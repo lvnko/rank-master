@@ -7,6 +7,7 @@
 ## API Design
 | Endpoints | POST | GET | PUT | DELETE |
 |:---|---|---|---|---|
-| **/user** | 新增用戶至 user collection | <span style="color: grey;">不適用</span> | <span style="color: grey;">不適用</span> | <span style="color: grey;">不適用</span> |
-| /user/ <span style="color: orange;">{{ user_id }}</span> | <span style="color: grey;">不適用</span> | 請求用戶的資料 | 更新用戶的資料 | 刪除用戶及其資料 |
-| **/user/** ``{{user_id}}`` /survey | 新增一個屬於 <span style="color: orange;">{{ user_id }}</span> 的 survey | 列出屬於 <span style="color: orange;">{{ user_id }}</span> 的所有 survey | <span style="color: grey;">不適用</span> | <span style="color: grey;">不適用</span> |
+| **/user** | 新增用戶至 user collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
+| /user/ ``{{user_id}}`` | ``-- 不適用 --`` | 請求用戶的資料 | 更新用戶的資料 | 刪除用戶及其資料 |
+| **/user/** ``{{user_id}}`` /survey | 新增一個屬於 ``{{user_id}}`` 的 survey 至 survey collection | 列出在 survey collection 內所有屬於 ``{{user_id}}`` 的 survey | ``-- 不適用 --`` | ``-- 不適用 --`` |
+| **/user/** ``{{user_id}}`` /survey/ ``{{survey_id}}`` | ``-- 不適用 --`` | 如果 ``{{survey_id}}`` 屬於 ``{{user_id}}`` 的話，便會獲得該 survey 的資料 | 如果 ``{{survey_id}}`` 屬於 ``{{user_id}}`` 的話，便會更新該 survey 的資料 | 如果 ``{{survey_id}}`` 屬於 ``{{user_id}}`` 的話，便會刪除該 survey |
