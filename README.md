@@ -11,5 +11,5 @@
 | **/user/** ``{{user_id}}`` | ``-- 不適用 --`` | 請求用戶的資料 | 更新用戶的資料 | 刪除用戶及其資料 |
 | **/user/** ``{{user_id}}`` /survey | 新增一個屬於 ``{{user_id}}`` 的 survey 至 survey collection | 列出在 survey collection 內所有屬於 ``{{user_id}}`` 的 survey | ``-- 不適用 --`` | ``-- 不適用 --`` |
 | **/user/** ``{{user_id}}`` /survey/ ``{{survey_id}}`` | ``-- 不適用 --`` | 如果 ``{{survey_id}}`` 屬於 ``{{user_id}}`` 的話，便會獲得該 survey 的資料 | 如果 ``{{survey_id}}`` 屬於 ``{{user_id}}`` 的話，便會更新該 survey 的資料 | 如果 ``{{survey_id}}`` 屬於 ``{{user_id}}`` 的話，便會刪除該 survey |
-| **/survey/** ``{{survey_id}}`` | 請求 ``{{survey_id}}`` 的 survey 資料 | 更新 ``{{survey_id}}`` 的 survey 資料 | 刪除 ``{{survey_id}}`` 的資料 |
-| **/survey/** new/``{{user_id}}`` | ``-- 不適用 --`` | 新增一個屬於 ``{{user_id}}`` 的 survey 至 survey collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
+| **/survey/** ``{{survey_id}}`` | ``-- 不適用 --`` | 請求 ``{{survey_id}}`` 的 survey 資料 | 更新 ``{{survey_id}}`` 的 survey 資料 | 刪除 ``{{survey_id}}`` 的資料 |
+| **/survey/** new/``{{user_id}}`` | 新增一個屬於 ``{{user_id}}`` 的 survey 至 survey collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
