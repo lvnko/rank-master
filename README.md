@@ -9,4 +9,4 @@
 |:---|---|---|---|---|
 | **/user** | 新增用戶至 user collection | <span style="color: grey;">不適用</span> | <span style="color: grey;">不適用</span> | <span style="color: grey;">不適用</span> |
 | /user/ <span style="color: orange;">{{ user_id }}</span> | <span style="color: grey;">不適用</span> | 請求用戶的資料 | 更新用戶的資料 | 刪除用戶及其資料 |
-| **/user/** <span style="color: orange;">{{ user_id }}</span> /survey | 新增一個屬於 <span style="color: orange;">{{ user_id }}</span> 的 survey | 列出屬於 <span style="color: orange;">{{ user_id }}</span> 的所有 survey | <span style="color: grey;">不適用</span> | <span style="color: grey;">不適用</span> |
+| **/user/** ``{{ user_id }}`` /survey | 新增一個屬於 <span style="color: orange;">{{ user_id }}</span> 的 survey | 列出屬於 <span style="color: orange;">{{ user_id }}</span> 的所有 survey | <span style="color: grey;">不適用</span> | <span style="color: grey;">不適用</span> |
