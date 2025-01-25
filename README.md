@@ -15,3 +15,5 @@
 | **/survey/** new/``{{user_id}}`` | 新增一個屬於 ``{{user_id}}`` 的 survey 至 survey collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
 | **/option/** ``{{option_id}}`` | ``-- 不適用 --`` | 請求 ``{{option_id}}`` 的 option 資料 | 更新 ``{{option_id}}`` 的 option 資料 | 刪除 ``{{option_id}}`` 的資料 |
 | **/option/** new/``{{survey_id}}`` | 新增一個屬於 ``{{survey_id}}`` 的 option 至 option collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
+| **/vote/** ``{{option_id}}`` | ``-- 不適用 --`` | 請求 ``{{option_id}}`` 的 option 資料 | 更新 ``{{option_id}}`` 的 option 資料 | 刪除 ``{{option_id}}`` 的資料 |
+| **/vote/** new/``{{survey_id}}`` | 新增一個屬於 ``{{survey_id}}`` 的 option 至 option collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
