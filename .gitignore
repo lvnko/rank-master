@@ -1,14 +1,12 @@
 # dependencies
-/*/node_modules
+*/node_modules
 
 # debug
-/*/logs
+*/logs
 
 # misc
 .DS_Store
-/*/.DS_Store
-*.pem
-/*/*.pem
+.pem
 
 # local env files
-/*/.env*.local
+.env*.local
