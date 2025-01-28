@@ -1,7 +1,7 @@
 # 專案實作
 
 ## Schema Design
-![Rank Master Schema Design](/files/schema_design.png)
+![Rank Master Schema Design](/files/schema_design-v2.2.png)
 以現階段所掌握的技術，用戶驗證 (verification) 及服務訂購 (subscription) 的功能，會在稍後課程有所提及其所需技術的時候，再行規劃其開發。
 
 ## API Design
@@ -15,5 +15,5 @@
 | **/survey/** new/``{{user_id}}`` | 新增一個屬於 ``{{user_id}}`` 的 survey 至 survey collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
 | **/option/** ``{{option_id}}`` | ``-- 不適用 --`` | 請求 ``{{option_id}}`` 的 option 資料 | 更新 ``{{option_id}}`` 的 option 資料 | 刪除 ``{{option_id}}`` 的資料 |
 | **/option/** new/``{{survey_id}}`` | 新增一個屬於 ``{{survey_id}}`` 的 option 至 option collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
-| **/vote/** ``{{option_id}}`` | ``-- 不適用 --`` | 請求 ``{{option_id}}`` 的 option 資料 | 更新 ``{{option_id}}`` 的 option 資料 | 刪除 ``{{option_id}}`` 的資料 |
-| **/vote/** new/``{{survey_id}}`` | 新增一個屬於 ``{{survey_id}}`` 的 option 至 option collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
+| **/vote/** ``{{vote_id}}`` | ``-- 不適用 --`` | 請求 ``{{vote_id}}`` 的 option 資料 | 更新 ``{{vote_id}}`` 的 option 資料 | ``-- 不適用 --`` |
+| **/vote/** new/``{{survey_id}}``/``{{candidate_id}}`` | 從 ``{{survey_id}}`` 的 option 列中新增一雙 option 配對給 ``{{candidate_id}}`` 做比較 | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
