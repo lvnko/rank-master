@@ -1,10 +1,15 @@
 # 專案實作
 
 ## Schema Design
+版本：v2.2
 ![Rank Master Schema Design](/files/schema_design-v2.2.png)
 以現階段所掌握的技術，用戶驗證 (verification) 及服務訂購 (subscription) 的功能，會在稍後課程有所提及其所需技術的時候，再行規劃其開發。
 
 ## API Design
+- 以下為暫時擬定的 API Endpoints
+- 根據現有的 Schema Design，大概還有一半以上的 Endpoints 待定
+- 因為有一些 collection 在新增 document 時，需要考慮本身跟其他 collection 的 relation，若這些有關其他 relational collection 的 foreign key 需要放在 url 上，為了避免跟同一個 API 在處理 RUD 時，在同一個 url 位置是用來放直接影響到的 collection 的 id，我便把他們 (relational collection id) 推到下一層，在 new/ 之後做整理。
+
 | Endpoints | POST | GET | PUT | DELETE |
 |:---|---|---|---|---|
 | **/user** | 新增用戶至 user collection | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
