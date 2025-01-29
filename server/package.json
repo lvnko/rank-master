@@ -1,0 +1,16 @@
+{
+  "name": "rank-master-server",
+  "version": "1.0.0",
+  "description": "Server side development of rank master",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lvnko",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.8.1"
+  }
+}
