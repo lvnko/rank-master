@@ -2,7 +2,7 @@
 
 ## Schema Design
 版本：v2.2
-![Rank Master Schema Design](/files/schema_design-v2.2.png)
+![Rank Master Schema Design](/files/schema_design-v2.4.png)
 以現階段所掌握的技術，用戶驗證 (verification) 及服務訂購 (subscription) 的功能，會在稍後課程有所提及其所需技術的時候，再行規劃其開發。
 
 ## API Design
