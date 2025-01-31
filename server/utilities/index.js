@@ -17,22 +17,30 @@
  * 505 HTTP Version Not Supported: The server does not support the HTTP protocol version used in the request.
  */
 
+const mongoose = require("mongoose");
+
 const standardErrorHandler = (res, err) => {
-    res.status(err.status || 500);
+    res.status(err.code || 500);
     console.log('err => ', err);
+    console.log('err.status => ', err.status);
+    console.log('err.errors => ', err.errors);
+    console.log('err.message => ', err.message);
+    console.log('Object.keys(err) => ', Object.keys(err));
     res.json({
-        err: err.message,
+        status: err.status || "error",
+        message: err.message,
         // ...message ? { message } : null
+        ...err.code ? { code: err.code } : null
     });
     res.end();
     return;
 }
 
-const customErrorHandler = (res, message, statysText = "error", code = 404, moreInfo) => {
+const customErrorHandler = (res, message, statusText = "error", code = 404, moreInfo) => {
     const resCode = code;
     res.status(code);
     res.json({
-        status: "error",
+        status: statusText,
         code: resCode,
         message: message,
         ...(moreInfo ? moreInfo : null),
@@ -44,16 +52,48 @@ const customErrorHandler = (res, message, statysText = "error", code = 404, more
 
 const customFaultHandler = (res, message) => {
     return res.send({
-        statusText: "fail",
+        status: "fail",
         message: message
     });
 };
+
+const getFullReqUrl = (req) => {
+    return `${req.protocol}://${req.headers.host}${req.originalUrl}`;
+}
+
+const getModelDataKeys = (Model) => {
+    return Object.keys(Model.schema.paths).filter(e=>['_id','_v'].indexOf(e) < 0);
+}
+
+const getReqBodyDataAsModelSchema = (req, Model) => {
+    const keysOfData = getModelDataKeys(Model);
+    return Object.keys(req.body).reduce((accm, curr)=>{
+        if (keysOfData.indexOf(curr) >= 0) {
+            accm[curr] = req.body[curr];
+        }
+        return accm;
+    }, {});
+}
+
+const validateObjectId = (id, message = `It requires a valid ID.`) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(`${id}`)) {
+            throw new Error(message);
+        }
+        return true;
+    } catch (error) {
+        throw error;
+    }
+}
 
 // exports.standardErrorHandler = standardErrorHandler;
 //  customErrorHandler, customFaultHandler };
 
 module.exports = {
-    standardErrorHandler: standardErrorHandler,
-    customErrorHandler: customErrorHandler,
-    customFaultHandler: customFaultHandler
+    standardErrorHandler,
+    customErrorHandler,
+    customFaultHandler,
+    getFullReqUrl,
+    getReqBodyDataAsModelSchema,
+    validateObjectId
 };

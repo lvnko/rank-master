@@ -2,12 +2,12 @@ const express = require("express");
 const path = require('path');
 const router = express.Router();
 const userRouter = require('./user');
-const { customErrorHandler } = require(path.join(__dirname, '../utilities'));
+const { customErrorHandler, getFullReqUrl } = require(path.join(__dirname, '../utilities'));
 
 router.use('/user', userRouter);
 
 const commonNonActiveEndpointReply = async (req, res) => {
-    const fullUrl = `${req.protocol}://${req.headers.host}${req.originalUrl}`;
+    const fullUrl = getFullReqUrl(req);
     console.log('Full URL:', fullUrl);
     res.setHeader('Content-Type', 'application/json');
     return customErrorHandler(

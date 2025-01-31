@@ -251,11 +251,14 @@ const VALUE_TYPES = ["string", "numeric", "boolean"];
 
 const INPUT_TYPES = ["text_input", "num_input", "selection", "selection_multiple", "switch"];
 
+const GENDER_TYPES = ["M", "F"];
+
 module.exports = {
     COUNTRIES_OR_REGIONS,
     ROLE_TYPES,
     SUBSCRIPTION_TYPES,
     SURVEY_STATUS,
     VALUE_TYPES,
-    INPUT_TYPES
+    INPUT_TYPES,
+    GENDER_TYPES
 }

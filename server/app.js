@@ -8,7 +8,7 @@ const port = 8081;
 const portMongodbDefault = 27017;
 
 mongoose.connect(`mongodb://localhost:${portMongodbDefault}/RankMaster`, {
-    useNewUrlParser: true,
+    // useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
