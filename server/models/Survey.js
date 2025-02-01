@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const { type } = require('os');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 const path = require('path');
 const { SURVEY_STATUS } = require(path.join(__dirname, '../constants'));
 const { Schema } = mongoose;
@@ -29,7 +27,7 @@ const surveySchema = new mongoose.Schema({
         default: 3,
         min: 1,
     },
-    highestAppearance: {
+    highestSingleAppearance: {
         type: Schema.Types.Number,
         default: 0,
     },

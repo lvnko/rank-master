@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 const path = require('path');
 const { COUNTRIES_OR_REGIONS, ROLE_TYPES, SUBSCRIPTION_TYPES, GENDER_TYPES } = require(path.join(__dirname, '../constants'));
 const { Schema } = mongoose;

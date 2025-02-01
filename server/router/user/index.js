@@ -3,7 +3,10 @@ const path = require('path');
 const mongoose = require("mongoose");
 const User = require(path.join(__dirname, '../../models/User'));
 const router = express.Router();
-const { standardErrorHandler, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../utilities'));
+const surveyRouter = require('./survey');
+const { standardErrorHandler, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../../utilities'));
+
+router.use('/:user_id/survey', surveyRouter);
 
 router.post('/', async (req, res) => {
     
@@ -75,7 +78,7 @@ router.put('/:id', async (req, res) => {
 
     try {
 
-        validateObjectId(req.params.id, `It requires a valid ID to find a user.`);
+        validateObjectId(req.params.id, `It requires a valid ID to update a user.`);
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
         const payload = getReqBodyDataAsModelSchema(req, User);
 
@@ -113,7 +116,7 @@ router.delete('/:id', async (req, res) => {
 
     try {
 
-        validateObjectId(req.params.id, `It requires a valid ID to find a user.`);
+        validateObjectId(req.params.id, `It requires a valid ID to delete a user.`);
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
 
         console.log('params id =>', id);

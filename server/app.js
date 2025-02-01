@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const router = require("./router"); 
+const router = require("./router");
 // const { standardErrorHandler, customErrorHandler } = require("./utilities");
 const { Schema, Types } = mongoose;
 const app = express();
