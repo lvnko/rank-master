@@ -245,7 +245,7 @@ const ROLE_TYPES = ["fair", "subject", "respondant"];
 
 const SUBSCRIPTION_TYPES = ["fair", "standard", "professional"];
 
-const SURVEY_STATUS = ["inactive", "active", "suspended"];
+const SURVEY_STATUS = ["draft", "inactive", "active", "suspended"];
 
 const VALUE_TYPES = ["string", "numeric", "boolean"];
 
