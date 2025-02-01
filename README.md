@@ -7,8 +7,7 @@
 
 ## API Design
 - 以下為暫時擬定的 API Endpoints；
-- 根據現有的 Schema Design，大概還有一半以上的 Endpoints 待定 (例：圖像 image ... )；
-- 因為有一些 collection 在新增 document 時，需要考慮本身跟其他 collection 的 relation，若這些有關其他 relational collection 的 foreign key 需要放在 url 上，為了避免跟同一個 API 在處理 RUD 時，在同一個 url 位置是用來放直接影響到的 collection 的 id，我便把他們 (relational collection id) 推到下一層，在 new/ 之後做整理。
+- 根據現有的 Schema Design，大概還有一半以上的 Endpoints 待定 (例：圖像 image ... )。
 
 | Endpoints | POST | GET | PUT | DELETE |
 |:---|---|---|---|---|
