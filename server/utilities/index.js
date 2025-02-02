@@ -36,6 +36,17 @@ const standardErrorHandler = (res, err) => {
     return;
 }
 
+const standardErrorHandlerOnPost = (res, error) => {
+    console.log('error.message =>', error.message);
+    const fullStatusText = error.message.split(/:/, 1)[0];
+    const messageText = error.message.replace(fullStatusText, '').trim();
+    return standardErrorHandler(res, {
+        status: fullStatusText.toLowerCase().indexOf('fail') >= 0 ? "fail" : "error",
+        code: 400,
+        message: messageText
+    });
+}
+
 const customErrorHandler = (res, message, statusText = "error", code = 404, moreInfo) => {
     const resCode = code;
     res.status(code);
@@ -91,6 +102,7 @@ const validateObjectId = (id, message = `It requires a valid ID.`) => {
 
 module.exports = {
     standardErrorHandler,
+    standardErrorHandlerOnPost,
     customErrorHandler,
     customFaultHandler,
     getFullReqUrl,

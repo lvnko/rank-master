@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const path = require('path');
 const { SURVEY_STATUS } = require(path.join(__dirname, '../constants'));
+const { logUpdateDateTime, logSaveDateTime } = require(path.join(__dirname, '../middlewares'));
 const { Schema } = mongoose;
 
 const surveySchema = new mongoose.Schema({
@@ -50,16 +51,8 @@ const surveySchema = new mongoose.Schema({
     }
 });
 
-surveySchema.pre('save', function (next) {
-    if (this.isModified()) {
-      this.updatedAt = Date.now();
-    }
-    next();
-});
+surveySchema.pre('save', logSaveDateTime);
 
-surveySchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], function (next) {
-    this.set({ updatedAt: Date.now() });
-    next();
-});
+surveySchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], logUpdateDateTime);
 
 module.exports = mongoose.model('Survey', surveySchema);

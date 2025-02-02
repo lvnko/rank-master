@@ -4,9 +4,10 @@ const mongoose = require("mongoose");
 const User = require(path.join(__dirname, '../../models/User'));
 const router = express.Router();
 const surveyRouter = require('./survey');
-const { standardErrorHandler, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../../utilities'));
+const { standardErrorHandler, standardErrorHandlerOnPost, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../../utilities'));
+const { passParentParamsForward } = require(path.join(__dirname, '../../middlewares'));
 
-router.use('/:user_id/survey', surveyRouter);
+router.use('/:user_id/survey', passParentParamsForward, surveyRouter);
 
 router.post('/', async (req, res) => {
     
@@ -24,14 +25,9 @@ router.post('/', async (req, res) => {
         res.end();
 
     } catch (error) {
-        console.log('error.message =>', error.message);
-        const fullStatusText = error.message.split(/:/, 1)[0];
-        const messageText = error.message.replace(fullStatusText, '').trim();
-        return standardErrorHandler(res, {
-            status: fullStatusText.toLowerCase().indexOf('fail') >= 0 ? "fail" : "error",
-            code: 400,
-            message: messageText
-        });
+
+        return standardErrorHandlerOnPost(res, error);
+        
     }
 
 });
@@ -55,8 +51,8 @@ router.get('/:id', async (req, res) => {
 
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
-            status: "success",
-            message: "A user profile is found.",
+            status: result === null ? "fail" : "success",
+            message: result === null ? "No user profile is found." : "A user profile is found.",
             data: {
                 user: result
             }

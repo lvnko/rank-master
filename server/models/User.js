@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const path = require('path');
 const { COUNTRIES_OR_REGIONS, ROLE_TYPES, SUBSCRIPTION_TYPES, GENDER_TYPES } = require(path.join(__dirname, '../constants'));
+const { logUpdateDateTime, logSaveDateTime } = require(path.join(__dirname, '../middlewares'));
 const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
@@ -55,16 +56,8 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-userSchema.pre('save', function (next) {
-    if (this.isModified()) {
-      this.updatedAt = Date.now();
-    }
-    next();
-});
+userSchema.pre('save', logSaveDateTime);
 
-userSchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], function (next) {
-    this.set({ updatedAt: Date.now() });
-    next();
-});
+userSchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], logUpdateDateTime);
 
 module.exports = mongoose.model('User', userSchema);
