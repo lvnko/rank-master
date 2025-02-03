@@ -21,3 +21,6 @@
 | **/option/** ``{{option_id}}`` | ``-- 不適用 --`` | 請求 ``{{option_id}}`` 的 option 資料 | 更新 ``{{option_id}}`` 的 option 資料 | 刪除 ``{{option_id}}`` 的資料 |
 | **/vote/** ``{{vote_id}}`` | ``-- 不適用 --`` | 請求 ``{{vote_id}}`` 的 option 資料 | 更新 ``{{vote_id}}`` 的 option 資料 | ``-- 不適用 --`` |
 | **/vote/** new/``{{survey_id}}``/``{{candidate_id}}`` | 從 ``{{survey_id}}`` 的 option 列中新增一雙 option 配對給 ``{{candidate_id}}`` 做比較 | ``-- 不適用 --`` | ``-- 不適用 --`` | ``-- 不適用 --`` |
+
+## 有用資源
+- 隨機用戶檔案生成器 ([連結](https://randomuser.me/api/?format=json&?nat=us,dk,fr,gb,ch,de,dk))
