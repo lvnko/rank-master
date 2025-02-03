@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const User = require(path.join(__dirname, '../../models/User'));
 const Survey = require(path.join(__dirname, '../../models/Survey'));
 const router = express.Router();
-const { standardErrorHandler, standardErrorHandlerOnPost, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../../utilities'));
+const { standardErrorHandler, standardErrorHandlerOnPost, getModelDataKeys, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../../utilities'));
 
 router.post('/', async (req, res) => {
 
@@ -88,6 +88,10 @@ router.get('/:survey_id', async (req, res) => {
         const params = { ...req.parentParams, ...req.params };
         validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
         validateObjectId(params.survey_id, `It requires a valid Survey ID to find a survey.`);
+        const dataKeyConfigs = getModelDataKeys(Survey).filter(e=>['authorId'].indexOf(e) < 0).reduce((accm, curr)=>{
+            accm[curr] = 1;
+            return accm;
+        }, {});
         const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
         const surveyId = new mongoose.Types.ObjectId(`${params.survey_id}`);
 
@@ -105,15 +109,7 @@ router.get('/:survey_id', async (req, res) => {
                 }
             },{
                 $project:  {
-                    title: 1,
-                    body: 1,
-                    status: 1,
-                    minPairAppearance: 1,
-                    highestSingleAppearance: 1,
-                    voteCountEachSurvey: 1,
-                    fullfilled: 1,
-                    updatedAt: 1,
-                    createdAt: 1,
+                    ...dataKeyConfigs,
                     author: {
                         $arrayElemAt: ["$author", 0],
                     }
@@ -162,8 +158,89 @@ router.get('/:survey_id', async (req, res) => {
     }
 });
 
-router.put('/:survey_id', async (req, res) => {});
+router.put('/:survey_id', async (req, res) => {
+    try {
 
-router.delete('/:survey_id', async (req, res) => {});
+        const params = { ...req.parentParams, ...req.params };
+        validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
+        validateObjectId(params.survey_id, `It requires a valid Survey ID to find a survey.`);
+        const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
+        const surveyId = new mongoose.Types.ObjectId(`${params.survey_id}`);
+        const payload = getReqBodyDataAsModelSchema(req, Survey);
+
+        const result = await Survey.updateOne({
+            _id: surveyId,
+            authorId
+        }, {
+            ...payload
+        });
+
+        res.setHeader('Content-Type', 'application/json');
+        res.write(JSON.stringify({
+            ...result === null ? {
+                status: "fail",
+                message: "We cannot found any survey from this user to update ."
+            } : {
+                status: "success",
+                messsage: "A survey from this user is updated."
+            },
+            data: {
+                survey: result
+            }
+        }));
+        res.end();
+
+    } catch (error) {
+
+        return standardErrorHandler(res, {
+            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            message: error.message
+        });
+
+    }
+
+});
+
+router.delete('/:survey_id', async (req, res) => {
+
+    try {
+
+        const params = { ...req.parentParams, ...req.params };
+        validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
+        validateObjectId(params.survey_id, `It requires a valid Survey ID to find a survey.`);
+        const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
+        const surveyId = new mongoose.Types.ObjectId(`${params.survey_id}`);
+        const result = await Survey.deleteOne({
+            _id: surveyId,
+            authorId
+        });
+
+        res.setHeader('Content-Type', 'application/json');
+        res.write(JSON.stringify({
+            ...result === null || result?.deletedCount === 0 ? {
+                status: "fail",
+                message: "We cannot found any survey from this user to delete."
+            } : {
+                status: "success",
+                message: "A survey created by this user is deleted."
+            },
+            data: {
+                survey: result
+            }
+        }));
+        res.end();
+
+    } catch (error) {
+
+        return standardErrorHandler(res, {
+            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            message: error.message
+        });
+
+    }
+
+});
 
 module.exports = router;

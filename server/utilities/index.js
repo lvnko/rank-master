@@ -73,7 +73,7 @@ const getFullReqUrl = (req) => {
 }
 
 const getModelDataKeys = (Model) => {
-    return Object.keys(Model.schema.paths).filter(e=>['_id','_v'].indexOf(e) < 0);
+    return Object.keys(Model.schema.paths).filter(e=>['_id','_v','__v'].indexOf(e) < 0);
 }
 
 const getReqBodyDataAsModelSchema = (req, Model) => {
@@ -106,6 +106,7 @@ module.exports = {
     customErrorHandler,
     customFaultHandler,
     getFullReqUrl,
+    getModelDataKeys,
     getReqBodyDataAsModelSchema,
     validateObjectId
 };
