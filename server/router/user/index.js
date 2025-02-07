@@ -33,9 +33,29 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    return customErrorHandler(res, "Bad Request", "fail", 400, {
-        message: `It requires more info to the end of ${getFullReqUrl(req)}/... as an ID to find a user.`
-    });
+    // return customErrorHandler(res, "Bad Request", "fail", 400, {
+    //     message: `It requires more info to the end of ${getFullReqUrl(req)}/... as an ID to find a user.`
+    // });
+
+    try {
+
+        const result = await User.find({});
+        res.setHeader('Content-Type', 'application/json');
+        res.write(JSON.stringify({
+            status: "success",
+            message: "User profiles are found.",
+            data: {
+                users: result
+            }
+        }));
+        res.end();
+
+    } catch (error) {
+
+        return standardErrorHandlerOnPost(res, error);
+
+    }
+    
 });
 
 router.get('/:id', async (req, res) => {

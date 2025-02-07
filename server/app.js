@@ -1,7 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./router");
-// const { standardErrorHandler, customErrorHandler } = require("./utilities");
+const cors = require("cors");
+const corsOptions = {
+    origin: "http://localhost:5173"
+};
 const { Schema, Types } = mongoose;
 const app = express();
 const port = 8081;
@@ -13,6 +16,7 @@ mongoose.connect(`mongodb://localhost:${portMongodbDefault}/RankMaster`, {
 });
 
 // parse req.body
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded(
     { extended: false }
