@@ -1,5 +1,5 @@
 import { appConfig } from "@/config/app";
-import { Icons } from "./Icons";
+import { Icons } from "./icons";
 
 export function Logo() {
     return (
