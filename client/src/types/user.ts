@@ -16,4 +16,4 @@ export default interface UserType {
     surveys?: Array<SurveyType>;
 };
 
-export type AuthorCoverType = Pick<UserType, 'id' | 'firstName' | 'lastName' | 'gender' | 'role'>;
+export type AuthorCoverType = Pick<UserType, '_id' | 'firstName' | 'lastName' | 'gender' | 'role'>;
