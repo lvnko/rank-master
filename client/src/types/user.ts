@@ -1,7 +1,7 @@
 import SurveyType from './survey';
 
 export default interface UserType {
-    id: string;
+    _id: string;
     firstName: string;
     lastName: string;
     gender: string;
