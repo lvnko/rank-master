@@ -7,6 +7,7 @@ import ErrorFallback from "@/components/error-fallback";
 import NoMatch from "./pages/NoMatch";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
+import Surveys from "./pages/Surveys";
 
 
 export const router = createBrowserRouter([
@@ -27,7 +28,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "surveys",
-                element: <Users />,
+                element: <Surveys />,
             },
         ],
     },

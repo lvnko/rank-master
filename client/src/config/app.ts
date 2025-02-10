@@ -11,7 +11,7 @@ interface AppConfig {
 }
 
 export const appConfig: AppConfig = {
-    name: "Sample App",
+    name: "Rank Master",
     github: {
         title: "Rank Master",
         url: "https://github.com/lvnko/rank-master",
