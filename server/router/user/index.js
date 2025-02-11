@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const User = require(path.join(__dirname, '../../models/User'));
 const router = express.Router();
 const surveyRouter = require('./survey');
-const { standardErrorHandler, standardErrorHandlerOnPost, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../../utilities'));
+const { standardErrorHandler, standardErrorHandlerOnPost, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId, packDataObjectWithCountryCodeByName } = require(path.join(__dirname, '../../utilities'));
 const { passParentParamsForward } = require(path.join(__dirname, '../../middlewares'));
 
 router.use('/:user_id/survey', passParentParamsForward, surveyRouter);
@@ -39,13 +39,31 @@ router.get('/', async (req, res) => {
 
     try {
 
-        const result = await User.find({});
+        // const results = await User.find({});
+        const results = await User.aggregate([
+            {
+                $lookup: {
+                    from: "surveys",
+                    localField: "_id",
+                    foreignField: "authorId",
+                    as: "surveys"
+                }
+            },{
+                $addFields: {
+                    surveysCreated: { $size: "$surveys" }
+                }
+            },{
+                $project: {
+                    surveys: 0
+                }
+            }
+        ]);
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: "success",
             message: "User profiles are found.",
             data: {
-                users: result
+                users: results.map(packDataObjectWithCountryCodeByName)
             }
         }));
         res.end();
@@ -74,7 +92,7 @@ router.get('/:id', async (req, res) => {
             status: result === null ? "fail" : "success",
             message: result === null ? "No user profile is found." : "A user profile is found.",
             data: {
-                user: result
+                user: packDataObjectWithCountryCodeByName(result)
             }
         }));
         res.end();

@@ -1,3 +1,4 @@
+import ParticipationProgressType from './participation-progress';
 import SurveyType from './survey';
 
 export default interface UserType {
@@ -14,6 +15,9 @@ export default interface UserType {
     updatedAt: Date;
     createdAt: Date;
     surveys?: Array<SurveyType>;
+    participations?: Array<ParticipationProgressType>;
+    surveysCreated?: number;
+    surveysParticipated?: number;
 };
 
 export type AuthorCoverType = Pick<UserType, '_id' | 'firstName' | 'lastName' | 'gender' | 'role'>;

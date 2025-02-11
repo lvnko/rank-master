@@ -18,6 +18,8 @@
  */
 
 const mongoose = require("mongoose");
+const path = require('path');
+const { COUNTRIES_OR_REGIONS } = require(path.join(__dirname, '../constants'));
 
 const standardErrorHandler = (res, err) => {
     res.status(err.code || 500);
@@ -97,6 +99,18 @@ const validateObjectId = (id, message = `It requires a valid ID.`) => {
     }
 }
 
+const getCountryCodeByName = (codeName = "") => {
+    if (codeName === undefined || codeName === null || codeName === "") return null;
+    return COUNTRIES_OR_REGIONS.filter(({name})=>name === codeName)[0]?.code || null
+}
+
+const packDataObjectWithCountryCodeByName = (dataObj) => {
+    return {
+        ...dataObj,
+        mobileCountryCode: getCountryCodeByName(dataObj.mobileCountryCode)
+    }
+}
+
 // exports.standardErrorHandler = standardErrorHandler;
 //  customErrorHandler, customFaultHandler };
 
@@ -108,5 +122,6 @@ module.exports = {
     getFullReqUrl,
     getModelDataKeys,
     getReqBodyDataAsModelSchema,
-    validateObjectId
+    validateObjectId,
+    packDataObjectWithCountryCodeByName
 };
