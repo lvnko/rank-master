@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const path = require('path');
-const { COUNTRIES_OR_REGIONS, ROLE_TYPES, SUBSCRIPTION_TYPES, GENDER_TYPES } = require(path.join(__dirname, '../constants'));
+const { COUNTRIES_OR_REGIONS, ROLE_TYPES, SUBSCRIPTION_TYPES, GENDER_TYPES, USER_STATUS_TYPES } = require(path.join(__dirname, '../constants'));
 const { logUpdateDateTime, logSaveDateTime } = require(path.join(__dirname, '../middlewares'));
 const { Schema } = mongoose;
 
@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema({
         type: Schema.Types.String,
         enum: SUBSCRIPTION_TYPES,
         default: 'fair'
+    },
+    status: {
+        type: Schema.Types.String,
+        enum: USER_STATUS_TYPES,
+        default: 'pending'
     },
     updatedAt: {
         type: Schema.Types.Date,

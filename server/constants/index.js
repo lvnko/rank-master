@@ -243,6 +243,8 @@ const COUNTRIES_OR_REGIONS = [
 
 const ROLE_TYPES = ["fair", "subject", "respondant"];
 
+const USER_STATUS_TYPES = ["active", "inactive", "pending", "suspended", "deleted"];
+
 const SUBSCRIPTION_TYPES = ["fair", "standard", "professional"];
 
 const SURVEY_STATUS = ["draft", "inactive", "active", "suspended"];
@@ -253,6 +255,10 @@ const INPUT_TYPES = ["text_input", "num_input", "selection", "selection_multiple
 
 const GENDER_TYPES = ["M", "F"];
 
+const ACTIVITY_TYPES = ["survey", "user", "option", "vote", "access"];
+
+const ACTION_TYPES = ["create", "update", "delete", "join", "vote", "verify", "login", "logout"];
+
 module.exports = {
     COUNTRIES_OR_REGIONS,
     ROLE_TYPES,
@@ -260,5 +266,8 @@ module.exports = {
     SURVEY_STATUS,
     VALUE_TYPES,
     INPUT_TYPES,
-    GENDER_TYPES
+    GENDER_TYPES,
+    USER_STATUS_TYPES,
+    ACTIVITY_TYPES,
+    ACTION_TYPES
 }

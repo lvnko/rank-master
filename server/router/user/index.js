@@ -86,13 +86,14 @@ router.get('/:id', async (req, res) => {
         console.log('params id =>', id);
         const result = await User.findById(id);
         console.log('result =>', result);
+        console.log('result.packed =>', packDataObjectWithCountryCodeByName(result));
 
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: result === null ? "fail" : "success",
             message: result === null ? "No user profile is found." : "A user profile is found.",
             data: {
-                user: packDataObjectWithCountryCodeByName(result)
+                user: packDataObjectWithCountryCodeByName(result.toJSON())
             }
         }));
         res.end();
