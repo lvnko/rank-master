@@ -24,3 +24,4 @@
 
 ## 有用資源
 - 隨機用戶檔案生成器 ([連結](https://randomuser.me/api/?format=json&?nat=us,dk,fr,gb,ch,de,dk))
+- 全球語言碼速查 ([連結](https://simplelocalize.io/data/locales/))

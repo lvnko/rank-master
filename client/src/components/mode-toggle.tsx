@@ -5,12 +5,13 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuCheckboxItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/hooks/useTheme"
 
 export function ModeToggle() {
-    const { setTheme } = useTheme()
+    const { setTheme, theme } = useTheme()
 
     return (
         <DropdownMenu>
@@ -22,15 +23,15 @@ export function ModeToggle() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem className="cursor-pointer" onClick={() => setTheme("light")}>
+                <DropdownMenuCheckboxItem className="cursor-pointer" checked={theme==='light'} onClick={() => setTheme("light")}>
                 Light
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer" onClick={() => setTheme("dark")}>
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem className="cursor-pointer" checked={theme==='dark'} onClick={() => setTheme("dark")}>
                 Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer" onClick={() => setTheme("system")}>
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem className="cursor-pointer" checked={theme==='system'} onClick={() => setTheme("system")}>
                 System
-                </DropdownMenuItem>
+                </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
         </DropdownMenu>
     )

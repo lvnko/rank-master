@@ -27,6 +27,12 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+    const { language, languages, t } = req;
+    console.log("CHECK : req.language => ", language);
+    console.log("CHECK : req.languages => ", languages);
+    console.log("CHECK : req.t => ", t);
+    console.log("CHECK : req.t('greeting') => ", t('greeting', 'Translation not found!'));
+    console.log("CHECK system locale => ", Intl.DateTimeFormat().resolvedOptions().locale)
     return await commonNonActiveEndpointReply(req, res);
 });
 

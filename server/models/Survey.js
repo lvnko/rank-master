@@ -12,8 +12,16 @@ const surveySchema = new mongoose.Schema({
     body: {
         type: Schema.Types.String
     },
+    translations: {
+        type: Schema.Types.Map,
+        of: new mongoose.Schema({
+            title: Schema.Types.String,
+            body: Schema.Types.String,
+        }),
+    },
     authorId: {
         type: Schema.Types.ObjectId,
+        ref: 'user',
         required: true
     },
     status: {
