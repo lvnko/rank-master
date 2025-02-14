@@ -7,12 +7,20 @@ const { customErrorHandler, getFullReqUrl } = require(path.join(__dirname, '../u
 router.use('/user', userRouter);
 
 const commonNonActiveEndpointReply = async (req, res) => {
+
+    const { language, languages, t } = req;
+    console.log("CHECK : req.language => ", language);
+    console.log("CHECK : req.languages => ", languages);
+    console.log("CHECK : req.t => ", t);
+    console.log("CHECK : req.t('greeting') => ", t('greeting', 'Translation not found!'));
+    console.log("CHECK system locale => ", Intl.DateTimeFormat().resolvedOptions().locale)
+
     const fullUrl = getFullReqUrl(req);
     console.log('Full URL:', fullUrl);
     res.setHeader('Content-Type', 'application/json');
     return customErrorHandler(
         res,
-        `Endpoint not found: ${fullUrl}`, "error", 404,
+        `Endpoint not found: ${fullUrl}`, "error", 400,
         {
             suggestions: [
                 "Check the API endpoint URL for typos.",
@@ -27,12 +35,6 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    const { language, languages, t } = req;
-    console.log("CHECK : req.language => ", language);
-    console.log("CHECK : req.languages => ", languages);
-    console.log("CHECK : req.t => ", t);
-    console.log("CHECK : req.t('greeting') => ", t('greeting', 'Translation not found!'));
-    console.log("CHECK system locale => ", Intl.DateTimeFormat().resolvedOptions().locale)
     return await commonNonActiveEndpointReply(req, res);
 });
 

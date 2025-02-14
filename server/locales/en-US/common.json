@@ -1,0 +1,6 @@
+{
+    "greeting": "Hello, welcome using the backend API of Rank Master!",
+    "endpoint": {
+        "notNound": "Endpoint not found: {{fullUrl}}."
+    }
+}

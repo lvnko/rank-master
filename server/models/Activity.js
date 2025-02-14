@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 const activitySchema = new mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     affected: {

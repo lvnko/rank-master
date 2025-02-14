@@ -41,8 +41,8 @@ i18next
         initImmediate: false,
         fallbackLng: {
             'en': ['en-US'],
-            'default': ['en-US'],
-            default: ['en-US']
+            'default': ['en-US', 'zh-TW'],
+            default: ['en-US', 'zh-TW']
         },
         supportedLngs: ['en', 'en-US', 'zh-TW'],
         preload: readdirSync(localesFolder).filter((fileName) => {

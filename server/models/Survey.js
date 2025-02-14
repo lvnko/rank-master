@@ -5,13 +5,6 @@ const { logUpdateDateTime, logSaveDateTime } = require(path.join(__dirname, '../
 const { Schema } = mongoose;
 
 const surveySchema = new mongoose.Schema({
-    title: {
-        type: Schema.Types.String,
-        required: true
-    },
-    body: {
-        type: Schema.Types.String
-    },
     translations: {
         type: Schema.Types.Map,
         of: new mongoose.Schema({
@@ -21,7 +14,7 @@ const surveySchema = new mongoose.Schema({
     },
     authorId: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: true
     },
     status: {
