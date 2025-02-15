@@ -1,6 +1,10 @@
 {
     "greeting": "你好，歡迎使用 Rank Master 後台 API！",
     "endpoint": {
-        "notNound": "Endpoint not found: {{fullUrl}}."
+        "notFound": "此 API 端點沒有回應: {{fullUrl}}。",
+        "suggestions": {
+            "checkTypo": "檢查 API 端點的路徑是否有錯字。",
+            "apiDocumentation": "到我們的 API 使用文件 : https://github.com/lvnko/rank-master 去看看有沒有符合你需要的端點。"
+        }
     }
 }

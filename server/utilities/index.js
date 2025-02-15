@@ -19,6 +19,7 @@
 
 const mongoose = require("mongoose");
 const path = require('path');
+const he = require('he');
 const { COUNTRIES_OR_REGIONS } = require(path.join(__dirname, '../constants'));
 
 const standardErrorHandler = (res, err) => {
@@ -112,6 +113,25 @@ const packDataObjectWithCountryCodeByName = (dataObj) => {
     }
 }
 
+const commonNonActiveEndpointReply = async (req, res) => {
+
+    const { t } = req;
+
+    const fullUrl = getFullReqUrl(req);
+    // console.log('Full URL:', fullUrl);
+    res.setHeader('Content-Type', 'application/json');
+    return customErrorHandler(
+        res,
+        he.decode(t('endpoint.notFound', { ns: 'common', fullUrl: fullUrl })), "error", 400,
+        {
+            suggestions: [
+                t('endpoint.suggestions.checkTypo', { ns: 'common'}),
+                t('endpoint.suggestions.apiDocumentation', { ns: 'common'})
+            ]
+        }
+    );
+}
+
 // exports.standardErrorHandler = standardErrorHandler;
 //  customErrorHandler, customFaultHandler };
 
@@ -124,5 +144,6 @@ module.exports = {
     getModelDataKeys,
     getReqBodyDataAsModelSchema,
     validateObjectId,
-    packDataObjectWithCountryCodeByName
+    packDataObjectWithCountryCodeByName,
+    commonNonActiveEndpointReply
 };

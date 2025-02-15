@@ -1,6 +1,10 @@
 {
     "greeting": "Hello, welcome using the backend API of Rank Master!",
     "endpoint": {
-        "notNound": "Endpoint not found: {{fullUrl}}."
+        "notFound": "Endpoint not found: {{fullUrl}}.",
+        "suggestions": {
+            "checkTypo": "Check the API endpoint URL for typos.",
+            "apiDocumentation": "Visit the API documentation at https://github.com/lvnko/rank-master for valid routes."
+        }
     }
 }

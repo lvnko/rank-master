@@ -1,13 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { dirname, join } = require('path');
-const { readdirSync, lstatSync } = require('fs')
-const { fileURLToPath } = require('url')
+const { readdirSync, lstatSync } = require('fs');
+const { fileURLToPath } = require('url');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
 const middleware = require('i18next-http-middleware');
 const cors = require("cors");
 const router = require("./router");
+const { commonNonActiveEndpointReply } = require('./utilities');
 const corsOptions = {
     origin: "http://localhost:5173"
 };
@@ -38,18 +39,18 @@ i18next
     .use(Backend)
     .init({
         debug: true,
+        ns: ['common', 'translation'],
+        defaultNS: 'translation',
         initImmediate: false,
-        fallbackLng: {
-            'en': ['en-US'],
-            'default': ['en-US', 'zh-TW'],
-            default: ['en-US', 'zh-TW']
-        },
-        supportedLngs: ['en', 'en-US', 'zh-TW'],
+        fallbackLng: ['en-US'],
+        supportedLngs: ['en-US', 'zh-TW'],
+        load: 'currentOnly',
         preload: readdirSync(localesFolder).filter((fileName) => {
             const joinedPath = join(localesFolder, fileName)
             return lstatSync(joinedPath).isDirectory()
         }),
-        backend: { loadPath: join(localesFolder, '{{lng}}/{{ns}}.json') },
+        // backend: { loadPath: join(localesFolder, '{{lng}}/{{ns}}.json') },
+        backend: { loadPath: join(__dirname, 'locales/{{lng}}/{{ns}}.json') },
         detection: { order: ['querystring', 'header'], lookupQuerystring: 'lng' },
     });
 
@@ -63,6 +64,9 @@ app.use(express.urlencoded(
 
 app.use('/', router);
 
+app.use(commonNonActiveEndpointReply);
+
 app.listen(port, ()=>{
     console.log(`Server is now responsding on port ${port}!!!`);
 });
+
