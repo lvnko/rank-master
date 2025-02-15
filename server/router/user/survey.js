@@ -179,7 +179,7 @@ router.put('/:survey_id', async (req, res) => {
         res.write(JSON.stringify({
             ...result === null ? {
                 status: "fail",
-                message: "We cannot found any survey from this user to update ."
+                message: "We cannot found any survey from this user to update."
             } : {
                 status: "success",
                 messsage: "A survey from this user is updated."
