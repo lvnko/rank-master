@@ -5,6 +5,12 @@
         "suggestions": {
             "checkTypo": "Check the API endpoint URL for typos.",
             "apiDocumentation": "Visit the API documentation at https://github.com/lvnko/rank-master for valid routes."
+        },
+        "action": {
+            "create": "create",
+            "find": "find",
+            "update": "update",
+            "delete": "delete"
         }
     }
 }

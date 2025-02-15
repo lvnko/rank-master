@@ -39,8 +39,8 @@ i18next
     .use(Backend)
     .init({
         debug: true,
-        ns: ['common', 'translation'],
-        defaultNS: 'translation',
+        ns: ['common', 'message', 'translation'],
+        defaultNS: 'common',
         initImmediate: false,
         fallbackLng: ['en-US'],
         supportedLngs: ['en-US', 'zh-TW'],

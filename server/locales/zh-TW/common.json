@@ -5,6 +5,12 @@
         "suggestions": {
             "checkTypo": "檢查 API 端點的路徑是否有錯字。",
             "apiDocumentation": "到我們的 API 使用文件 : https://github.com/lvnko/rank-master 去看看有沒有符合你需要的端點。"
+        },
+        "action": {
+            "create": "創造",
+            "find": "尋找",
+            "update": "更新",
+            "delete": "刪除"
         }
     }
 }

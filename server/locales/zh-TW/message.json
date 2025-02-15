@@ -1,13 +1,13 @@
 {
     "user": {
         "created": "A new user has been created.",
-        "notFound": "No user profile is found.",
-        "cannotFound": "We couldn't find this user profile.",
-        "found": "A user profile is found.",
-        "founds": "User profiles are found.",
+        "notFound": "我們無法找不到任何用戶檔案。",
+        "cannotFound": "我們無法找到這個用戶檔案。",
+        "found": "我們找到了這個用戶檔案。",
+        "founds": "我們找到了這些用戶檔案。",
         "updted": "A user profile is updated.",
         "deleted": "A user profile is deleted.",
-        "requirement": "It requires a valid {{requirement}} to {{action}} a user.",
+        "requirement": "我們需要一個有效的{{requirement}}去{{action}}用戶檔案.",
         "survey": {
             "created": "A new survey has been created.",
             "notFound": "We found this user has created no survey.",

@@ -33,13 +33,11 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    // return customErrorHandler(res, "Bad Request", "fail", 400, {
-    //     message: `It requires more info to the end of ${getFullReqUrl(req)}/... as an ID to find a user.`
-    // });
+
+    const { t } = req;
 
     try {
 
-        // const results = await User.find({});
         const results = await User.aggregate([
             {
                 $lookup: {
@@ -61,7 +59,7 @@ router.get('/', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: "success",
-            message: "User profiles are found.",
+            message: t(results.length > 0 ? 'user.founds' : 'user.notFound', { ns: 'message' }),
             data: {
                 users: results.map(packDataObjectWithCountryCodeByName)
             }
@@ -78,9 +76,11 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     
+    const { t } = req;
+    
     try {
-
-        validateObjectId(req.params.id, `It requires a valid ID to find a user.`);
+        const apiAction = t('endpoint.action.find');
+        validateObjectId(req.params.id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
 
         console.log('params id =>', id);
@@ -91,7 +91,7 @@ router.get('/:id', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: result === null ? "fail" : "success",
-            message: result === null ? "No user profile is found." : "A user profile is found.",
+            message: t(result === null ? 'user.cannotFound' : 'user.found', { ns: 'message' }),
             data: {
                 user: packDataObjectWithCountryCodeByName(result.toJSON())
             }
@@ -111,9 +111,11 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
 
-    try {
+    const { t } = req;
 
-        validateObjectId(req.params.id, `It requires a valid ID to update a user.`);
+    try {
+        const apiAction = t('endpoint.action.update');
+        validateObjectId(req.params.id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
         const payload = getReqBodyDataAsModelSchema(req, User);
 
@@ -149,9 +151,11 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
 
-    try {
+    const { t } = req;
 
-        validateObjectId(req.params.id, `It requires a valid ID to delete a user.`);
+    try {
+        const apiAction = t('endpoint.action.delete');
+        validateObjectId(req.params.id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
 
         console.log('params id =>', id);
