@@ -1,33 +1,33 @@
 {
     "user": {
-        "created": "A new user has been created.",
-        "notFound": "我們無法找不到任何用戶檔案。",
+        "created": "我們建立了一個用戶檔案。",
+        "notFound": "我們無法找到任何用戶檔案。",
         "cannotFound": "我們無法找到這個用戶檔案。",
         "found": "我們找到了這個用戶檔案。",
         "founds": "我們找到了這些用戶檔案。",
-        "updted": "A user profile is updated.",
-        "deleted": "A user profile is deleted.",
-        "requirement": "我們需要一個有效的{{requirement}}去{{action}}用戶檔案.",
+        "updted": "我們更新了一個用戶檔案。",
+        "deleted": "我們刪除了一個用戶檔案。",
+        "requirement": "我們需要一個有效的 {{requirement}} 去 {{action}} 用戶檔案.",
         "survey": {
-            "created": "A new survey has been created.",
-            "notFound": "We found this user has created no survey.",
-            "notFounds": "There is no survey nor a user is found.",
-            "cannotFound": "We couldn't find this survey from this user.",
-            "cannotFoundToDo": "We cannot found any survey from this user to {{action}}.",
-            "found": "We found a survey that was created by this user.",
-            "founds": "We found these surveys that are created by this user.",
-            "updted": "A survey from this user is updated.",
-            "deleted": "A survey created by this user is deleted.",
-            "requirement": "It requires a valid {{requirement}} to {{action}} a survey."
+            "created": "我們為該使用者建立了一個新的問卷。",
+            "notFound": "該使用者沒有建立這個問卷。",
+            "notFounds": "找不到任何問卷或使用者。",
+            "cannotFound": "無法找到該使用者建立的問卷。",
+            "cannotFoundToDo": "我們無法找到該使用者建立的任何問卷來 {{action}}。",
+            "found": "找到了該使用者建立的一個問卷。",
+            "founds": "找到了該使用者建立的這些問卷。",
+            "updated": "更新了該使用者的一個問卷。",
+            "deleted": "刪除了該使用者建立的一個問卷。",
+            "requirement": "需要一個有效的 {{requirement}} 才能 {{action}} 問卷。"
         }
     },
     "survey": {
-        "created": "A new survey has been created.",
-        "notFound": "No survey is found.",
-        "found": "A survey is found.",
-        "founds": "Surveys are found.",
-        "updted": "A survey is updated.",
-        "deleted": "A survey is deleted.",
-        "requirement": "It requires a valid {{requirement}} to {{action}} a survey."
+        "created": "建立了一個新的問卷。",
+        "notFound": "找不到任何問卷。",
+        "found": "找到了一個問卷。",
+        "founds": "找到了一些問卷。",
+        "updated": "更新了一個問卷。",
+        "deleted": "刪除了一個問卷。",
+        "requirement": "需要一個有效的 {{requirement}} 才能 {{action}} 問卷。"
     }
 }

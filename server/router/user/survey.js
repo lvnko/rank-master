@@ -8,9 +8,12 @@ const { standardErrorHandler, standardErrorHandlerOnPost, getModelDataKeys, getR
 
 router.post('/', async (req, res) => {
 
+    const { t } = req;
+
     try {
             const params = { ...req.parentParams, ...req.params };
-            validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
+            const apiAction = t('endpoint.action.find');
+            validateObjectId(params.user_id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
             const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
             const payload = {
                 authorId,
@@ -20,7 +23,7 @@ router.post('/', async (req, res) => {
             res.setHeader('Content-Type', 'application/json');
             res.write(JSON.stringify({
                 status: "success",
-                message: "A new survey has been created.",
+                message: t('user.survey.created', { ns: 'message' }),
                 data: {
                     survey: result
                 }
@@ -37,9 +40,13 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
 
+    const { t } = req;
+
     try {
         const params = { ...req.parentParams, ...req.params };
-        validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
+        const apiAction = t('endpoint.action.find');
+        validateObjectId(params.user_id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
+
         const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
         
         const results = await User.aggregate([
@@ -66,8 +73,8 @@ router.get('/', async (req, res) => {
             status: results.length > 0 ? "success" : "fail",
             message: results.length > 0 ?
                 results[0].surveys.length > 0 ?
-                    "We found these surveys that are created by this user." : "We found this user has created no survey." :
-                "There is no survey nor a user is found.",
+                    t('user.survey.founds', { ns: 'message' }) : t('user.survey.notFound', { ns: 'message' }) :
+                t('user.survey.notFounds', { ns: 'message' }),
             data: {
                 user: results.length > 0 ? results[0] : null
             }
@@ -83,11 +90,15 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:survey_id', async (req, res) => {
+
+    const { t } = req;
+
     try {
 
         const params = { ...req.parentParams, ...req.params };
-        validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
-        validateObjectId(params.survey_id, `It requires a valid Survey ID to find a survey.`);
+        const apiAction = t('endpoint.action.find');
+        validateObjectId(params.user_id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
+        validateObjectId(params.survey_id, t('user.survey.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const dataKeyConfigs = getModelDataKeys(Survey).filter(e=>['authorId'].indexOf(e) < 0).reduce((accm, curr)=>{
             accm[curr] = 1;
             return accm;
@@ -136,10 +147,10 @@ router.get('/:survey_id', async (req, res) => {
         res.write(JSON.stringify({
             ...result === null ? {
                 status: "fail",
-                message: "We found nothing from this user."
+                message: t('user.survey.notFound', { ns: 'message' })
             } : {
                 status: "success",
-                messsage: "We found a survey that was created by this user."
+                messsage: t('user.survey.found', { ns: 'message' })
             },
             data: {
                 survey: result
@@ -159,11 +170,15 @@ router.get('/:survey_id', async (req, res) => {
 });
 
 router.put('/:survey_id', async (req, res) => {
+    
+    const { t } = req;
+
     try {
 
         const params = { ...req.parentParams, ...req.params };
-        validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
-        validateObjectId(params.survey_id, `It requires a valid Survey ID to find a survey.`);
+        const apiAction = t('endpoint.action.update');
+        validateObjectId(params.user_id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
+        validateObjectId(params.survey_id, t('user.survey.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
         const surveyId = new mongoose.Types.ObjectId(`${params.survey_id}`);
         const payload = getReqBodyDataAsModelSchema(req, Survey);
@@ -179,10 +194,10 @@ router.put('/:survey_id', async (req, res) => {
         res.write(JSON.stringify({
             ...result === null ? {
                 status: "fail",
-                message: "We cannot found any survey from this user to update."
+                message: t('user.survey.cannotFoundToDo', { ns: "message", action: apiAction })
             } : {
                 status: "success",
-                messsage: "A survey from this user is updated."
+                messsage: t("user.survey.updted", { ns: "message" })
             },
             data: {
                 survey: result
@@ -204,11 +219,14 @@ router.put('/:survey_id', async (req, res) => {
 
 router.delete('/:survey_id', async (req, res) => {
 
+    const { t } = req;
+
     try {
 
         const params = { ...req.parentParams, ...req.params };
-        validateObjectId(params.user_id, `It requires a valid User ID to find a user.`);
-        validateObjectId(params.survey_id, `It requires a valid Survey ID to find a survey.`);
+        const apiAction = t('endpoint.action.delete');
+        validateObjectId(params.user_id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
+        validateObjectId(params.survey_id, t('user.survey.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
         const surveyId = new mongoose.Types.ObjectId(`${params.survey_id}`);
         const result = await Survey.deleteOne({
@@ -220,10 +238,10 @@ router.delete('/:survey_id', async (req, res) => {
         res.write(JSON.stringify({
             ...result === null || result?.deletedCount === 0 ? {
                 status: "fail",
-                message: "We cannot found any survey from this user to delete."
+                message: t('user.survey.cannotFoundToDo', { ns: "message", action: apiAction })
             } : {
                 status: "success",
-                message: "A survey created by this user is deleted."
+                messsage: t("user.survey.deleted", { ns: "message" })
             },
             data: {
                 survey: result

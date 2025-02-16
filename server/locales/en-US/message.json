@@ -10,7 +10,7 @@
         "requirement": "It requires a valid {{requirement}} to {{action}} a user.",
         "survey": {
             "created": "A new survey has been created.",
-            "notFound": "We found this user has created no survey.",
+            "notFound": "We couldn't find this survey from this user.",
             "notFounds": "There is no survey nor a user is found.",
             "cannotFound": "We couldn't find this survey from this user.",
             "cannotFoundToDo": "We cannot found any survey from this user to {{action}}.",

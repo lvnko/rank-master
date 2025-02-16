@@ -10,6 +10,8 @@ const { passParentParamsForward } = require(path.join(__dirname, '../../middlewa
 router.use('/:user_id/survey', passParentParamsForward, surveyRouter);
 
 router.post('/', async (req, res) => {
+
+    const { t } = req;
     
     try {
         const payload = getReqBodyDataAsModelSchema(req, User);
