@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: "success",
-            message: "A new user has been created.",
+            message: t('user.created', { ns: 'message' }),
             data: {
                 user: result
             }
@@ -85,7 +85,7 @@ router.get('/:id', async (req, res) => {
 
         console.log('params id =>', id);
         const result = await User.findById(id);
-        console.log('result =>', result);
+        // console.log('result =>', result);
         console.log('result.packed =>', packDataObjectWithCountryCodeByName(result));
 
         res.setHeader('Content-Type', 'application/json');
@@ -130,7 +130,7 @@ router.put('/:id', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: "success",
-            message: "A user profile is updated.",
+            message: t('user.updted', { ns: 'message' }),
             data: {
                 user: result
             }
@@ -167,7 +167,7 @@ router.delete('/:id', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: "success",
-            message: "A user profile is deleted.",
+            message: t('user.deleted', { ns: 'message' }),
             data: {
                 user: result
             }
