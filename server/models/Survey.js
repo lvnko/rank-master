@@ -7,8 +7,12 @@ const { Schema } = mongoose;
 const surveySchema = new mongoose.Schema({
     translations: {
         type: Schema.Types.Map,
+        required: true,
         of: new mongoose.Schema({
-            title: Schema.Types.String,
+            title: {
+                type: Schema.Types.String,
+                required: true
+            },
             body: Schema.Types.String,
         }),
     },

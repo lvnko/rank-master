@@ -132,6 +132,19 @@ const commonNonActiveEndpointReply = async (req, res) => {
     );
 }
 
+const payloadFilteringByKey = (_object, _keysToFilterOut) => {
+    if (!_object) return null;
+    if (_object.length <= 0) return _object;
+    const keys = Object.keys(_object).filter(key => _keysToFilterOut.indexOf(key) < 0);
+    return keys.reduce((accm, curr)=>{
+        return {
+            ...accm,
+            [curr]: _object[curr]
+        };
+    }, {});
+
+}
+
 // exports.standardErrorHandler = standardErrorHandler;
 //  customErrorHandler, customFaultHandler };
 
@@ -145,5 +158,6 @@ module.exports = {
     getReqBodyDataAsModelSchema,
     validateObjectId,
     packDataObjectWithCountryCodeByName,
-    commonNonActiveEndpointReply
+    commonNonActiveEndpointReply,
+    payloadFilteringByKey
 };

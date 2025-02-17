@@ -7,6 +7,7 @@ const { Schema } = mongoose;
 const userSchema = new mongoose.Schema({
     translations: {
         type: Schema.Types.Map,
+        required: true,
         of: new mongoose.Schema({
             firstName: {
                 type: Schema.Types.String,

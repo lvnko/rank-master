@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const User = require(path.join(__dirname, '../../models/User'));
 const Survey = require(path.join(__dirname, '../../models/Survey'));
 const router = express.Router();
-const { standardErrorHandler, standardErrorHandlerOnPost, getModelDataKeys, getReqBodyDataAsModelSchema, validateObjectId } = require(path.join(__dirname, '../../utilities'));
+const { standardErrorHandler, standardErrorHandlerOnPost, getModelDataKeys, getReqBodyDataAsModelSchema, validateObjectId, payloadFilteringByKey } = require(path.join(__dirname, '../../utilities'));
 
 router.post('/', async (req, res) => {
 
@@ -183,12 +183,26 @@ router.put('/:survey_id', async (req, res) => {
         const surveyId = new mongoose.Types.ObjectId(`${params.survey_id}`);
         const payload = getReqBodyDataAsModelSchema(req, Survey);
 
-        const result = await Survey.updateOne({
-            _id: surveyId,
-            authorId
-        }, {
-            ...payload
-        });
+        const result = await Survey.findOneAndUpdate(
+            {
+                _id: surveyId,
+                authorId
+            },
+            [
+                {
+                    $set: payload.translations ? {
+                        ...payloadFilteringByKey(payload, ["translations"]),
+                        translations: {
+                            $mergeObjects: [
+                                "$translations", // Keep existing translations
+                                payload.translations // Merge new translations
+                            ],
+                        },
+                    } : payload,
+                },
+            ],
+            { new: true }
+        );
 
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({

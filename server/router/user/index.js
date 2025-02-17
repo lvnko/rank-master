@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const User = require(path.join(__dirname, '../../models/User'));
 const router = express.Router();
 const surveyRouter = require('./survey');
-const { standardErrorHandler, standardErrorHandlerOnPost, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId, packDataObjectWithCountryCodeByName } = require(path.join(__dirname, '../../utilities'));
+const { standardErrorHandler, standardErrorHandlerOnPost, customErrorHandler, getFullReqUrl, getReqBodyDataAsModelSchema, validateObjectId, packDataObjectWithCountryCodeByName, payloadFilteringByKey } = require(path.join(__dirname, '../../utilities'));
 const { passParentParamsForward } = require(path.join(__dirname, '../../middlewares'));
 
 router.use('/:user_id/survey', passParentParamsForward, surveyRouter);
@@ -122,11 +122,23 @@ router.put('/:id', async (req, res) => {
         const payload = getReqBodyDataAsModelSchema(req, User);
 
         console.log('params id =>', id);
-        const result = await User.updateOne({
-            _id: id
-        }, {
-            ...payload
-        });
+        const result = await User.findOneAndUpdate(
+            { _id: id },
+            [
+                {
+                    $set: payload.translations ? {
+                        ...payloadFilteringByKey(payload, ["translations"]),
+                        translations: {
+                            $mergeObjects: [
+                                "$translations", // Keep existing translations
+                                payload.translations // Merge new translations
+                            ],
+                        },
+                    } : payload,
+                },
+            ],
+            { new: true }
+        );
         console.log('result =>', result);
 
         res.setHeader('Content-Type', 'application/json');
