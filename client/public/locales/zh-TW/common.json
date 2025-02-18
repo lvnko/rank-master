@@ -1,0 +1,9 @@
+{
+    "languages": "顯示語言",
+    "theme": {
+        "toggle": "切換主題色系",
+        "light": "亮色系",
+        "dark": "暗色系",
+        "system": "系統選項"
+    }
+}

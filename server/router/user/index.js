@@ -38,6 +38,8 @@ router.get('/', async (req, res) => {
 
     const { t } = req;
 
+    console.log('req =>', req);
+
     try {
 
         const results = await User.aggregate([

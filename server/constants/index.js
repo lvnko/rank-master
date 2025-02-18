@@ -241,6 +241,11 @@ const COUNTRIES_OR_REGIONS = [
     { name: "zimbabwe", translation: "Zimbabwe", code: "263" }
 ];
 
+const LANGUAGES_LIB = [
+    { name: "en-US", label: "English", variation: ["en"] },
+    { name: "zh-TW", label: "中文", variation: ["zh"] }
+];
+
 const ROLE_TYPES = ["fair", "subject", "respondant"];
 
 const USER_STATUS_TYPES = ["active", "inactive", "pending", "suspended", "deleted"];
@@ -261,6 +266,7 @@ const ACTION_TYPES = ["create", "update", "delete", "join", "vote", "verify", "l
 
 module.exports = {
     COUNTRIES_OR_REGIONS,
+    LANGUAGES_LIB,
     ROLE_TYPES,
     SUBSCRIPTION_TYPES,
     SURVEY_STATUS,

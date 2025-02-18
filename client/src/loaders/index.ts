@@ -19,3 +19,11 @@ export const userLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs)
   const result: DataResponse = await response.json();
   return result;
 }
+
+export const fetchLanguages = async () => {
+    const response = await fetch(`http://localhost:8081/languages`); // Adjust API route
+    if (!response.ok) {
+      throw new Error(`Failed to fetch languages...`);
+    }
+    return await response.json(); // Expected: ['en', 'fr', 'es']
+}

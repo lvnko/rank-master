@@ -1,0 +1,8 @@
+{
+    "generic": {
+        "error": {
+            "opening": "Oops!",
+            "description": "Sorry, an unexpected error has occurred."
+        }
+    }
+}

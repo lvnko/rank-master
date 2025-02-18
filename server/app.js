@@ -22,7 +22,8 @@ async function connectToMongoDB() {
         await mongoose.connect(`mongodb://localhost:${portMongodbDefault}/RankMaster`, {
             // useNewUrlParser: true,
             useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000
+            serverSelectionTimeoutMS: 2000,
+            socketTimeoutMS: 5000
         });
         console.log('Connected to MongoDB');
     } catch (error) {

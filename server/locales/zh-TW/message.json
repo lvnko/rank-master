@@ -1,4 +1,7 @@
 {
+    "languages": {
+        "found": "Rank Master 所支援的語言選項資料庫在這裡。"
+    },
     "user": {
         "created": "我們建立了一個用戶檔案。",
         "notFound": "我們無法找到任何用戶檔案。",

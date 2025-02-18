@@ -3,11 +3,14 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from 'react';
 
 export default function ErrorFallback() {
-  const { t, i18n: { changeLanguage, language } } = useTranslation();
+
+  const { t, i18n } = useTranslation();
+  const { changeLanguage, language } = i18n;
   const error = useRouteError();
   let errorMessage: string;
 
     useEffect(()=> {
+      console.log('i18n => ', i18n);
       console.log('i18n => ', changeLanguage);
       console.log('i18n => ', language);
     }, []);
