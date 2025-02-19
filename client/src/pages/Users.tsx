@@ -33,7 +33,7 @@ function UserTable({ users, onSelectUser, selectedUserId }: UserTableProps) {
                         onClick={() => onSelectUser(user)}
                         className={`cursor-pointer hover:bg-muted ${selectedUserId === user._id ? "bg-muted" : ""}`}
                     >
-                        <TableCell className="py-3">{user.firstName}</TableCell>
+                        <TableCell className="py-3">{user.translations["en-US"]?.firstName} {user.translations["en-US"]?.lastName}</TableCell>
                         <TableCell className="py-3">{user.email}</TableCell>
                         <TableCell className="py-3">{user.role}</TableCell>
                         <TableCell className="py-3">{new Date(user.updatedAt).toLocaleDateString()}</TableCell>
@@ -88,7 +88,7 @@ export default function Users() {
                                 <p>
                                     <strong>Full Name:</strong>
                                     <br/>
-                                    <span className="text-lg">{selectedUser.firstName} {selectedUser.lastName}</span>
+                                    <span className="text-lg">{selectedUser.translations["en-US"]?.firstName} {selectedUser.translations["en-US"]?.lastName}</span>
                                 </p>
                                 <p>
                                     <strong>Email:</strong>

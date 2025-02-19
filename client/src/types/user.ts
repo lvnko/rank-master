@@ -1,10 +1,15 @@
 import ParticipationProgressType from './participation-progress';
 import SurveyType from './survey';
 
-export default interface UserType {
+interface UserTranslationType {
     _id: string;
     firstName: string;
     lastName: string;
+}
+
+export default interface UserType {
+    _id: string;
+    translations: { [key: string]: UserTranslationType }
     gender: string;
     dateOfBrith: Date;
     email: string;
@@ -20,4 +25,4 @@ export default interface UserType {
     surveysParticipated?: number;
 };
 
-export type AuthorCoverType = Pick<UserType, '_id' | 'firstName' | 'lastName' | 'gender' | 'role'>;
+export type AuthorCoverType = Pick<UserType, '_id' | 'translations' | 'gender' | 'role'>;

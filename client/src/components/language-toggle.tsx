@@ -13,6 +13,7 @@ import {
     DropdownMenuRadioItem
 } from "@/components/ui/dropdown-menu";
 import { fetchLanguages } from "@/loaders";
+import { Icons } from "./icons";
 
 interface LanguageType {
     name: string;
@@ -63,7 +64,10 @@ export function LanguageToggle() {
             {languages && languages.length > 0 && (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost">{languages.filter(({name})=>name===currentLanguage)[0]?.label || 'Languages'}</Button>
+                        <Button variant="ghost">
+                            <Icons.multilingual className="!h-[1.6rem] !w-[1.6rem]" />
+                            {languages.filter(({name})=>name===currentLanguage)[0]?.label || 'Languages'}
+                        </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                         <DropdownMenuLabel>{t('languages', { ns: 'common' })}</DropdownMenuLabel>
