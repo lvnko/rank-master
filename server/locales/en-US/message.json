@@ -2,6 +2,9 @@
     "languages": {
         "found": "The library of the supported langauges of Rank Master is here."
     },
+    "countryCodes": {
+        "found": "The library of the mobile number country codes of Rank Master is here."
+    },
     "user": {
         "created": "A new user has been created.",
         "notFound": "No user profile is found.",

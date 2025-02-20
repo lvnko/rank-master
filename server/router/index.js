@@ -4,7 +4,7 @@ const he = require('he');
 const router = express.Router();
 const userRouter = require('./user');
 const { commonNonActiveEndpointReply } = require(path.join(__dirname, '../utilities'));
-const { LANGUAGES_LIB } = require(path.join(__dirname, '../constants'));
+const { LANGUAGES_LIB, COUNTRIES_OR_REGIONS } = require(path.join(__dirname, '../constants'));
 
 router.use('/user', userRouter);
 
@@ -25,6 +25,23 @@ router.get('/languages', async(req, res) => {
     }));
     res.end();
 
+});
+
+router.get('/country-codes', async(req, res) => {
+    
+    const { t, i18n } = await req;
+    const result = COUNTRIES_OR_REGIONS.map(({ name, code})=>{
+        return {name, code};
+    });
+    res.setHeader('Content-Type', 'application/json');
+    res.write(JSON.stringify({
+        status: "success",
+        message: t('countryCodes.found', { ns: 'message' }),
+        data: {
+            countryCodes: result
+        }
+    }));
+    res.end();
 });
 
 router.post('/', async (req, res) => {

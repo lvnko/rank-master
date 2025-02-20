@@ -29,11 +29,11 @@ export default function User() {
                         <div className="flex justify-between items-center mt-4">
                             <div>
                                 <p className="text-sm text-foreground/50">Full Name</p>
-                                <p className="text-lg">{user.firstName} {user.lastName}</p>
+                                <p className="text-lg">{user.translations['en-US']?.firstName} {user.translations['en-US']?.lastName}</p>
                             </div>
                             <Avatar className="w-16 h-16">
                                 <AvatarImage src={`https://xsgames.co/randomusers/avatar.php?g=${user.gender.toLowerCase() === "m" ? 'male' : 'female'}`}/>
-                                <AvatarFallback>{user.firstName}</AvatarFallback>
+                                <AvatarFallback>{user.translations['en-US']?.firstName}</AvatarFallback>
                             </Avatar>
                         </div>
                         <Separator className="my-2"/>

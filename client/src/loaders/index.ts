@@ -21,9 +21,18 @@ export const userLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs)
 }
 
 export const fetchLanguages = async () => {
-    const response = await fetch(`http://localhost:8081/languages`); // Adjust API route
-    if (!response.ok) {
-      throw new Error(`Failed to fetch languages...`);
-    }
-    return await response.json(); // Expected: ['en', 'fr', 'es']
+  const response = await fetch(`http://localhost:8081/languages`); // Adjust API route
+  if (!response.ok) {
+    throw new Error(`Failed to fetch languages...`);
+  }
+  return await response.json(); // Expected: ['en', 'fr', 'es']
+}
+
+export const countryCodesLoader: LoaderFunction = async():Promise<DataResponse> => {
+  const response = await fetch(`http://localhost:8081/country-codes`); // Adjust API route
+  if (!response.ok) {
+    throw new Error(`Failed to fetch country codes...`);
+  }
+  const result: DataResponse = await response.json();
+  return result;
 }

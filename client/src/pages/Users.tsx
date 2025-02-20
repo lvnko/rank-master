@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { Link, useLoaderData } from 'react-router-dom';
 
 import type UserType from "@/types/user"
+import { PlusIcon } from "@radix-ui/react-icons";
 
 interface UserTableProps {
     users: UserType[]
@@ -62,8 +63,13 @@ export default function Users() {
 
     return (
         <>
-            <PageHeader>
+            <PageHeader className="flex justify-between">
                 <PageHeaderHeading>Users Page</PageHeaderHeading>
+                <Link to="/user/add">
+                    <Button variant={"ghost"} className="w-9 px-0">
+                        <PlusIcon className="!h-[1.2rem] !w-[1.2rem]" />
+                    </Button>
+                </Link>
             </PageHeader>
             <Card>
                 {/* <CardHeader>

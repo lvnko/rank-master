@@ -74,7 +74,7 @@ export function LanguageToggle() {
                         <DropdownMenuSeparator />
                         <DropdownMenuRadioGroup value={currentLanguage} onValueChange={setCurrentLanguage}>
                             {languages.map(({name, label})=>(
-                                <DropdownMenuRadioItem value={name}>{label}</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem key={`radio-${name}`} value={name}>{label}</DropdownMenuRadioItem>
                             ))}
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
