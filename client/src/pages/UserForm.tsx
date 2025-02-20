@@ -4,6 +4,16 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next";
 import { useLoaderData } from "react-router-dom";
 import { z } from "zod"
+import { Button } from "@/components/ui/button"
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
 
 /**
  interface UserTranslationType {
@@ -52,15 +62,21 @@ export default function UserForm() {
     const countryNames: string[] = countryCodes.reduce<string[]>((accm, { name })=>{
         return [...accm, name]
     }, []);
+    
     let userNameSchema = z.object({
         [language]: z.object({
-            firstName: z.string().min(2),
-            lastName: z.string().min(2)
+            firstName: z.string().min(2, {
+                message: "First name must be at least 2 characters.",
+            }),
+            lastName: z.string().min(1, {
+                message: "Last name must be at least 2 characters.",
+            })
         })
     });
 
     let formSchema = formBaseSchema.merge(z.object({
-        countryCodes: z.enum([countryNames[0], ...countryNames.slice(1)] as [string, ...string[]])
+        countryCodes: z.enum([countryNames[0], ...countryNames.slice(1)] as [string, ...string[]]),
+        translations: userNameSchema
     }));
 
     // 1. Define your form.
@@ -81,6 +97,12 @@ export default function UserForm() {
     return (
         <div className="flex justify-center items-center">
             <p>User Form</p>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
+                </form>
+                <Button type="submit">Submit</Button>
+            </Form>
         </div>
     );
 }
