@@ -45,7 +45,7 @@ const formBaseSchema = z.object({
     username: z.string().min(2).max(50),
     gender: z.enum(["M", "F"]),
     dateOfBrith: z.string().date(),
-    email: z.string().email(),
+    email: z.string().email().min(5),
     mobileNum: z.string(),
     // mobileCountryCode: ,
     translations: z.object({})
@@ -62,7 +62,7 @@ export default function UserForm() {
     const countryNames: string[] = countryCodes.reduce<string[]>((accm, { name })=>{
         return [...accm, name]
     }, []);
-    
+
     let userNameSchema = z.object({
         [language]: z.object({
             firstName: z.string().min(2, {
