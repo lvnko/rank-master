@@ -35,6 +35,7 @@ import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { CaretSortIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, CheckIcon } from "lucide-react";
+import { userPoster } from "@/loaders";
 
 /**
  interface UserTranslationType {
@@ -135,10 +136,33 @@ export default function UserForm() {
     },[form.formState.errors]);
    
     // 2. Define a submit handler.
-    const onSubmit: SubmitHandler<FormShape> = (data) => {
+    const onSubmit: SubmitHandler<FormShape> = async (data) => {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         console.log("form values =>", data);
+        const {
+            currLangFirstName: firstName,
+            currLangLastName: lastName,
+            countryCode: mobileCountryCode,
+            ...restFields
+        } = data;
+        const body = {
+            translations: {
+                [language as string]: {
+                    firstName, lastName
+                }
+            },
+            mobileCountryCode,
+            ...restFields
+        };
+        try {
+            const result = userPoster({
+                body: body,
+                language: language
+            });
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        } 
     }
 
     return (
@@ -218,6 +242,7 @@ export default function UserForm() {
                                             value={field.value} onChange={field.onChange}
                                             displayFormat={{ hour24: 'dd/MM/yyyy' }}
                                             granularity={'day'}
+                                            yearRange={100}
                                         />
                                     </FormControl>
                                 </FormItem>

@@ -11,7 +11,7 @@ export default interface UserType {
     _id: string;
     translations: { [key: string]: UserTranslationType }
     gender: string;
-    dateOfBrith: Date;
+    dateOfBirth: Date;
     email: string;
     mobileNum: string;
     mobileCountryCode: string;
@@ -26,3 +26,7 @@ export default interface UserType {
 };
 
 export type AuthorCoverType = Pick<UserType, '_id' | 'translations' | 'gender' | 'role'>;
+
+export type UserNewDataType = Pick<UserType, 'gender' | 'dateOfBirth' | 'email' | 'mobileNum' | 'mobileCountryCode'> & {
+    translations: { [key: string]: Pick<UserTranslationType, 'firstName' | 'lastName'> }
+};

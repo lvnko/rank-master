@@ -1,5 +1,6 @@
 import { LoaderFunction, LoaderFunctionArgs } from 'react-router-dom';
 import { DataResponse } from "@/types/data-response";
+import { UserNewDataType } from '@/types/user';
 
 export const usersLoader : LoaderFunction = async ():Promise<DataResponse> => {
     const response = await fetch(`http://localhost:8081/user`);
@@ -18,6 +19,25 @@ export const userLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs)
   }
   const result: DataResponse = await response.json();
   return result;
+}
+
+export const userPoster = async({ body, language } : {
+  body: UserNewDataType,
+  language: string
+}) => {
+  try {
+    const response = await fetch(`http://localhost:8081/user`, { // Replace with your API endpoint
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Important: Specify content type
+        'Accept-Language': language
+      },
+      body: JSON.stringify(body), // Convert form data to JSON
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 export const fetchLanguages = async () => {
