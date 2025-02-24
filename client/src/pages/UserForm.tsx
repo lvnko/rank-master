@@ -28,9 +28,10 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-  } from "@/components/ui/popover";
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { CaretSortIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, CheckIcon } from "lucide-react";
@@ -75,7 +76,7 @@ const formSchema = z.object({
     gender: z.enum(["M", "F"], {
         required_error: "You need to select a gender.",
     }),
-    // dateOfBrith: z.string().date(),
+    dateOfBirth: z.date(),
     countryCode: z.string().min(1, {
         message: "Please select a country code.",
     }),
@@ -113,10 +114,12 @@ export default function UserForm() {
     type FormShape = z.infer<typeof formSchema>
     const form = useForm<FormShape>({
         resolver: zodResolver(formSchema),
+        shouldFocusError: false,
         defaultValues: {
             currLangFirstName: "",
             currLangLastName: "",
             gender: undefined,
+            dateOfBirth: undefined,
             countryCode: "",
             mobileNum: "",
             email: ""
@@ -176,33 +179,49 @@ export default function UserForm() {
                         />
                     </div>
                     <div className="flex items-start gap-x-[1.25rem]">
-                    <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                            <FormItem className="space-y-3">
-                                <FormLabel>{t('user.gender')}</FormLabel>
-                                <FormControl>
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        className="flex flex-row space-x-4"
-                                    >
-                                        {genderValues.map((g) => (
-                                            <FormItem className="flex items-center space-x-3 space-y-0">
-                                                <FormControl>
-                                                    <RadioGroupItem value={g.value} />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">
-                                                    {g.label}
-                                                </FormLabel>
-                                            </FormItem>
-                                        ))}
-                                    </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
+                        <FormField
+                            control={form.control}
+                            name="gender"
+                            render={({ field }) => (
+                                <FormItem className="space-y-3 basis-1/2">
+                                    <FormLabel>{t('user.gender')}</FormLabel>
+                                    <FormControl>
+                                        <RadioGroup
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            className="flex flex-row space-x-4"
+                                        >
+                                            {genderValues.map((g) => (
+                                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                                    <FormControl>
+                                                        <RadioGroupItem value={g.value} />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">
+                                                        {g.label}
+                                                    </FormLabel>
+                                                </FormItem>
+                                            ))}
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="dateOfBirth"
+                            render={({ field }) => (
+                                <FormItem className="space-y-3 basis-1/2">
+                                    <FormLabel>Date of Birth</FormLabel>
+                                    <FormControl>
+                                        <DateTimePicker
+                                            value={field.value} onChange={field.onChange}
+                                            displayFormat={{ hour24: 'dd/MM/yyyy' }}
+                                            granularity={'day'}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
                         />
                     </div>
                     <div className="flex items-start gap-x-[1.25rem]">
