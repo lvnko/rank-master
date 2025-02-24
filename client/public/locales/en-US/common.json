@@ -5,6 +5,12 @@
         "light": "Light",
         "dark": "Dark",
         "system": "System"
+    },
+    "button": {
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "apply": "Apply",
+        "confirm": "Confirm",
+        "done": "Done"
     }
-    
 }

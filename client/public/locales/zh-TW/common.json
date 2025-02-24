@@ -5,5 +5,12 @@
         "light": "亮色系",
         "dark": "暗色系",
         "system": "系統選項"
+    },
+    "button": {
+        "submit": "提交",
+        "cancel": "取消",
+        "apply": "套用",
+        "confirm": "確認",
+        "done": "完成"
     }
 }
