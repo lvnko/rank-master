@@ -12,5 +12,6 @@
         "apply": "Apply",
         "confirm": "Confirm",
         "done": "Done"
-    }
+    },
+    "loading": "Please wait..."
 }

@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner"
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
@@ -14,6 +15,7 @@ export function AppLayout() {
             <div className="px-4 md:px-8">
                 <Footer />
             </div>
+            <Toaster />
         </>
     )
 }

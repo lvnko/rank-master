@@ -21,23 +21,27 @@ export const userLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs)
   return result;
 }
 
-export const userPoster = async({ body, language } : {
+export async function userPoster({ body, language } : {
   body: UserNewDataType,
   language: string
-}) => {
-  try {
-    const response = await fetch(`http://localhost:8081/user`, { // Replace with your API endpoint
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Important: Specify content type
-        'Accept-Language': language
-      },
-      body: JSON.stringify(body), // Convert form data to JSON
-    });
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-  }
+}): Promise<({ name: string })> {
+  return new Promise(async (resolve, reject)=>{
+    try {
+      const response = await fetch(`http://localhost:8081/user`, { // Replace with your API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Important: Specify content type
+          'Accept-Language': language
+        },
+        body: JSON.stringify(body), // Convert form data to JSON
+      });
+      if (response) {
+        resolve({ name: 'This is success!' });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  })
 }
 
 export const fetchLanguages = async () => {

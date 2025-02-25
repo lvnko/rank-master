@@ -1,11 +1,12 @@
 import CountryCodeType from "@/types/country-code";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
     Command,
@@ -34,7 +35,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { CaretSortIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
-import { ArrowLeftIcon, CheckIcon } from "lucide-react";
+import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
 import { userPoster } from "@/loaders";
 
 /**
@@ -97,7 +98,7 @@ export default function UserForm() {
     // const { t, i18n } = useTranslation();
     const { t, i18n } = useTranslation();
     const { language } = i18n;
-
+    const navigate = useNavigate();
     const response: any = useLoaderData();
     const countryCodes: CountryCodeType[] = response?.data?.countryCodes || [];
     const countryCodeValues = countryCodes.map(({name, code})=>{
@@ -110,6 +111,8 @@ export default function UserForm() {
         { label: t("user.valueLabel.gender.M"), value: "M" },
         { label: t("user.valueLabel.gender.F"), value: "F" },
     ];
+
+    const [isLoading, setIsLoading] = useState(false);
 
     // 1. Define your form.
     type FormShape = z.infer<typeof formSchema>
@@ -140,6 +143,7 @@ export default function UserForm() {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         console.log("form values =>", data);
+        setIsLoading(true);
         const {
             currLangFirstName: firstName,
             currLangLastName: lastName,
@@ -155,14 +159,31 @@ export default function UserForm() {
             mobileCountryCode,
             ...restFields
         };
-        try {
-            const result = userPoster({
-                body: body,
-                language: language
-            });
-        } catch (error) {
-            console.error("Error submitting form:", error);
-        } 
+        toast.promise(userPoster({
+            body: body,
+            language: language
+        }), {
+            loading: t('loading', { ns: 'common' }),
+            success: (data: { name: string }) => {
+                navigate("/users");
+                return {
+                    message: `${data.name} toast has been added`,
+                    description: 'Custom description for the success state',
+                };
+            },
+            error: 'Error',
+        });
+        // try {
+        //     const result = await userPoster({
+        //         body: body,
+        //         language: language
+        //     });
+        //     setIsLoading(false);
+        //     navigate("/users");
+        // } catch (error) {
+        //     console.error("Error submitting form:", error);
+        //     setIsLoading(false);
+        // } 
     }
 
     return (
@@ -180,7 +201,11 @@ export default function UserForm() {
                                 <FormItem className="flex-grow">
                                     <FormLabel>{t("user.firstName")}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={t("generic.name.first")} {...field} />
+                                        <Input
+                                            placeholder={t("generic.name.first")}
+                                            disabled={isLoading}
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormDescription>{t("user.description.firstName")}</FormDescription>
                                     <FormMessage />
@@ -194,7 +219,11 @@ export default function UserForm() {
                                 <FormItem className="flex-grow">
                                     <FormLabel>{t("user.lastName")}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={t("generic.name.last")} {...field} />
+                                        <Input
+                                            placeholder={t("generic.name.last")}
+                                            disabled={isLoading}
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormDescription>{t("user.description.lastName")}</FormDescription>
                                     <FormMessage />
@@ -213,6 +242,7 @@ export default function UserForm() {
                                         <RadioGroup
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
+                                            disabled={isLoading}
                                             className="flex flex-row space-x-4"
                                         >
                                             {genderValues.map((g) => (
@@ -243,6 +273,7 @@ export default function UserForm() {
                                             displayFormat={{ hour24: 'dd/MM/yyyy' }}
                                             granularity={'day'}
                                             yearRange={100}
+                                            disabled={isLoading}
                                         />
                                     </FormControl>
                                 </FormItem>
@@ -264,6 +295,7 @@ export default function UserForm() {
                                                 <Button
                                                     variant="outline"
                                                     role="combobox"
+                                                    disabled={isLoading}
                                                     className={cn(
                                                         "justify-between",
                                                         !field.value && "text-muted-foreground"
@@ -323,7 +355,11 @@ export default function UserForm() {
                                 <FormItem className="basis-1/2">
                                     <FormLabel>{t("user.mobileNum")}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={t("user.placeholder.mobileNum")} {...field} />
+                                        <Input
+                                            placeholder={t("user.placeholder.mobileNum")}
+                                            disabled={isLoading}
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormDescription>{t("user.description.mobileNum")}</FormDescription>
                                     <FormMessage />
@@ -339,7 +375,11 @@ export default function UserForm() {
                                 <FormItem className="basis-1/2">
                                     <FormLabel>{t("user.email")}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={t("user.placeholder.email")} {...field} />
+                                        <Input
+                                            placeholder={t("user.placeholder.email")}
+                                            disabled={isLoading}
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormDescription>{t("user.description.email")}</FormDescription>
                                     <FormMessage />
@@ -352,7 +392,10 @@ export default function UserForm() {
                         <Link to="/users">
                             <Button variant="outline"><ArrowLeftIcon />Back</Button>
                         </Link>
-                        <Button type="submit">{t('button.submit', { ns: 'common' })}</Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading && (<Loader2 className="animate-spin" />)}
+                            {t(isLoading ? 'loading' : 'button.submit', { ns: 'common' })}
+                        </Button>
                     </div>
                 </form>
             </Form>
