@@ -131,7 +131,11 @@ export default function UserEditForm() {
         console.log("form isDirty?", form?.formState?.isDirty);
         console.log("form dirtyFields => ", form?.formState?.dirtyFields);
         console.log("form values =>", data);
-        
+
+        if (form?.formState?.isDirty && Object.keys(form?.formState?.dirtyFields).length > 0) {
+            const dirtyFieldNames = Object.keys(form.formState.dirtyFields);
+        }
+
         setIsLoading(true);
         // const {
         //     primFirstName: firstName = '',
