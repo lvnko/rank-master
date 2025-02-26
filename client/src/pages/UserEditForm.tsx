@@ -1,4 +1,5 @@
 import CountryCodeType from "@/types/country-code";
+import LanguageType from "@/types/languages";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -35,8 +36,9 @@ import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
-import LanguageType from "@/types/languages";
+
 import { userUpdater } from "@/loaders";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
     primFirstName:
@@ -107,7 +109,7 @@ export default function UserEditForm() {
     ];
 
     const [isLoading, setIsLoading] = useState(false);
-    
+
         // 1. Define your form.
     type FormShape = z.infer<typeof formSchema>
     const form = useForm<FormShape>({
@@ -164,6 +166,38 @@ export default function UserEditForm() {
             error: 'Error',
         });
     }
+    
+
+    useEffect(()=>{
+        const userData = response?.data?.user || {};
+        if (Object.keys(userData).length > 0) {
+            const {
+                translations,
+                gender,
+                dateOfBirth,
+                email,
+                mobileNum,
+                mobileCountryCode
+            } = userData;
+            const primNameLang = extractPrimaryNameLang(translations);
+            const {
+                firstName: primFirstName,
+                lastName: primLastName,
+            } = translations[primNameLang] || {
+                firstName: "",
+                lastName: "",
+            };
+            form.setValue("primFirstName", primFirstName);
+            form.setValue("primLastName", primLastName);
+            form.setValue("primNameLang", primNameLang);
+            form.setValue("gender", gender);
+            form.setValue("dateOfBirth", new Date(dateOfBirth));
+            form.setValue("mobileNum", mobileNum);
+            form.setValue("countryCode", countryCodes.filter(({ code }) => code === mobileCountryCode)[0].name || "");
+            form.setValue("email", email);
+
+        }
+    }, [form.setValue]);
 
     return (
         <div className="flex flex-col justify-center items-center w-full">
@@ -171,7 +205,11 @@ export default function UserEditForm() {
                 <PageHeaderHeading>{t(`user.heading.edit`)}</PageHeaderHeading>
             </PageHeader>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 self-stretch"></form>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 self-stretch">
+                    <Separator />
+                    <h3 className="!scroll-m-8 !mt-4 text-xl font-semibold tracking-tight underline underline-offset-4 text-blue-500">Primary Name</h3>
+                    <Separator />
+                </form>
             </Form>
         </div>
     );
