@@ -9,10 +9,11 @@ import { Link, useLoaderData } from 'react-router-dom';
 
 import type UserType from "@/types/user"
 import { PlusIcon } from "@radix-ui/react-icons";
+import { UserPageDataType } from "@/types/user";
 
 interface UserTableProps {
-    users: UserType[]
-    onSelectUser: (user: UserType) => void
+    users: UserPageDataType[]
+    onSelectUser: (user: UserPageDataType) => void
     selectedUserId: string | null
 }
 
@@ -34,7 +35,7 @@ function UserTable({ users, onSelectUser, selectedUserId }: UserTableProps) {
                         onClick={() => onSelectUser(user)}
                         className={`cursor-pointer hover:bg-muted ${selectedUserId === user._id ? "bg-muted" : ""}`}
                     >
-                        <TableCell className="py-3">{user.translations["en-US"]?.firstName} {user.translations["en-US"]?.lastName}</TableCell>
+                        <TableCell className="py-3">{user.translations.get("en-US")?.firstName} {user.translations.get("en-US")?.lastName}</TableCell>
                         <TableCell className="py-3">{user.email}</TableCell>
                         <TableCell className="py-3">{user.role}</TableCell>
                         <TableCell className="py-3">{new Date(user.updatedAt).toLocaleDateString()}</TableCell>
@@ -48,7 +49,29 @@ function UserTable({ users, onSelectUser, selectedUserId }: UserTableProps) {
 export default function Users() {
 
     const response: any = useLoaderData();
-    const users: UserType[] = response?.data?.users || [];
+    // const users: UserType[] = response?.data?.users || [];
+    const usersRaw = response?.data?.users || [];
+
+    interface UserRawType {
+        _id: string;
+        email: string;
+        role: string;
+        updatedAt: Date;
+        createdAt: Date;
+        translations: Record<string, { firstName: string; lastName: string, isPrimayr: boolean }>;
+        mobileCountryCode?: string;
+        mobileNum?: string;
+        subscription?: string;
+        surveysCreated?: number;
+        surveysParticipated?: number;
+    }
+
+    const users: UserPageDataType[] = usersRaw.map((userRaw: UserRawType) => {
+        return {
+            ...userRaw,
+            translations: new Map(Object.keys(userRaw.translations).map((key) => [key, userRaw.translations[key]]))
+        };
+    });
 
     const [selectedUser, setSelectedUser] = useState<(typeof users)[0] | null>(null)
 
@@ -94,7 +117,7 @@ export default function Users() {
                                 <p>
                                     <strong>Full Name:</strong>
                                     <br/>
-                                    <span className="text-lg">{selectedUser.translations["en-US"]?.firstName} {selectedUser.translations["en-US"]?.lastName}</span>
+                                    <span className="text-lg">{selectedUser.translations.get("en-US")?.firstName} {selectedUser.translations.get("en-US")?.lastName}</span>
                                 </p>
                                 <p>
                                     <strong>Email:</strong>

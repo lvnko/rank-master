@@ -10,7 +10,7 @@ export interface UserTranslationType {
 
 export default interface UserType {
     _id: string;
-    translations: { [key: string]: UserTranslationType }
+    translations: Record<string, UserTranslationType>
     gender: string;
     dateOfBirth: Date;
     email: string;
@@ -28,6 +28,10 @@ export default interface UserType {
 
 export type AuthorCoverType = Pick<UserType, '_id' | 'translations' | 'gender' | 'role'>;
 
-export type UserNewDataType = Pick<UserType, 'gender' | 'dateOfBirth' | 'email' | 'mobileNum' | 'mobileCountryCode'> & {
-    translations: { [key: string]: Pick<UserTranslationType, 'firstName' | 'lastName' | 'isPrimary'> }
+export type UserFormDataType = Pick<UserType, 'gender' | 'dateOfBirth' | 'email' | 'mobileNum' | 'mobileCountryCode'> & {
+    translations: Map<string, Pick<UserTranslationType, 'firstName' | 'lastName' | 'isPrimary'>>
+};
+
+export type UserPageDataType = Omit<UserType, 'translations'> & {
+    translations: Map<string, Pick<UserTranslationType, 'firstName' | 'lastName' | 'isPrimary'>>
 };

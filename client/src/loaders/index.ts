@@ -1,6 +1,6 @@
 import { LoaderFunction, LoaderFunctionArgs } from 'react-router-dom';
 import { DataResponse } from "@/types/data-response";
-import { UserNewDataType } from '@/types/user';
+import { UserFormDataType } from '@/types/user';
 
 export const usersLoader : LoaderFunction = async ():Promise<DataResponse> => {
     const response = await fetch(`http://localhost:8081/user`);
@@ -53,7 +53,7 @@ export const userFormLoader: LoaderFunction = async ({ params }: LoaderFunctionA
 }
 
 export async function userPoster({ body, language } : {
-  body: UserNewDataType,
+  body: UserFormDataType,
   language: string
 }): Promise<({ name: string })> {
   return new Promise(async (resolve, reject)=>{
@@ -76,7 +76,7 @@ export async function userPoster({ body, language } : {
 }
 
 export async function userUpdater({ body, language } : {
-  body: UserNewDataType,
+  body: UserFormDataType,
   language: string
 }): Promise<({ name: string })> {
   return new Promise(async (resolve, reject)=>{

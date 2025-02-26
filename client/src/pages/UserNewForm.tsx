@@ -312,7 +312,7 @@ export default function UserNewForm() {
                             name="dateOfBirth"
                             render={({ field }) => (
                                 <FormItem className="space-y-3 basis-1/2">
-                                    <FormLabel>Date of Birth</FormLabel>
+                                    <FormLabel>{t('user.dateOfBirth')}</FormLabel>
                                     <FormControl>
                                         <DateTimePicker
                                             value={field.value} onChange={field.onChange}
@@ -433,7 +433,7 @@ export default function UserNewForm() {
                     </div>
                     <div className="flex justify-between">
                         <Link to="/users">
-                            <Button variant="outline"><ArrowLeftIcon />Back</Button>
+                            <Button variant="outline" disabled={isLoading}><ArrowLeftIcon />Back</Button>
                         </Link>
                         <Button type="submit" disabled={isLoading}>
                             {isLoading && (<Loader2 className="animate-spin" />)}

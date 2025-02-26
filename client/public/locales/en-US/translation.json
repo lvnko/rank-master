@@ -16,6 +16,7 @@
         "countryCode": "Country Code",
         "mobileNum": "Mobile Number",
         "email": "Email Address",
+        "dateOfBirth": "Date of Birth",
         "description": {
             "firstName": "Your first name.",
             "lastName": "Your Surname or last name.",
@@ -280,7 +281,11 @@
         },
         "heading": {
             "add": "Add New User",
-            "edit": "Edit User Data"
+            "edit": "Edit User Data",
+            "primName": "Primary Name",
+            "secName": "Secondary Name",
+            "contact": "Contact Info",
+            "personal": "Personal Info"
         }
     }
 }
