@@ -162,7 +162,7 @@ export function Header() {
                     </SheetContent>
                 </Sheet>
                 <a href="/" className="mr-6 flex items-center space-x-2 md:hidden">
-                    <Icons.logo className="h-6 w-6" />
+            
                     <span className="font-bold inline-block">{appConfig.name}</span>
                 </a>
                 {/* right */}

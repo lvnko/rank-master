@@ -1,10 +1,11 @@
 import ParticipationProgressType from './participation-progress';
 import SurveyType from './survey';
 
-interface UserTranslationType {
+export interface UserTranslationType {
     _id: string;
     firstName: string;
     lastName: string;
+    isPrimary: boolean;
 }
 
 export default interface UserType {
@@ -28,5 +29,5 @@ export default interface UserType {
 export type AuthorCoverType = Pick<UserType, '_id' | 'translations' | 'gender' | 'role'>;
 
 export type UserNewDataType = Pick<UserType, 'gender' | 'dateOfBirth' | 'email' | 'mobileNum' | 'mobileCountryCode'> & {
-    translations: { [key: string]: Pick<UserTranslationType, 'firstName' | 'lastName'> }
+    translations: { [key: string]: Pick<UserTranslationType, 'firstName' | 'lastName' | 'isPrimary'> }
 };

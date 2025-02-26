@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { AppLayout } from "@/components/layouts/AppLayout";
-import { usersLoader, userLoader, countryCodesLoader } from "@/loaders";
+import { usersLoader, userLoader, countryCodesLoader, userFormLoader } from "@/loaders";
 
 import ErrorFallback from "@/components/error-fallback";
 import NoMatch from "./pages/NoMatch";
@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Surveys from "./pages/Surveys";
 import User from "./pages/User";
-import UserForm from "./pages/UserForm";
+import UserForm from "./pages/UserNewForm";
 
 
 export const router = createBrowserRouter([
@@ -38,6 +38,12 @@ export const router = createBrowserRouter([
                         path: "add",
                         element: <UserForm />,
                         loader: countryCodesLoader,
+                        errorElement: <ErrorFallback />
+                    },
+                    {
+                        path: "edit/:id",
+                        element: <UserForm />,
+                        loader: userFormLoader,
                         errorElement: <ErrorFallback />
                     },
                     {

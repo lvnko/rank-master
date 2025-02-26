@@ -155,15 +155,21 @@ export default function Users() {
                                             )}
                                         </div>
                                         <Separator className="my-4" />
+                                        <p className="text-sm text-foreground/50 flex-grow mt-2">
+                                            <strong>ID:</strong> {selectedUser._id}
+                                        </p>
+                                        <Separator className="my-4" />
                                     </>
                                 )}
                                 
                             </div>
-                            <SheetFooter className="items-center space-y-2">
-                                <p className="text-sm text-foreground/50 flex-grow mt-2">
-                                    <strong>ID:</strong> {selectedUser._id}
-                                </p>
-                                <Link to={`/user/${selectedUser._id}`}><Button>More ...</Button></Link>
+                            <SheetFooter className="flex items-center py-2">
+                                <Link to={`/user/edit/${selectedUser._id}`}>
+                                    <Button>Edit</Button>
+                                </Link>
+                                <Link to={`/user/${selectedUser._id}`}>
+                                    <Button>More ...</Button>
+                                </Link>
                             </SheetFooter>
                         </>
                     )}

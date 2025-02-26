@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod"
-import { cn } from "@/lib/utils"
+import { cn, extractPrimaryNameLang } from "@/lib/utils"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
@@ -33,7 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateTimePicker } from '@/components/ui/datetime-picker';
-import { CaretSortIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
 import { userPoster } from "@/loaders";
@@ -65,32 +65,39 @@ import { userPoster } from "@/loaders";
  */
 
 const formSchema = z.object({
-    currLangFirstName: z.string({
-        required_error: "First Name is required"
-    }).min(2, {
-        message: "First Name must be at least 2 characters.",
-    }),
-    currLangLastName: z.string({
-        required_error: "Last Name is required"
-    }).min(1, {
-        message: "Last Name must be at least 2 characters.",    
-    }),
-    gender: z.enum(["M", "F"], {
-        required_error: "You need to select a gender.",
-    }),
-    dateOfBirth: z.date(),
-    countryCode: z.string().min(1, {
-        message: "Please select a country code.",
-    }),
-    mobileNum: z.string().min(8, {
-        message: "Please provide a valid mobile phone number."
-    }),
-    email: z.string().email({
-        message: "Please provide a valid email address."
-    }).min(5, {
-        message: "Please provide a valid email address."
-    })
-})
+    primFirstName:
+        z.string({
+            required_error: "First Name is required"
+        }).min(2, {
+            message: "First Name must be at least 2 characters.",
+        }),
+    primLastName:
+        z.string({
+            required_error: "Last Name is required"
+        }).min(1, {
+            message: "Last Name must be at least 2 characters.",    
+        }),
+    gender:
+        z.enum(["M", "F"], {
+            required_error: "You need to select a gender.",
+        }),
+    dateOfBirth:
+        z.date(),
+    countryCode:
+        z.string().min(1, {
+            message: "Please select a country code.",
+        }),
+    mobileNum:
+        z.string().min(8, {
+            message: "Please provide a valid mobile phone number."
+        }),
+    email:
+        z.string().email({
+            message: "Please provide a valid email address."
+        }).min(5, {
+            message: "Please provide a valid email address."
+        })
+});
 
 
 export default function UserForm() {
@@ -120,8 +127,8 @@ export default function UserForm() {
         resolver: zodResolver(formSchema),
         shouldFocusError: false,
         defaultValues: {
-            currLangFirstName: "",
-            currLangLastName: "",
+            primFirstName: "",
+            primLastName: "",
             gender: undefined,
             dateOfBirth: undefined,
             countryCode: "",
@@ -130,9 +137,42 @@ export default function UserForm() {
         },
     });
 
-    useEffect(()=>{
-        console.log("countryCodes =>", countryCodes);
-    },[]);
+    // useEffect(()=>{
+    //     // console.log("response?.data =>", response?.data);
+    //     const userData = response?.data?.user || null;
+    //     if (userData) {
+            
+    //         console.log('userData => ', userData);
+    //         console.log('form => ', form);
+    //         // console.log('languageValues => ', languageValues);
+    //         // console.log('countryCodes => ', countryCodes);
+    //         const {
+    //             translations,
+    //             gender,
+    //             dateOfBirth,
+    //             email,
+    //             mobileNum,
+    //             mobileCountryCode
+    //         } = userData;
+    //         const primName = Object.keys(translations).filter(lang => translations[lang].isPrimary);
+    //         const {
+    //             firstName: primFirstName,
+    //             lastName: primLastName,
+    //         } = primName.length > 0 ? translations[primName[0]] : {
+    //             firstName: "",
+    //             lastName: "",
+    //         };
+    //         form.setValue("primFirstName", primFirstName);
+    //         form.setValue("primLastName", primLastName);
+    //         form.setValue("primNameLang", primName[0]);
+    //         form.setValue("gender", gender);
+    //         form.setValue("dateOfBirth", dateOfBirth);
+    //         form.setValue("mobileNum", mobileNum);
+    //         form.setValue("countryCode", countryCodes.filter(({ code }) => code === mobileCountryCode)[0].name || "");
+    //         form.setValue("email", email);
+    //     }
+
+    // },[form.setValue]);
 
     useEffect(()=>{
         console.log("tracking errors =>",form.formState.errors);
@@ -145,15 +185,15 @@ export default function UserForm() {
         console.log("form values =>", data);
         setIsLoading(true);
         const {
-            currLangFirstName: firstName,
-            currLangLastName: lastName,
-            countryCode: mobileCountryCode,
+            primFirstName: firstName = '',
+            primLastName: lastName = '',
+            countryCode: mobileCountryCode = '',
             ...restFields
-        } = data;
+        } = data as any;
         const body = {
             translations: {
                 [language as string]: {
-                    firstName, lastName
+                    firstName, lastName, isPrimary: true
                 }
             },
             mobileCountryCode,
@@ -173,32 +213,38 @@ export default function UserForm() {
             },
             error: 'Error',
         });
-        // try {
-        //     const result = await userPoster({
-        //         body: body,
-        //         language: language
-        //     });
-        //     setIsLoading(false);
-        //     navigate("/users");
-        // } catch (error) {
-        //     console.error("Error submitting form:", error);
-        //     setIsLoading(false);
-        // } 
     }
 
     return (
         <div className="flex flex-col justify-center items-center w-full">
             <PageHeader className="justify-start item-center space-x-4 w-full">
-                <PageHeaderHeading>{t('user.heading.add')}</PageHeaderHeading>
+                <PageHeaderHeading>{t(`user.heading.add`)}</PageHeaderHeading>
             </PageHeader>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 self-stretch">
                     <div className={`flex items-start gap-x-[1.25rem]${['zh-TW'].indexOf(language) >= 0 ? " flex-row-reverse":""}`}>
+                        {/* {isEdit && (
+                            <FormField
+                                control={form.control}
+                                name="primNameLang"
+                                render={FormSelectFieldItemRender({
+                                    initFieldValueState: isEdit && response?.data?.user?.translations ?
+                                        extractPrimaryNameLang(response.data.user.translations) :
+                                        language,
+                                    name: "primNameLang",
+                                    label: "Language",
+                                    description: "Language of primary name.",
+                                    placeholder: "Select Language",
+                                    className: "basis-1/5",
+                                    optionValues: languageValues
+                                })}
+                            />
+                        )} */}
                         <FormField
                             control={form.control}
-                            name="currLangFirstName"
+                            name="primFirstName"
                             render={({ field })=>(
-                                <FormItem className="flex-grow">
+                                <FormItem className={"flex-grow"}>
                                     <FormLabel>{t("user.firstName")}</FormLabel>
                                     <FormControl>
                                         <Input
@@ -214,9 +260,9 @@ export default function UserForm() {
                         />
                         <FormField
                             control={form.control}
-                            name="currLangLastName"
+                            name="primLastName"
                             render={({ field })=>(
-                                <FormItem className="flex-grow">
+                                <FormItem className={"flex-grow"}>
                                     <FormLabel>{t("user.lastName")}</FormLabel>
                                     <FormControl>
                                         <Input
@@ -285,7 +331,7 @@ export default function UserForm() {
                             control={form.control}
                             name="countryCode"
                             render={({ field })=>(
-                                <FormItem className="flex flex-col basis-1/2">
+                                <FormItem className="flex flex-col basis-1/5">
                                     <div>
                                         <FormLabel className="!inline">{t("user.countryCode")}</FormLabel>
                                     </div>
@@ -352,7 +398,7 @@ export default function UserForm() {
                             control={form.control}
                             name="mobileNum"
                             render={({ field })=>(
-                                <FormItem className="basis-1/2">
+                                <FormItem className="basis-2/5">
                                     <FormLabel>{t("user.mobileNum")}</FormLabel>
                                     <FormControl>
                                         <Input
@@ -366,13 +412,11 @@ export default function UserForm() {
                                 </FormItem>
                             )}
                         />
-                    </div>
-                    <div className="flex items-start gap-x-[1.25rem]">
                         <FormField
                             control={form.control}
                             name="email"
                             render={({ field })=>(
-                                <FormItem className="basis-1/2">
+                                <FormItem className="basis-2/5">
                                     <FormLabel>{t("user.email")}</FormLabel>
                                     <FormControl>
                                         <Input
@@ -386,7 +430,6 @@ export default function UserForm() {
                                 </FormItem>
                             )}
                         />
-                        <div className="basis-1/2"></div>
                     </div>
                     <div className="flex justify-between">
                         <Link to="/users">

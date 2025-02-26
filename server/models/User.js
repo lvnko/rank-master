@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
                 type: Schema.Types.String,
                 required: true
             },
+            isPrimary: {
+                type: Schema.Types.Boolean,
+                required: true,
+                default: false
+            }
         })
     },
     gender: {
