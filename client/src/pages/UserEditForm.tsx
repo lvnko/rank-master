@@ -39,6 +39,7 @@ import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
 
 import { userUpdater } from "@/loaders";
 import { Separator } from "@/components/ui/separator";
+import { RadioGroupRenderer, SelectFieldRenderer } from "@/components/form-item-renderer";
 
 const formSchema = z.object({
     primFirstName:
@@ -207,8 +208,78 @@ export default function UserEditForm() {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 self-stretch">
                     <Separator />
-                    <h3 className="!scroll-m-8 !mt-4 text-xl font-semibold tracking-tight underline underline-offset-4 text-blue-500">Primary Name</h3>
+                    <h3 className="!scroll-m-8 text-xl font-semibold tracking-tight underline underline-offset-4 text-blue-500">Primary Name</h3>
+                    <div className={`flex items-start gap-x-[1.25rem] !mt-4`}>
+                        <FormField
+                            control={form.control}
+                            name="primNameLang"
+                            render={SelectFieldRenderer({
+                                initFieldValueState: response?.data?.user?.translations ?
+                                    extractPrimaryNameLang(response.data.user.translations) :
+                                    language,
+                                name: "primNameLang",
+                                label: "Language",
+                                description: "Language of primary name.",
+                                placeholder: "Select Language",
+                                className: "basis-1/5",
+                                optionValues: languageValues,
+                                disabled: isLoading
+                            })}
+                        />
+                        <div className={`flex items-start gap-x-[1.25rem] basis-4/5 ${['zh-TW'].indexOf(language) >= 0 ? " flex-row-reverse":""}`}>
+                            <FormField
+                                control={form.control}
+                                name="primFirstName"
+                                render={({ field })=>(
+                                    <FormItem className={"flex-grow"}>
+                                        <FormLabel>{t("user.firstName")}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder={t("generic.name.first")}
+                                                disabled={isLoading}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>{t("user.description.firstName")}</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="primLastName"
+                                render={({ field })=>(
+                                    <FormItem className={"flex-grow"}>
+                                        <FormLabel>{t("user.lastName")}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder={t("generic.name.last")}
+                                                disabled={isLoading}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>{t("user.description.lastName")}</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </div>
                     <Separator />
+                    <div className="flex items-start gap-x-[1.25rem]">
+                        <FormField
+                            control={form.control}
+                            name="gender"
+                            render={RadioGroupRenderer({
+                                initFieldValueState: response?.data?.user?.gender || '',
+                                name: 'gender',
+                                label: t('user.gender'),
+                                optionValues: genderValues,
+                                className: "space-y-3 basis-1/2",
+                                disabled: isLoading
+                            })}
+                        />
+                    </div>
                 </form>
             </Form>
         </div>

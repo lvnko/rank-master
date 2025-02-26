@@ -21,7 +21,7 @@ interface RendererPropsType {
     initFieldValueState: string,
     name: string,
     label: string,
-    description: string,
+    description?: string,
     placeholder?: string,
     className: string,
     optionValues: {value: string, label: string}[],
@@ -32,11 +32,11 @@ export function SelectFieldRenderer ({
     initFieldValueState,
     name,
     label,
-    description,
+    description = '',
     optionValues,
     placeholder,
     className,
-    disabled
+    disabled = false
 } : RendererPropsType) {
     return function ({ field }: any) {
 
@@ -77,10 +77,10 @@ export function RadioGroupRenderer ({
     initFieldValueState,
     name,
     label,
-    description,
+    description = '',
     optionValues,
     className,
-    disabled
+    disabled = false
 } : RendererPropsType) {
     
     const [fieldValueState, setFieldValueState] = useState<string>(initFieldValueState);
