@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Surveys from "./pages/Surveys";
 import User from "./pages/User";
-import UserForm from "./pages/UserNewForm";
+import UserNewForm from "./pages/UserNewForm";
 
 
 export const router = createBrowserRouter([
@@ -36,13 +36,13 @@ export const router = createBrowserRouter([
                 children: [
                     {
                         path: "add",
-                        element: <UserForm />,
+                        element: <UserNewForm />,
                         loader: countryCodesLoader,
                         errorElement: <ErrorFallback />
                     },
                     {
                         path: "edit/:id",
-                        element: <UserForm />,
+                        element: <UserNewForm />,
                         loader: userFormLoader,
                         errorElement: <ErrorFallback />
                     },

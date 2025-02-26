@@ -75,6 +75,29 @@ export async function userPoster({ body, language } : {
   })
 }
 
+export async function userUpdater({ body, language } : {
+  body: UserNewDataType,
+  language: string
+}): Promise<({ name: string })> {
+  return new Promise(async (resolve, reject)=>{
+    try {
+      const response = await fetch(`http://localhost:8081/user`, { // Replace with your API endpoint
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json', // Important: Specify content type
+          'Accept-Language': language
+        },
+        body: JSON.stringify(body), // Convert form data to JSON
+      });
+      if (response) {
+        resolve({ name: 'This is success!' });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  })
+}
+
 export const fetchLanguages = async () => {
   const response = await fetch(`http://localhost:8081/languages`); // Adjust API route
   if (!response.ok) {

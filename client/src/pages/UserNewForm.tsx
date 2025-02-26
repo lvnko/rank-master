@@ -1,13 +1,13 @@
 import CountryCodeType from "@/types/country-code";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { z } from "zod"
-import { cn, extractPrimaryNameLang } from "@/lib/utils"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
+import { z } from "zod";
+import { cn, extractPrimaryNameLang } from "@/lib/utils";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
     Command,
     CommandEmpty,
@@ -100,7 +100,7 @@ const formSchema = z.object({
 });
 
 
-export default function UserForm() {
+export default function UserNewForm() {
 
     // const { t, i18n } = useTranslation();
     const { t, i18n } = useTranslation();

@@ -1,6 +1,7 @@
 import UserType from "./user";
 import SurveyType from "./survey";
 import CountryCodeType from "@/types/country-code";
+import LanguageType from "./languages";
 
 export interface DataItem {
     user?: UserType;
@@ -8,6 +9,7 @@ export interface DataItem {
     survey?: SurveyType;
     surveys?: Array<SurveyType>;
     countryCodes?: Array<CountryCodeType>;
+    languages?: Array<LanguageType>;
 }
 
 export interface DataResponse {

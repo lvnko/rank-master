@@ -22,7 +22,7 @@ interface RendererPropsType {
     name: string,
     label: string,
     description: string,
-    placeholder: string,
+    placeholder?: string,
     className: string,
     optionValues: {value: string, label: string}[],
     disabled: boolean
@@ -67,6 +67,7 @@ export function SelectFieldRenderer ({
                 <FormDescription>
                     {description}
                 </FormDescription>
+                <FormMessage />
             </FormItem>
         );
     }
@@ -78,7 +79,6 @@ export function RadioGroupRenderer ({
     label,
     description,
     optionValues,
-    placeholder,
     className,
     disabled
 } : RendererPropsType) {
@@ -87,7 +87,7 @@ export function RadioGroupRenderer ({
 
     return function({ field }: any) {
         return (
-            <FormItem className="space-y-3 basis-1/2">
+            <FormItem className={className}>
                 <FormLabel>{label}</FormLabel>
                 <FormControl>
                     <RadioGroup
@@ -99,8 +99,8 @@ export function RadioGroupRenderer ({
                         disabled={disabled}
                         className="flex flex-row space-x-4"
                     >
-                        {optionValues.map((g) => (
-                            <FormItem className="flex items-center space-x-3 space-y-0">
+                        {optionValues.map((g, index) => (
+                            <FormItem key={`${name}-radio-${index}`} className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
                                     <RadioGroupItem value={g.value} />
                                 </FormControl>
@@ -111,6 +111,7 @@ export function RadioGroupRenderer ({
                         ))}
                     </RadioGroup>
                 </FormControl>
+                <FormDescription>{description}</FormDescription>
                 <FormMessage />
             </FormItem>
         );
