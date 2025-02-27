@@ -133,10 +133,45 @@ export default function UserEditForm() {
         console.log("form values =>", data);
 
         if (form?.formState?.isDirty && Object.keys(form?.formState?.dirtyFields).length > 0) {
-            const dirtyFieldNames = Object.keys(form.formState.dirtyFields);
+            setIsLoading(true);
+            let payloadCollection: {
+                translations?: Record<string, { firstName: string, lastName: string, isPrimary: boolean }>,
+                gender? : string,
+                dateOfBirth?: Date,
+                mobileCountryCode? : string,
+                mobileNum?: string,
+                email? : string
+            } = {};
+            const dirtyFields = form.formState.dirtyFields;
+            const isPrimNameDirty = ["primFirstName", "primLastName", "primNameLang"].reduce((accm, curr) => {
+                return accm + (dirtyFields[curr as keyof typeof dirtyFields] !== undefined ? 1 : 0);
+            }, 0) > 0;
+            const isSecNameDirty = ["secFirstName", "secLastName", "secNameLang"].reduce((accm, curr) => {
+                return accm + (dirtyFields[curr as keyof typeof dirtyFields] !== undefined ? 1 : 0);
+            }, 0) > 0;
+            if (isPrimNameDirty || isSecNameDirty) {
+                payloadCollection = {
+                    ...payloadCollection,
+                    translations: {
+                        ...(isPrimNameDirty? {
+                            [data.primNameLang]: {
+                                firstName: data.primFirstName,
+                                lastName: data.primLastName,
+                                isPrimary: true
+                            }
+                        } : null),
+                        ...(isSecNameDirty && data.secNameLang ? {
+                            [data.secNameLang]: {
+                                firstName: data.secFirstName || '',
+                                lastName: data.secLastName || '',
+                                isPrimary: false
+                            }
+                        } : null)
+                    }
+                }
+            }
         }
 
-        setIsLoading(true);
         // const {
         //     primFirstName: firstName = '',
         //     primLastName: lastName = '',
