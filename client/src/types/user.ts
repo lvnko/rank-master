@@ -26,6 +26,15 @@ export default interface UserType {
     surveysParticipated?: number;
 };
 
+export type UserPayloadType = {
+    translations?: Record<string, Pick<UserTranslationType, 'firstName' | 'lastName' | 'isPrimary'>>
+    gender?: string;
+    dateOfBirth?: Date;
+    mobileNum?: string;
+    mobileCountryCode?: string;
+    email?: string;
+};
+
 export type AuthorCoverType = Pick<UserType, '_id' | 'translations' | 'gender' | 'role'>;
 
 export type UserFormDataType = Pick<UserType, 'gender' | 'dateOfBirth' | 'email' | 'mobileNum' | 'mobileCountryCode'> & {

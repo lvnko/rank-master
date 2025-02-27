@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { cn, extractPrimaryNameLang, extractUserFormData } from "@/lib/utils";
 import { toast } from "sonner";
@@ -32,7 +32,6 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
@@ -41,6 +40,8 @@ import { userUpdater } from "@/loaders";
 import { Separator } from "@/components/ui/separator";
 import { DateTimePickerRenderer, RadioGroupRenderer, SelectFieldRenderer } from "@/components/form-item-renderer";
 import FormSectionHeading from "@/components/form-section-heading";
+import { UserPayloadType } from "@/types/user";
+import { ApiFetchPromiseMessage } from "@/types/data-response";
 
 const formSchema = z.object({
     primFirstName:
@@ -93,6 +94,7 @@ export default function UserEditForm() {
     const { t, i18n } = useTranslation();
     const { language } = i18n;
     const navigate = useNavigate();
+    const { id = "" } = useParams();
     const response: any = useLoaderData();
     const countryCodes: CountryCodeType[] = response?.data?.countryCodes || [];
     const countryCodeValues = countryCodes.map(({name, code})=>{
@@ -134,14 +136,7 @@ export default function UserEditForm() {
 
         if (form?.formState?.isDirty && Object.keys(form?.formState?.dirtyFields).length > 0) {
             setIsLoading(true);
-            let payloadCollection: {
-                translations?: Record<string, { firstName: string, lastName: string, isPrimary: boolean }>,
-                gender? : string,
-                dateOfBirth?: Date,
-                mobileCountryCode? : string,
-                mobileNum?: string,
-                email? : string
-            } = {};
+            let payloadCollection: UserPayloadType = {};
             const dirtyFields = form.formState.dirtyFields;
             const isPrimNameDirty = ["primFirstName", "primLastName", "primNameLang"].reduce((accm, curr) => {
                 return accm + (dirtyFields[curr as keyof typeof dirtyFields] !== undefined ? 1 : 0);
@@ -170,6 +165,37 @@ export default function UserEditForm() {
                     }
                 }
             }
+            payloadCollection = {
+                ...payloadCollection,
+                ...(dirtyFields.gender ? { gender: data.gender }: null),
+                ...(dirtyFields.dateOfBirth ? { dateOfBirth: data.dateOfBirth }: null),
+                ...(dirtyFields.countryCode ? { mobileCountryCode: data.countryCode }: null),
+                ...(dirtyFields.mobileNum ? { mobileNum: data.mobileNum }: null),
+                ...(dirtyFields.email ? { email: data.email }: null),
+            };
+            toast.promise(userUpdater({
+                id: id,
+                body: payloadCollection,
+                language: language,
+                successMessage: {
+                    title: t("user.success.update.title"),
+                    description: t("user.success.update.description", {
+                        fullName: ["zh-TW"].indexOf(language) < 0 ?
+                            `${data.primFirstName} ${data.primLastName}` :
+                            `${data.primLastName}${data.primFirstName}`
+                    })
+                }
+            }), {
+                loading: t('loading', { ns: 'common' }),
+                success: (data: { title: string, description: string }) => {
+                    navigate("/users");
+                    return {
+                        message: data.title,
+                        description: data.description
+                    };
+                },
+                error: 'Error',
+            });
         }
 
         // const {

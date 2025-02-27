@@ -106,7 +106,7 @@ const getCountryCodeByName = (codeName = "") => {
 }
 
 const packDataObjectWithCountryCodeByName = (dataObj) => {
-    console.log("dataObj =>", dataObj);
+    // console.log("dataObj =>", dataObj);
     return {
         ...dataObj,
         mobileCountryCode: getCountryCodeByName(dataObj.mobileCountryCode || "")

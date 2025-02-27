@@ -1,6 +1,6 @@
 import { LoaderFunction, LoaderFunctionArgs } from 'react-router-dom';
-import { DataResponse } from "@/types/data-response";
-import { UserFormDataType } from '@/types/user';
+import { ApiFetchPromiseMessage, DataResponse } from "@/types/data-response";
+import { UserFormDataType, UserPayloadType } from '@/types/user';
 
 export const usersLoader : LoaderFunction = async ():Promise<DataResponse> => {
     const response = await fetch(`http://localhost:8081/user`);
@@ -52,6 +52,8 @@ export const userFormLoader: LoaderFunction = async ({ params }: LoaderFunctionA
   }
 }
 
+
+
 export async function userPoster({ body, language } : {
   body: UserFormDataType,
   language: string
@@ -75,13 +77,15 @@ export async function userPoster({ body, language } : {
   })
 }
 
-export async function userUpdater({ body, language } : {
-  body: UserFormDataType,
-  language: string
-}): Promise<({ name: string })> {
+export async function userUpdater({ id, body, language, successMessage } : {
+  id: string,
+  body: UserPayloadType,
+  language: string,
+  successMessage: ApiFetchPromiseMessage
+}): Promise<(ApiFetchPromiseMessage)> {
   return new Promise(async (resolve, reject)=>{
     try {
-      const response = await fetch(`http://localhost:8081/user`, { // Replace with your API endpoint
+      const response = await fetch(`http://localhost:8081/user/${id}`, { // Replace with your API endpoint
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json', // Important: Specify content type
@@ -90,7 +94,7 @@ export async function userUpdater({ body, language } : {
         body: JSON.stringify(body), // Convert form data to JSON
       });
       if (response) {
-        resolve({ name: 'This is success!' });
+        resolve(successMessage);
       }
     } catch (error) {
       reject(error);

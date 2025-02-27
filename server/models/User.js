@@ -74,6 +74,6 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', logSaveDateTime);
 
-userSchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], logUpdateDateTime);
+userSchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], { query: false, document: true }, logUpdateDateTime);
 
 module.exports = mongoose.model('User', userSchema);

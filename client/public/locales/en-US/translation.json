@@ -286,6 +286,20 @@
             "secName": "Secondary Name",
             "contact": "Contact Info",
             "personal": "Personal Info"
+        },
+        "success": {
+            "create": {
+                "title": "User successfully created!",
+                "description": "A user record of {{fullName}} is created."
+            },
+            "update": {
+                "title": "User successfully updated!",
+                "description": "Data of a user record of {{fullName}} is updated."
+            },
+            "delete": {
+                "title": "User successfully deleted!",
+                "description": "A user record of {{fullName}} is removed from the system."
+            }
         }
     }
 }

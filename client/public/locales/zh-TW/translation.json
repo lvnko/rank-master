@@ -286,6 +286,20 @@
             "secName": "次要名稱",
             "contact": "聯絡資訊",
             "personal": "個人資訊"
+        },
+        "success": {
+            "create": {
+                "title": "用戶成功建立！",
+                "description": "已建立 {{fullName}} 的用戶記錄。"
+            },
+            "update": {
+                "title": "用戶成功更新！",
+                "description": "已更新 {{fullName}} 的用戶記錄資料。"
+            },
+            "delete": {
+                "title": "用戶成功刪除！",
+                "description": "已從系統移除 {{fullName}} 的用戶記錄。"
+            }
         }
     }
 }

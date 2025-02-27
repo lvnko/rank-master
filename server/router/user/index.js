@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 
     const { t } = req;
 
-    console.log('req =>', req);
+    // console.log('req =>', req);
 
     try {
 
@@ -87,10 +87,10 @@ router.get('/:id', async (req, res) => {
         validateObjectId(req.params.id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
 
-        console.log('params id =>', id);
+        // console.log('params id =>', id);
         const result = await User.findById(id);
         // console.log('result =>', result);
-        console.log('result.packed =>', packDataObjectWithCountryCodeByName(result));
+        // console.log('result.packed =>', packDataObjectWithCountryCodeByName(result));
 
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
@@ -123,20 +123,24 @@ router.put('/:id', async (req, res) => {
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
         const payload = getReqBodyDataAsModelSchema(req, User);
 
-        console.log('params id =>', id);
+        // console.log('params id =>', id);
         const result = await User.findOneAndUpdate(
             { _id: id },
             [
                 {
                     $set: payload.translations ? {
-                        ...payloadFilteringByKey(payload, ["translations"]),
+                        ...payloadFilteringByKey(payload, ["translations", "updatedAt"]),
                         translations: {
                             $mergeObjects: [
                                 "$translations", // Keep existing translations
                                 payload.translations // Merge new translations
                             ],
                         },
-                    } : payload,
+                        updatedAt: new Date()
+                    } : {
+                        ...payload,
+                        updatedAt: new Date()
+                    },
                 },
             ],
             { new: true }
@@ -174,7 +178,7 @@ router.delete('/:id', async (req, res) => {
         validateObjectId(req.params.id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
 
-        console.log('params id =>', id);
+        // console.log('params id =>', id);
         const result = await User.deleteOne({
             _id: id
         });

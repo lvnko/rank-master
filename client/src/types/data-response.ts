@@ -18,6 +18,11 @@ export interface DataResponse {
     code?: string;
     data?: DataItem;
 };
+
+export interface ApiFetchPromiseMessage {
+    title: string,
+    description: string
+};
   
 // // Interface extending the basic data structure
 // interface DetailedDataItem extends DataItem {
