@@ -60,6 +60,12 @@ router.get('/', async (req, res) => {
                 }
             }
         ]);
+        // results.forEach((ur)=>{
+        //     Object.keys(ur.translations).forEach((key)=>{
+        //         console.log('Users get result.translations => ', ur.translations[key]._id);
+        //     });
+        // });
+        
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             status: "success",
@@ -124,27 +130,65 @@ router.put('/:id', async (req, res) => {
         const payload = getReqBodyDataAsModelSchema(req, User);
 
         // console.log('params id =>', id);
-        const result = await User.findOneAndUpdate(
-            { _id: id },
-            [
+        let result = {};
+        if (!payload.translations) {
+            result = await User.findOneAndUpdate({ _id: id },[
                 {
-                    $set: payload.translations ? {
-                        ...payloadFilteringByKey(payload, ["translations", "updatedAt"]),
-                        translations: {
-                            $mergeObjects: [
-                                "$translations", // Keep existing translations
-                                payload.translations // Merge new translations
-                            ],
-                        },
-                        updatedAt: new Date()
-                    } : {
+                    $set: {
                         ...payload,
                         updatedAt: new Date()
-                    },
-                },
+                    }
+                }
             ],
-            { new: true }
-        );
+            { new: true });
+        } else {
+            const user = await User.findOne({ _id: id });
+            const { translations: payloadTranslations, ...restOfPayload } = payload;
+            Object.keys(payloadTranslations).forEach((key)=>{
+                if (user.translations[key] !== undefined) {
+                    user.translations[key] = {
+                        ...user.translations[key],
+                        ...payloadTranslations[key]
+                    };
+                } else {
+                    const { isPrimary : payloadTranslationIsPrimary } = payloadTranslations[key];
+                    const correspondingUserTranslationKey = Object.keys(user.translations).reduce((accm, curr) => {
+                        if (accm !== '') return accm;
+                        if (user.translations[curr].isPrimary === payloadTranslationIsPrimary) return curr;
+                    }, '');
+                    if (correspondingUserTranslationKey !== '') {
+                        delete user.translations[correspondingUserTranslationKey];
+                    }
+                    user.translations[key] = payloadTranslations[key];
+                }
+            });
+            user = {
+                ...user,
+                ...restOfPayload
+            };
+            result = await user.save();
+        }
+        // const result = await User.findOneAndUpdate(
+        //     { _id: id },
+        //     [
+        //         {
+        //             $set: payload.translations ? {
+        //                 ...payloadFilteringByKey(payload, ["translations", "updatedAt"]),
+        //                 translations: {
+        //                     $mergeObjects: [
+        //                         "$translations", // Keep existing translations
+        //                         payload.translations // Merge new translations
+        //                     ],
+        //                 },
+        //                 updatedAt: new Date()
+        //             } : {
+        //                 ...payload,
+        //                 updatedAt: new Date()
+        //             },
+        //         },
+        //     ],
+        //     { new: true }
+        // );
         console.log('result =>', result);
 
         res.setHeader('Content-Type', 'application/json');
