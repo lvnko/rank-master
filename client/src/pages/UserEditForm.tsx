@@ -32,7 +32,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { CaretSortIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon, PlusIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
 
@@ -316,7 +316,14 @@ export default function UserEditForm() {
                             />
                         </div>
                     </div>
-                    <Separator />
+                    <div className="flex">
+                        <Separator />
+                        <Button variant={"ghost"}>
+                            <PlusIcon />
+                            Name in another language
+                        </Button>
+                        <Separator />
+                    </div>
                     <FormSectionHeading>{t('user.heading.personal')}</FormSectionHeading>
                     <div className="flex items-start gap-x-[1.25rem]">
                         <FormField
