@@ -146,21 +146,21 @@ router.put('/:id', async (req, res) => {
             const { translations } = user;
             const { translations: payloadTranslations, ...restOfPayload } = payload;
             Object.keys(payloadTranslations).forEach((key)=>{
-                if (translations[key] !== undefined) {
-                    translations[key] = {
-                        ...translations[key],
+                if (translations.get(key) !== undefined) {
+                    translations.set(key, {
+                        ...translations.toJSON()[key],
                         ...payloadTranslations[key]
-                    };
+                    });
                 } else {
                     const { isPrimary : payloadTranslationIsPrimary } = payloadTranslations[key];
-                    const correspondingUserTranslationKey = Object.keys(translations).reduce((accm, curr) => {
+                    const correspondingUserTranslationKey = translations.keys().reduce((accm, curr) => {
                         if (accm !== '') return accm;
-                        if (translations[curr].isPrimary === payloadTranslationIsPrimary) return curr;
+                        if (translations.get(curr).isPrimary === payloadTranslationIsPrimary) return curr;
                     }, '');
                     if (correspondingUserTranslationKey !== '') {
-                        delete translations[correspondingUserTranslationKey];
+                        translations.delete(correspondingUserTranslationKey);
                     }
-                    translations[key] = payloadTranslations[key];
+                    translations.set(key, payloadTranslations[key]);
                 }
             });
             result = await User.findOneAndUpdate(
@@ -168,7 +168,7 @@ router.put('/:id', async (req, res) => {
                 [
                     {
                         $set: {
-                            translations,
+                            translations: translations,
                             ...restOfPayload,
                             updatedAt: new Date()
                         }
