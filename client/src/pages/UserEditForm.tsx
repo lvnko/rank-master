@@ -116,6 +116,8 @@ export default function UserEditForm() {
 
     const formDefaultValues = extractUserFormData(response);
 
+    const [hasSecName, setHasSecName] = useState(formDefaultValues.secFirstName !== '' || formDefaultValues.secLastName !== '' ? true : false);
+
         // 1. Define your form.
     type FormShape = z.infer<typeof formSchema>
     const form = useForm<FormShape>({
@@ -318,12 +320,38 @@ export default function UserEditForm() {
                     </div>
                     <div className="flex items-center">
                         <Separator className="!w-auto flex-grow" />
-                        <Button variant={"ghost"}>
-                            <PlusIcon />
-                            Name in another language
-                        </Button>
+                        {!hasSecName && (
+                            <Button variant={"ghost"} onClick={()=>setHasSecName(true)}>
+                                <PlusIcon />
+                                Name in another language
+                            </Button>
+                        )}
                         <Separator className="!w-auto flex-grow" />
                     </div>
+                    {hasSecName && (
+                        <>
+                            <FormSectionHeading>{t('user.heading.secName')}</FormSectionHeading>
+                            <div className={`flex items-start gap-x-[1.25rem] !mt-4`}>
+                                {/* <FormField
+                                    control={form.control}
+                                    name="secNameLang"
+                                    render={SelectFieldRenderer({
+                                        initFieldValueState: response?.data?.user?.translations ?
+                                            extractPrimaryNameLang(response.data.user.translations) :
+                                            language,
+                                        name: "secNameLang",
+                                        label: "Language",
+                                        description: "Language of secondary name.",
+                                        placeholder: "Select Language",
+                                        className: "basis-1/5",
+                                        optionValues: languageValues,
+                                        disabled: isLoading
+                                    })}
+                                /> */}
+                            </div>
+                            <Separator />
+                        </>
+                    )}
                     <FormSectionHeading>{t('user.heading.personal')}</FormSectionHeading>
                     <div className="flex items-start gap-x-[1.25rem]">
                         <FormField

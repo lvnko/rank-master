@@ -14,6 +14,8 @@ export function extractPrimaryNameLang(translations: Map<string, {
   lastName: string,
   isPrimary: boolean
 }>): string {
+  console.log('[1] : extractPrimaryNameLang => translations => ', translations);
+  console.log('[2] : extractPrimaryNameLang => Object.keys(translations) => ', Object.keys(translations));
   const translationLangKeys = Object.keys(translations);
   if (translationLangKeys.length === 1) return translationLangKeys[0];
   if (translationLangKeys.length > 1) {
@@ -22,6 +24,14 @@ export function extractPrimaryNameLang(translations: Map<string, {
   } 
   return 'en-US';
 }
+
+// export function extractSecondaryNameLang(translations: Map<string, {
+//   firstName: string,
+//   lastName: string,
+//   isPrimary: boolean
+// }>): string {
+//   const translationLangKeys = Object.keys(translations);
+// }
 
 interface UserRawType {
   translations: Record<string, { firstName: string; lastName: string, isPrimary: boolean }>;
@@ -76,8 +86,8 @@ export function extractUserFormData(response: DataResponse): {
       mobileCountryCode,
       email
   } = userData;
+  console.log("extractUserFormData : called => extractPrimaryNameLang ...");
   const primNameLang = extractPrimaryNameLang(translations);
-  // const primNameLang = extractPrimaryNameLang(translations as { [key: string]: UserTranslationType });
   const {
       firstName: primFirstName,
       lastName: primLastName,
