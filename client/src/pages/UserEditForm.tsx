@@ -316,13 +316,13 @@ export default function UserEditForm() {
                             />
                         </div>
                     </div>
-                    <div className="flex">
-                        <Separator />
+                    <div className="flex items-center">
+                        <Separator className="!w-auto flex-grow" />
                         <Button variant={"ghost"}>
                             <PlusIcon />
                             Name in another language
                         </Button>
-                        <Separator />
+                        <Separator className="!w-auto flex-grow" />
                     </div>
                     <FormSectionHeading>{t('user.heading.personal')}</FormSectionHeading>
                     <div className="flex items-start gap-x-[1.25rem]">
