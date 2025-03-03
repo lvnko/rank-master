@@ -32,9 +32,9 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { CaretSortIcon, PlusIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
-import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
+import { ArrowLeftIcon, ArrowUpDown, CheckIcon, DeleteIcon, Loader2, Trash2Icon } from "lucide-react";
 
 import { userUpdater } from "@/loaders";
 import { Separator } from "@/components/ui/separator";
@@ -43,7 +43,7 @@ import FormSectionHeading from "@/components/form-section-heading";
 import { UserPayloadType } from "@/types/user";
 import { ApiFetchPromiseMessage } from "@/types/data-response";
 
-const formSchema = z.object({
+const formSchemaBase = z.object({
     primFirstName:
         z.string({
             required_error: "First Name is required"
@@ -60,12 +60,6 @@ const formSchema = z.object({
         z.string().min(1, {
             message: "Please select the language of your primary name.",    
         }),
-    secFirstName:
-        z.string().optional(),
-    secLastName:
-        z.string().optional(),
-    secNameLang:
-        z.string().optional(),
     gender:
         z.string().min(1, {
             message: "You need to select a gender.",
@@ -87,6 +81,38 @@ const formSchema = z.object({
             message: "Please provide a valid email address."
         })
 });
+
+const formSchemaNoSecName = formSchemaBase.merge(z.object({
+    secFirstName:
+        z.string().optional(),
+    secLastName:
+        z.string().optional(),
+    secNameLang:
+        z.literal(""),
+}));
+
+const formSchemaHasSecName = formSchemaBase.merge(z.object({
+    secFirstName:
+        z.string().min(2, {
+            message: "First Name must be at least 2 characters.",
+        }),
+    secLastName:
+        z.string().min(1, {
+            message: "Last Name must be at least 1 characters.",
+        }),
+    secNameLang:
+        z.string().min(1, {
+            message: "Please select the language of your secondary name.",    
+        }),
+}));
+
+const formSchema = z.union([formSchemaNoSecName, formSchemaHasSecName]);
+
+interface NameValues {
+    first: string;
+    last: string;
+    lang: string;
+}
 
 export default function UserEditForm() {
 
@@ -112,11 +138,10 @@ export default function UserEditForm() {
         { label: t("user.valueLabel.gender.F"), value: "F" },
     ];
 
-    const [isLoading, setIsLoading] = useState(false);
-
     const formDefaultValues = extractUserFormData(response);
 
     const [hasSecName, setHasSecName] = useState(formDefaultValues.secFirstName !== '' || formDefaultValues.secLastName !== '' ? true : false);
+    const [isLoading, setIsLoading] = useState(false);
 
         // 1. Define your form.
     type FormShape = z.infer<typeof formSchema>
@@ -126,15 +151,56 @@ export default function UserEditForm() {
         defaultValues: {
             ...formDefaultValues
         },
+        // shouldUnregister: false
     });
+
+    const primNameLangFieldValue = form.watch("primNameLang");
+    const secNameLangFieldValue = form.watch("secNameLang");
+
+    const releaseSecNameFields = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setHasSecName(true);
+    }
+
+    const clearSecNameValues = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        form.setValue("secFirstName", formDefaultValues.secFirstName);
+        form.setValue("secLastName", formDefaultValues.secLastName);
+        form.setValue("secNameLang", formDefaultValues.secNameLang);
+        setHasSecName(false);
+    }
+
+    const swapNames = (e: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("!!! SWAP called !!!");
+        e.preventDefault();
+        const primNameValInst: NameValues = {
+            first: form.getValues("primFirstName") || "",
+            last: form.getValues("primLastName") || "",
+            lang: form.getValues("primNameLang") || ""
+        };
+        const secNameValInst: NameValues = {
+            first: form.getValues("secFirstName") || "",
+            last: form.getValues("secLastName") || "",
+            lang: form.getValues("secNameLang") || ""
+        };
+        form.setValue("primFirstName", secNameValInst.first, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+        form.setValue("primLastName", secNameValInst.last, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+        form.setValue("primNameLang", secNameValInst.lang, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+        form.setValue("secFirstName", primNameValInst.first, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+        form.setValue("secLastName", primNameValInst.last, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+        form.setValue("secNameLang", primNameValInst.lang, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+    }
 
     // 2. Define a submit handler.
     const onSubmit: SubmitHandler<FormShape> = async (data) => {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log("form isDirty?", form?.formState?.isDirty);
-        console.log("form dirtyFields => ", form?.formState?.dirtyFields);
-        console.log("form values =>", data);
+        // console.log("form ?", form);
+        // console.log("form isDirty?", form?.formState?.isDirty);
+        // console.log("form dirtyFields => ", form?.formState?.dirtyFields);
+        console.log("!!! onSubmit : form values =>", data);
+
+        return;
 
         if (form?.formState?.isDirty && Object.keys(form?.formState?.dirtyFields).length > 0) {
             setIsLoading(true);
@@ -199,40 +265,11 @@ export default function UserEditForm() {
                 error: 'Error',
             });
         }
-
-        // const {
-        //     primFirstName: firstName = '',
-        //     primLastName: lastName = '',
-        //     countryCode: mobileCountryCode = '',
-        //     ...restFields
-        // } = data as any;
-        // const body = {
-        //     translations: {
-        //         [language as string]: {
-        //             firstName, lastName, isPrimary: true
-        //         }
-        //     },
-        //     mobileCountryCode,
-        //     ...restFields
-        // };
-        // toast.promise(userUpdater({
-        //     body: body,
-        //     language: language
-        // }), {
-        //     loading: t('loading', { ns: 'common' }),
-        //     success: (data: { name: string }) => {
-        //         navigate("/users");
-        //         return {
-        //             message: `${data.name} toast has been added`,
-        //             description: 'Custom description for the success state',
-        //         };
-        //     },
-        //     error: 'Error',
-        // });
     }
     
 
     useEffect(()=>{
+        console.log("!!! Fill the form with default values !!!")
         const userData = response?.data?.user || {};
         if (Object.keys(userData).length > 0) {
             // console.log("form => ", form);
@@ -251,7 +288,17 @@ export default function UserEditForm() {
 
     useEffect(()=>{
         console.log("tracking errors =>",form.formState.errors);
+        console.log("form primNameLangFieldValue ?", primNameLangFieldValue);
+        console.log("form secNameLangFieldValue ?", secNameLangFieldValue);
     },[form.formState.errors]);
+
+    // useEffect(()=>{
+    //     if (hasSecName) {
+
+    //     } else {
+
+    //     }
+    // }, [hasSecName]);
 
     return (
         <div className="flex flex-col justify-center items-center w-full">
@@ -261,39 +308,38 @@ export default function UserEditForm() {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 self-stretch">
                     <Separator />
-                    <FormSectionHeading>{t('user.heading.primName')}</FormSectionHeading>
+                    <FormSectionHeading>{t(`user.heading.${hasSecName ? 'primName' : 'name'}`)}</FormSectionHeading>
                     <div className={`flex items-start gap-x-[1.25rem] !mt-4`}>
                         <FormField
                             control={form.control}
                             name="primNameLang"
                             render={SelectFieldRenderer({
-                                initFieldValueState: response?.data?.user?.translations ?
-                                    extractPrimaryNameLang(response.data.user.translations) :
-                                    language,
+                                initFieldValueState: formDefaultValues.primNameLang,
                                 name: "primNameLang",
-                                label: "Language",
-                                description: "Language of primary name.",
-                                placeholder: "Select Language",
+                                label: t('user.language', {lng: primNameLangFieldValue}),
+                                description: t('user.description.primNameLang', {lng: primNameLangFieldValue}),
+                                placeholder: t('user.placeholder.language', {lng: primNameLangFieldValue}),
                                 className: "basis-1/5",
                                 optionValues: languageValues,
-                                disabled: isLoading
+                                disabled: isLoading,
+                                control: form.control
                             })}
                         />
-                        <div className={`flex items-start gap-x-[1.25rem] basis-4/5 ${['zh-TW'].indexOf(language) >= 0 ? " flex-row-reverse":""}`}>
+                        <div className={`flex items-start gap-x-[1.25rem] basis-4/5 ${['zh-TW'].indexOf(primNameLangFieldValue) >= 0 ? " flex-row-reverse":""}`}>
                             <FormField
                                 control={form.control}
                                 name="primFirstName"
                                 render={({ field })=>(
                                     <FormItem className={"flex-grow"}>
-                                        <FormLabel>{t("user.firstName")}</FormLabel>
+                                        <FormLabel>{t("user.firstName", {lng: primNameLangFieldValue})}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder={t("generic.name.first")}
+                                                placeholder={t("generic.name.first", {lng: primNameLangFieldValue})}
                                                 disabled={isLoading}
                                                 {...field}
                                             />
                                         </FormControl>
-                                        <FormDescription>{t("user.description.firstName")}</FormDescription>
+                                        <FormDescription>{t("user.description.firstName", {lng: primNameLangFieldValue})}</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -303,51 +349,104 @@ export default function UserEditForm() {
                                 name="primLastName"
                                 render={({ field })=>(
                                     <FormItem className={"flex-grow"}>
-                                        <FormLabel>{t("user.lastName")}</FormLabel>
+                                        <FormLabel>{t("user.lastName", {lng: primNameLangFieldValue})}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder={t("generic.name.last")}
+                                                placeholder={t("generic.name.last", {lng: primNameLangFieldValue})}
                                                 disabled={isLoading}
                                                 {...field}
                                             />
                                         </FormControl>
-                                        <FormDescription>{t("user.description.lastName")}</FormDescription>
+                                        <FormDescription>{t("user.description.lastName", {lng: primNameLangFieldValue})}</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
                     </div>
-                    <div className="flex items-center">
-                        <Separator className="!w-auto flex-grow" />
+                    <div className="flex items-center !mt-4">
+                        <Separator
+                            className="!w-auto flex-grow"
+                            lineStyle={hasSecName ? "dotted" : "normal"}
+                        />
                         {!hasSecName && (
-                            <Button variant={"ghost"} onClick={()=>setHasSecName(true)}>
+                            <Button variant={"ghost"} onClick={releaseSecNameFields}>
                                 <PlusIcon />
-                                Name in another language
+                                {t('user.button.anotherName')}
                             </Button>
                         )}
-                        <Separator className="!w-auto flex-grow" />
+                        {hasSecName && (
+                            <Button variant={"ghost"} onClick={swapNames}>
+                                <ArrowUpDown />
+                                {t('user.button.swapName')}
+                            </Button>
+                        )}
+                        <Separator
+                            className="!w-auto flex-grow"
+                            lineStyle={hasSecName ? "dotted" : "normal"}
+                        />
                     </div>
                     {hasSecName && (
                         <>
-                            <FormSectionHeading>{t('user.heading.secName')}</FormSectionHeading>
+                            <div className="flex justify-between item-centers !mt-4">
+                                <FormSectionHeading>{t(`user.heading.${hasSecName ? 'secName' : 'name'}`)}</FormSectionHeading>
+                                <Button variant={"outline"} size={"icon"} onClick={clearSecNameValues}>
+                                    <Trash2Icon />
+                                </Button>
+                            </div>
                             <div className={`flex items-start gap-x-[1.25rem] !mt-4`}>
-                                {/* <FormField
+                                <FormField
                                     control={form.control}
                                     name="secNameLang"
                                     render={SelectFieldRenderer({
-                                        initFieldValueState: response?.data?.user?.translations ?
-                                            extractPrimaryNameLang(response.data.user.translations) :
-                                            language,
+                                        initFieldValueState: formDefaultValues.secNameLang,
                                         name: "secNameLang",
-                                        label: "Language",
-                                        description: "Language of secondary name.",
-                                        placeholder: "Select Language",
+                                        label: t('user.language', {lng: secNameLangFieldValue}),
+                                        description: t('user.description.secNameLang', {lng: secNameLangFieldValue}),
+                                        placeholder: t('user.placeholder.language', {lng: secNameLangFieldValue}),
                                         className: "basis-1/5",
                                         optionValues: languageValues,
                                         disabled: isLoading
                                     })}
-                                /> */}
+                                />
+                                <div className={`flex items-start gap-x-[1.25rem] basis-4/5 ${['zh-TW'].indexOf(secNameLangFieldValue) >= 0 ? " flex-row-reverse":""}`}>
+                                    <FormField
+                                        control={form.control}
+                                        name="secFirstName"
+                                        render={({ field })=>(
+                                            <FormItem className={"flex-grow"}>
+                                                <FormLabel>{t("user.firstName", {lng: secNameLangFieldValue})}</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder={t("generic.name.first", {lng: secNameLangFieldValue})}
+                                                        disabled={isLoading}
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormDescription>{t("user.description.firstName", {lng: secNameLangFieldValue})}</FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="secLastName"
+                                        render={({ field })=>(
+                                            <FormItem className={"flex-grow"}>
+                                                <FormLabel>{t("user.lastName", {lng: secNameLangFieldValue})}</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder={t("generic.name.last", {lng: secNameLangFieldValue})}
+                                                        disabled={isLoading}
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormDescription>{t("user.description.lastName", {lng: secNameLangFieldValue})}</FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
                             </div>
                             <Separator />
                         </>

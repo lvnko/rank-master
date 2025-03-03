@@ -87,3 +87,15 @@
     @apply bg-background text-foreground;
   }
 }
+.bg-dotted-hori, .bg-dotted-vert {
+  background-image: radial-gradient(hsl(var(--border)) 2px, transparent 0);
+  background-color: transparent !important;
+  background-size: 6px 6px;
+  background-position: -3px -3px;
+}
+.bg-dotted-hori {
+  height: 1px;
+}
+.bg-dotted-vert {
+  width: 1px;
+}

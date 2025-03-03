@@ -12,6 +12,7 @@
     "user": {
         "firstName": "Given Name",
         "lastName": "Family Name",
+        "language": "Language",
         "gender": "Gender",
         "countryCode": "Country Code",
         "mobileNum": "Mobile Number",
@@ -20,11 +21,18 @@
         "description": {
             "firstName": "Your first name.",
             "lastName": "Your Surname or last name.",
+            "primNameLang": "Language of primary name.",
+            "secNameLang": "Language of secondary name.",
             "countryCode": "For identifing the country/region of your mobile phone number.",
             "mobileNum": "A mobile phone number for receiving SMS, please skip spaces from your input.",
             "email": "A email address for receiving verification code."
         },
+        "button": {
+            "anotherName": "Name in another language",
+            "swapName": "Swap"
+        },
         "placeholder": {
+            "language": "Select Language",
             "countryCode": "E.g. +1",
             "mobileNum": "E.g. 123 456 7890",
             "email": "john.smith@abc.com"
@@ -282,6 +290,7 @@
         "heading": {
             "add": "Add New User",
             "edit": "Edit User Data",
+            "name": "Name",
             "primName": "Primary Name",
             "secName": "Secondary Name",
             "contact": "Contact Info",

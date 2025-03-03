@@ -14,9 +14,10 @@ export function extractPrimaryNameLang(translations: Map<string, {
   lastName: string,
   isPrimary: boolean
 }>): string {
-  console.log('[1] : extractPrimaryNameLang => translations => ', translations);
-  console.log('[2] : extractPrimaryNameLang => Object.keys(translations) => ', Object.keys(translations));
-  const translationLangKeys = Object.keys(translations);
+  // console.log('[1] : extractPrimaryNameLang => translations => ', translations);
+  // console.log('[2] : extractPrimaryNameLang => Object.keys(translations) => ', Object.keys(translations));
+  // console.log('[3] : extractPrimaryNameLang => Array.from(translations.keys()) => ', Array.from(translations.keys()));
+  const translationLangKeys = Array.from(translations.keys()) || [];
   if (translationLangKeys.length === 1) return translationLangKeys[0];
   if (translationLangKeys.length > 1) {
     const primLangs = translationLangKeys.filter((key) => translations.get(key)?.isPrimary === true);
@@ -86,7 +87,7 @@ export function extractUserFormData(response: DataResponse): {
       mobileCountryCode,
       email
   } = userData;
-  console.log("extractUserFormData : called => extractPrimaryNameLang ...");
+  // console.log("extractUserFormData : called => extractPrimaryNameLang ...");
   const primNameLang = extractPrimaryNameLang(translations);
   const {
       firstName: primFirstName,

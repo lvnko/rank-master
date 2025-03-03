@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateTimePicker } from '@/components/ui/datetime-picker';
+import { ControllerProps, FieldValues, FieldPath, useWatch, Control } from "react-hook-form";
 
 interface RendererPropsType {
     initFieldValueState: string,
@@ -26,7 +27,8 @@ interface RendererPropsType {
     placeholder?: string,
     className: string,
     optionValues: {value: string, label: string}[],
-    disabled: boolean
+    disabled: boolean,
+    control: Control
 }
 
 type DateTimePickerRendererPropsType = Omit<RendererPropsType, 'initFieldValueState' | 'optionValues'> & {
@@ -41,25 +43,28 @@ export function SelectFieldRenderer ({
     optionValues,
     placeholder,
     className,
-    disabled = false
+    disabled = false,
+    control
 } : RendererPropsType) {
     return function ({ field }: any) {
 
         const [fieldValueState, setFieldValueState] = useState<string>(initFieldValueState);
+        const fieldValueWatched = useWatch({ control: control, name: name });
     
         return (
             <FormItem className={className}>
                 <FormLabel>{label}</FormLabel>
                 <Select
                     onValueChange={(e)=>{
+                        console.log("!!! values changed => ", e);
                         setFieldValueState(e);
-                        field.onChange(e)
+                        field.onChange(e);
                     }}
-                    value={fieldValueState}
+                    value={fieldValueWatched}
                     disabled={disabled}
                 >
                     <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger ref={field.ref}>
                             <SelectValue placeholder={placeholder} />
                         </SelectTrigger>
                     </FormControl>
@@ -89,7 +94,7 @@ export function RadioGroupRenderer ({
 } : RendererPropsType) {
     
     const [fieldValueState, setFieldValueState] = useState<string>(initFieldValueState);
-
+    
     return function({ field }: any) {
         return (
             <FormItem className={className}>
@@ -133,7 +138,7 @@ export function DateTimePickerRenderer ({
 } : DateTimePickerRendererPropsType) {
 
     const [fieldValueState, setFieldValueState] = useState<Date>(initFieldValueState);
-
+    
     return ({ field }: any) => (
         <FormItem className={className}>
             <FormLabel>{label}</FormLabel>
@@ -157,3 +162,19 @@ export function DateTimePickerRenderer ({
         </FormItem>
     )
 }
+
+// export function FormSelectField<
+//   TFieldValues extends FieldValues = FieldValues,
+//   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+//   RendererPropsType
+// > ({
+//     control, name, initFieldValueState
+// }: ControllerProps<TFieldValues>) {
+//     return (
+//         <FormField
+//             control={control}
+//             name={name}
+//             render={RadioGroupRenderer}
+//         />
+//     );
+// }

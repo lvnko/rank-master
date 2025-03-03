@@ -12,6 +12,7 @@
     "user": {
         "firstName": "名",
         "lastName": "姓",
+        "language": "語言",
         "gender": "性別",
         "countryCode": "國家代碼",
         "mobileNum": "手機號碼",
@@ -20,11 +21,18 @@
         "description": {
             "firstName": "你的名字。",
             "lastName": "你的姓氏。",
+            "primNameLang": "主要名稱的語言。",
+            "secNameLang": "次要名稱的語言。",
             "countryCode": "用於識別您的手機號碼所屬國家/地區。",
             "mobileNum": "您可以接收簡訊的手機號碼，請不要輸入空格。",
             "email": "您可以接收驗證碼的電郵地址。"
         },
+        "button": {
+            "anotherName": "其他語言的名稱",
+            "swapName": "互換"
+        },
         "placeholder": {
+            "language": "選擇語言",
             "countryCode": "例： +1",
             "mobileNum": "例： 123 456 7890",
             "email": "man.chen@abc.com"
@@ -282,6 +290,7 @@
         "heading": {
             "add": "加入新用戶",
             "edit": "編輯使用者資料",
+            "name": "名稱",
             "primName": "主要名稱",
             "secName": "次要名稱",
             "contact": "聯絡資訊",
