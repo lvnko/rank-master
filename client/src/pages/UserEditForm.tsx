@@ -200,8 +200,6 @@ export default function UserEditForm() {
         // console.log("form dirtyFields => ", form?.formState?.dirtyFields);
         console.log("!!! onSubmit : form values =>", data);
 
-        return;
-
         if (form?.formState?.isDirty && Object.keys(form?.formState?.dirtyFields).length > 0) {
             setIsLoading(true);
             let payloadCollection: UserPayloadType = {};
@@ -291,14 +289,6 @@ export default function UserEditForm() {
         console.log("form primNameLangFieldValue ?", primNameLangFieldValue);
         console.log("form secNameLangFieldValue ?", secNameLangFieldValue);
     },[form.formState.errors]);
-
-    // useEffect(()=>{
-    //     if (hasSecName) {
-
-    //     } else {
-
-    //     }
-    // }, [hasSecName]);
 
     return (
         <div className="flex flex-col justify-center items-center w-full">
@@ -406,7 +396,8 @@ export default function UserEditForm() {
                                         placeholder: t('user.placeholder.language', {lng: secNameLangFieldValue}),
                                         className: "basis-1/5",
                                         optionValues: languageValues,
-                                        disabled: isLoading
+                                        disabled: isLoading,
+                                        control: form.control
                                     })}
                                 />
                                 <div className={`flex items-start gap-x-[1.25rem] basis-4/5 ${['zh-TW'].indexOf(secNameLangFieldValue) >= 0 ? " flex-row-reverse":""}`}>
@@ -462,7 +453,8 @@ export default function UserEditForm() {
                                 label: t('user.gender'),
                                 optionValues: genderValues,
                                 className: "space-y-3 basis-1/2",
-                                disabled: isLoading
+                                disabled: isLoading,
+                                control: form.control
                             })}
                         />
                         <FormField
@@ -473,7 +465,8 @@ export default function UserEditForm() {
                                 name: "dateOfBirth",
                                 label: t('user.dateOfBirth'),
                                 className: "space-y-3 basis-1/2",
-                                disabled: isLoading
+                                disabled: isLoading,
+                                control: form.control
                             })}
                         />
                     </div>

@@ -152,10 +152,14 @@ router.put('/:id', async (req, res) => {
                         ...payloadTranslations[key]
                     });
                 } else {
+                    // console.log("Array.from(user.translations.keys()) => ", Array.from(translations.keys()));
                     const { isPrimary : payloadTranslationIsPrimary } = payloadTranslations[key];
-                    const correspondingUserTranslationKey = translations.keys().reduce((accm, curr) => {
+                    const correspondingUserTranslationKey = Array.from(translations.keys()).reduce((accm, curr) => {
+                        // console.log('translations.get(curr).isPrimary => ', translations.get(String(curr)).isPrimary);
+                        // console.log('payloadTranslationIsPrimary => ', payloadTranslationIsPrimary);
                         if (accm !== '') return accm;
-                        if (translations.get(curr).isPrimary === payloadTranslationIsPrimary) return curr;
+                        if (translations.get(String(curr)).isPrimary === payloadTranslationIsPrimary) return curr;
+                        else return accm;
                     }, '');
                     if (correspondingUserTranslationKey !== '') {
                         translations.delete(correspondingUserTranslationKey);

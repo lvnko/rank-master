@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { ControllerProps, FieldValues, FieldPath, useWatch, Control } from "react-hook-form";
 
-interface RendererPropsType {
+interface RendererPropsType<T extends FieldValues> {
     initFieldValueState: string,
     name: string,
     label: string,
@@ -28,10 +28,10 @@ interface RendererPropsType {
     className: string,
     optionValues: {value: string, label: string}[],
     disabled: boolean,
-    control: Control
+    control: Control<T>;
 }
 
-type DateTimePickerRendererPropsType = Omit<RendererPropsType, 'initFieldValueState' | 'optionValues'> & {
+type DateTimePickerRendererPropsType<T extends FieldValues> = Omit<RendererPropsType<T>, 'initFieldValueState' | 'optionValues'> & {
     initFieldValueState: Date
 };
 
@@ -45,10 +45,9 @@ export function SelectFieldRenderer ({
     className,
     disabled = false,
     control
-} : RendererPropsType) {
+} : RendererPropsType<any>) {
     return function ({ field }: any) {
 
-        const [fieldValueState, setFieldValueState] = useState<string>(initFieldValueState);
         const fieldValueWatched = useWatch({ control: control, name: name });
     
         return (
@@ -56,8 +55,7 @@ export function SelectFieldRenderer ({
                 <FormLabel>{label}</FormLabel>
                 <Select
                     onValueChange={(e)=>{
-                        console.log("!!! values changed => ", e);
-                        setFieldValueState(e);
+                        // console.log("!!! values changed => ", e);
                         field.onChange(e);
                     }}
                     value={fieldValueWatched}
@@ -90,10 +88,11 @@ export function RadioGroupRenderer ({
     description = '',
     optionValues,
     className,
-    disabled = false
-} : RendererPropsType) {
+    disabled = false,
+    control
+} : RendererPropsType<any>) {
     
-    const [fieldValueState, setFieldValueState] = useState<string>(initFieldValueState);
+    const fieldValueWatched = useWatch({ control: control, name: name });
     
     return function({ field }: any) {
         return (
@@ -102,19 +101,18 @@ export function RadioGroupRenderer ({
                 <FormControl>
                     <RadioGroup
                         onValueChange={(e)=>{
-                            setFieldValueState(e);
                             field.onChange(e)
                         }}
-                        defaultValue={fieldValueState}
+                        defaultValue={fieldValueWatched}
                         disabled={disabled}
                         className="flex flex-row space-x-4"
                     >
                         {optionValues.map((g, index) => (
-                            <FormItem key={`${name}-radio-${index}`} className="flex items-center space-x-3 space-y-0 py-2">
+                            <FormItem key={`${name}-radio-${index}`} className="flex items-center space-x-3 space-y-0 py-2 !cursor-pointer">
                                 <FormControl>
                                     <RadioGroupItem value={g.value} />
                                 </FormControl>
-                                <FormLabel className="font-normal">
+                                <FormLabel className="font-normal !cursor-none">
                                     {g.label}
                                 </FormLabel>
                             </FormItem>
@@ -134,20 +132,20 @@ export function DateTimePickerRenderer ({
     label,
     description = '',
     className,
-    disabled = false
-} : DateTimePickerRendererPropsType) {
+    disabled = false,
+    control
+} : DateTimePickerRendererPropsType<any>) {
 
-    const [fieldValueState, setFieldValueState] = useState<Date>(initFieldValueState);
+    const fieldValueWatched = useWatch({ control: control, name: name });
     
     return ({ field }: any) => (
         <FormItem className={className}>
             <FormLabel>{label}</FormLabel>
             <FormControl>
                 <DateTimePicker
-                    value={fieldValueState}
+                    value={fieldValueWatched}
                     onChange={(e)=>{
                         if (e) {
-                            setFieldValueState(e);
                             field.onChange(e);
                         }
                     }}
