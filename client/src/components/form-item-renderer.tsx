@@ -207,6 +207,7 @@ export function DateTimePickerRenderer ({
 
 export function ComboBoxRenderer({
     name,
+    control,
     label,
     description = '',
     placeholder,
@@ -217,6 +218,7 @@ export function ComboBoxRenderer({
 }: ComboBoxRendererPropsType<any>) {
 
     const { t } = useTranslation();
+    const fieldValueWatched = useWatch({ control: control, name: name });
 
     return ({ field }: any) => (
         <FormItem className={className}>
@@ -235,9 +237,9 @@ export function ComboBoxRenderer({
                                 !field.value && "text-muted-foreground"
                             )}
                         >
-                            {field.value
-                                ? optionValues.find(
-                                    (code) => code.value === field.value
+                            {fieldValueWatched && fieldValueWatched !== '' ?
+                                optionValues.find(
+                                    (code) => code.value === fieldValueWatched
                                 )?.label
                                 : placeholder}
                             <CaretSortIcon className="opacity-50" />

@@ -198,7 +198,7 @@ export default function UserEditForm() {
         // console.log("form ?", form);
         // console.log("form isDirty?", form?.formState?.isDirty);
         // console.log("form dirtyFields => ", form?.formState?.dirtyFields);
-        console.log("!!! onSubmit : form values =>", data);
+        // console.log("!!! onSubmit : form values =>", data);
 
         if (form?.formState?.isDirty && Object.keys(form?.formState?.dirtyFields).length > 0) {
             setIsLoading(true);
@@ -436,7 +436,8 @@ export default function UserEditForm() {
                             placeholder={t("user.placeholder.countryCode")}
                             optionValues={countryCodeValues}
                             onSelected={(name, value) => {
-                                form.setValue(name as keyof FormShape, value);
+                                console.log(`setValue of ${name} to ${value}`);
+                                form.setValue(name as keyof FormShape, value, { shouldDirty: true });
                             }}
                         />
                         <FormFieldRenderer
@@ -464,7 +465,7 @@ export default function UserEditForm() {
                         <Link to="/users">
                             <Button variant="outline" disabled={isLoading}><ArrowLeftIcon />Back</Button>
                         </Link>
-                        <Button type="submit" disabled={!form.formState.isDirty || isLoading}>
+                        <Button type="submit" disabled={!form.formState.isDirty || Object.keys(form.formState.dirtyFields)?.length === 0 || isLoading}>
                             {isLoading && (<Loader2 className="animate-spin" />)}
                             {t(isLoading ? 'loading' : 'button.submit', { ns: 'common' })}
                         </Button>
