@@ -17,10 +17,28 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateTimePicker } from '@/components/ui/datetime-picker';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
 import { ControllerProps, FieldValues, FieldPath, useWatch, Control } from "react-hook-form";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import { CheckIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
-interface RendererPropsType<T extends FieldValues> {
-    initFieldValueState: string,
+export interface RendererPropsType<T extends FieldValues> {
     name: string,
     label: string,
     description?: string,
@@ -31,12 +49,39 @@ interface RendererPropsType<T extends FieldValues> {
     control: Control<T>;
 }
 
-type DateTimePickerRendererPropsType<T extends FieldValues> = Omit<RendererPropsType<T>, 'initFieldValueState' | 'optionValues'> & {
-    initFieldValueState: Date
-};
+export type InputRendererPropsType<T extends FieldValues> = Omit<RendererPropsType<T>, 'optionValues' | 'name' | 'control'>
+
+export type DateTimePickerRendererPropsType<T extends FieldValues> = Omit<RendererPropsType<T>, 'optionValues'>;
+
+export type ComboBoxRendererPropsType<T extends FieldValues> = RendererPropsType<T> & { onSelected: (name: string, value: string) => void };
+
+export function InputFieldRenderer ({
+    label,
+    description = '',
+    placeholder,
+    className,
+    disabled = false,
+}: InputRendererPropsType<any>) {
+
+    return function ({ field }: any) {
+        return (
+            <FormItem className={className}>
+                <FormLabel>{label}</FormLabel>
+                <FormControl>
+                    <Input
+                        placeholder={placeholder}
+                        disabled={disabled}
+                        {...field}
+                    />
+                </FormControl>
+                <FormDescription>{description}</FormDescription>
+                <FormMessage />
+            </FormItem>
+        );
+    }
+}
 
 export function SelectFieldRenderer ({
-    initFieldValueState,
     name,
     label,
     description = '',
@@ -46,6 +91,7 @@ export function SelectFieldRenderer ({
     disabled = false,
     control
 } : RendererPropsType<any>) {
+
     return function ({ field }: any) {
 
         const fieldValueWatched = useWatch({ control: control, name: name });
@@ -82,7 +128,6 @@ export function SelectFieldRenderer ({
 }
 
 export function RadioGroupRenderer ({
-    initFieldValueState,
     name,
     label,
     description = '',
@@ -127,7 +172,6 @@ export function RadioGroupRenderer ({
 }
 
 export function DateTimePickerRenderer ({
-    initFieldValueState,
     name,
     label,
     description = '',
@@ -159,6 +203,86 @@ export function DateTimePickerRenderer ({
             <FormMessage />
         </FormItem>
     )
+}
+
+export function ComboBoxRenderer({
+    name,
+    label,
+    description = '',
+    placeholder,
+    className = '',
+    optionValues,
+    disabled,
+    onSelected = (name, value) => console.log(name, value)
+}: ComboBoxRendererPropsType<any>) {
+
+    const { t } = useTranslation();
+
+    return ({ field }: any) => (
+        <FormItem className={className}>
+            <div>
+                <FormLabel className='!inline'>{label}</FormLabel>
+            </div>
+            <Popover>
+                <PopoverTrigger className="w-full" asChild>
+                    <FormControl>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            disabled={disabled}
+                            className={cn(
+                                "justify-between",
+                                !field.value && "text-muted-foreground"
+                            )}
+                        >
+                            {field.value
+                                ? optionValues.find(
+                                    (code) => code.value === field.value
+                                )?.label
+                                : placeholder}
+                            <CaretSortIcon className="opacity-50" />
+                        </Button>
+                    </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                    <Command>
+                        <CommandInput
+                            placeholder={t('placeholder.search', {ns: 'common', name: label})}
+                            className="h-9"
+                        />
+                        <CommandList>
+                            <CommandEmpty>{t('fail.search', {ns: 'common', name: label})}</CommandEmpty>
+                            <CommandGroup>
+                                {optionValues.map((code) => (
+                                    <CommandItem
+                                        value={code.label}
+                                        key={code.value}
+                                        onSelect={() => {
+                                            // form.setValue("countryCode", code.value)
+                                            onSelected(name, code.value);
+                                        }}
+                                    >
+                                        {code.label}
+                                        <CheckIcon
+                                            className={cn(
+                                                "ml-auto",
+                                                code.value === field.value
+                                                ? "opacity-100"
+                                                : "opacity-0"
+                                            )}
+                                        />
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            <FormDescription>{description}</FormDescription>
+            <FormMessage />
+        </FormItem>
+    )
+
 }
 
 // export function FormSelectField<

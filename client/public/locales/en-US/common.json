@@ -13,5 +13,11 @@
         "confirm": "Confirm",
         "done": "Done"
     },
-    "loading": "Please wait..."
+    "loading": "Please wait...",
+    "placeholder": {
+        "search": "Search {{name}}..."
+    },
+    "fail": {
+        "search": "Cannot find {{name}}."
+    }
 }

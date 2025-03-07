@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function extractPrimaryNameLang(translations: Map<string, {
+function extractPrimaryNameLang(translations: Map<string, {
   firstName: string,
   lastName: string,
   isPrimary: boolean
@@ -24,6 +24,23 @@ export function extractPrimaryNameLang(translations: Map<string, {
     return primLangs.length > 0 ? primLangs[0] : translationLangKeys[0];
   } 
   return 'en-US';
+}
+
+function extractSecondaryNameLang(translations: Map<string, {
+  firstName: string,
+  lastName: string,
+  isPrimary: boolean
+}>): string {
+  // console.log('[1] : extractPrimaryNameLang => translations => ', translations);
+  // console.log('[2] : extractPrimaryNameLang => Object.keys(translations) => ', Object.keys(translations));
+  // console.log('[3] : extractPrimaryNameLang => Array.from(translations.keys()) => ', Array.from(translations.keys()));
+  const translationLangKeys = Array.from(translations.keys()) || [];
+  if ( translationLangKeys.length < 2 ) return '';
+  if (translationLangKeys.length >= 2) {
+    const [secLang] = translationLangKeys.filter((key) => translations.get(key)?.isPrimary === false);
+    return secLang ? secLang : '';
+  } 
+  return '';
 }
 
 // export function extractSecondaryNameLang(translations: Map<string, {
@@ -87,22 +104,29 @@ export function extractUserFormData(response: DataResponse): {
       mobileCountryCode,
       email
   } = userData;
-  // console.log("extractUserFormData : called => extractPrimaryNameLang ...");
   const primNameLang = extractPrimaryNameLang(translations);
   const {
-      firstName: primFirstName,
-      lastName: primLastName,
+    firstName: primFirstName,
+    lastName: primLastName,
   } = translations.get(primNameLang) || {
-      firstName: "",
-      lastName: "",
+    firstName: "",
+    lastName: "",
+  };
+  const secNameLang = extractSecondaryNameLang(translations);
+  const {
+    firstName: secFirstName,
+    lastName: secLastName,
+  } = translations.get(secNameLang) || {
+    firstName: "",
+    lastName: "",
   };
   return {
     primFirstName,
     primLastName,
     primNameLang,
-    secFirstName: '',
-    secLastName: '',
-    secNameLang: '',
+    secFirstName,
+    secLastName,
+    secNameLang,
     gender,
     dateOfBirth: new Date(dateOfBirth),
     mobileNum,

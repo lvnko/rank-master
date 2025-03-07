@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { cn, extractPrimaryNameLang } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {

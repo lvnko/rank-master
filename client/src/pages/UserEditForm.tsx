@@ -6,7 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { cn, extractPrimaryNameLang, extractUserFormData } from "@/lib/utils";
+import { cn, extractUserFormData } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,6 +42,7 @@ import { DateTimePickerRenderer, RadioGroupRenderer, SelectFieldRenderer } from 
 import FormSectionHeading from "@/components/form-section-heading";
 import { UserPayloadType } from "@/types/user";
 import { ApiFetchPromiseMessage } from "@/types/data-response";
+import FormFieldRenderer from "@/components/form-field-renderer";
 
 const formSchemaBase = z.object({
     primFirstName:
@@ -116,7 +117,6 @@ interface NameValues {
 
 export default function UserEditForm() {
 
-    // const { t, i18n } = useTranslation();
     const { t, i18n } = useTranslation();
     const { language } = i18n;
     const navigate = useNavigate();
@@ -273,6 +273,7 @@ export default function UserEditForm() {
             // console.log("form => ", form);
             // console.log("formSchema => ", formSchema);
             const { formState:  { defaultValues = {} } } = form;
+            console.log('defaultValues => ', defaultValues);
             if (Object.keys(defaultValues).length > 0) {
                Object.keys(defaultValues).forEach((key) => {
                 const typedKey = key as keyof typeof defaultValues;
@@ -300,57 +301,37 @@ export default function UserEditForm() {
                     <Separator />
                     <FormSectionHeading>{t(`user.heading.${hasSecName ? 'primName' : 'name'}`)}</FormSectionHeading>
                     <div className={`flex items-start gap-x-[1.25rem] !mt-4`}>
-                        <FormField
+                        <FormFieldRenderer
                             control={form.control}
                             name="primNameLang"
-                            render={SelectFieldRenderer({
-                                initFieldValueState: formDefaultValues.primNameLang,
-                                name: "primNameLang",
-                                label: t('user.language', {lng: primNameLangFieldValue}),
-                                description: t('user.description.primNameLang', {lng: primNameLangFieldValue}),
-                                placeholder: t('user.placeholder.language', {lng: primNameLangFieldValue}),
-                                className: "basis-1/5",
-                                optionValues: languageValues,
-                                disabled: isLoading,
-                                control: form.control
-                            })}
+                            className={"basis-1/5"}
+                            type={"Select"}
+                            disabled={isLoading}
+                            label={t('user.language', {lng: primNameLangFieldValue})}
+                            placeholder={t('user.placeholder.language', {lng: primNameLangFieldValue})}
+                            description={t('user.description.primNameLang', {lng: primNameLangFieldValue})}
+                            optionValues={languageValues}
                         />
                         <div className={`flex items-start gap-x-[1.25rem] basis-4/5 ${['zh-TW'].indexOf(primNameLangFieldValue) >= 0 ? " flex-row-reverse":""}`}>
-                            <FormField
+                            <FormFieldRenderer
                                 control={form.control}
                                 name="primFirstName"
-                                render={({ field })=>(
-                                    <FormItem className={"flex-grow"}>
-                                        <FormLabel>{t("user.firstName", {lng: primNameLangFieldValue})}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={t("generic.name.first", {lng: primNameLangFieldValue})}
-                                                disabled={isLoading}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>{t("user.description.firstName", {lng: primNameLangFieldValue})}</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                className={"flex-grow"}
+                                type={"Input"}
+                                disabled={isLoading}
+                                label={t("user.firstName", {lng: primNameLangFieldValue})}
+                                placeholder={t("generic.name.first", {lng: primNameLangFieldValue})}
+                                description={t("user.description.firstName", {lng: primNameLangFieldValue})}
                             />
-                            <FormField
+                            <FormFieldRenderer
                                 control={form.control}
                                 name="primLastName"
-                                render={({ field })=>(
-                                    <FormItem className={"flex-grow"}>
-                                        <FormLabel>{t("user.lastName", {lng: primNameLangFieldValue})}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={t("generic.name.last", {lng: primNameLangFieldValue})}
-                                                disabled={isLoading}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>{t("user.description.lastName", {lng: primNameLangFieldValue})}</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                className={"flex-grow"}
+                                type={"Input"}
+                                disabled={isLoading}
+                                label={t("user.lastName", {lng: primNameLangFieldValue})}
+                                placeholder={t("generic.name.last", {lng: primNameLangFieldValue})}
+                                description={t("user.description.lastName", {lng: primNameLangFieldValue})}
                             />
                         </div>
                     </div>
@@ -385,57 +366,37 @@ export default function UserEditForm() {
                                 </Button>
                             </div>
                             <div className={`flex items-start gap-x-[1.25rem] !mt-4`}>
-                                <FormField
+                                <FormFieldRenderer
                                     control={form.control}
                                     name="secNameLang"
-                                    render={SelectFieldRenderer({
-                                        initFieldValueState: formDefaultValues.secNameLang,
-                                        name: "secNameLang",
-                                        label: t('user.language', {lng: secNameLangFieldValue}),
-                                        description: t('user.description.secNameLang', {lng: secNameLangFieldValue}),
-                                        placeholder: t('user.placeholder.language', {lng: secNameLangFieldValue}),
-                                        className: "basis-1/5",
-                                        optionValues: languageValues,
-                                        disabled: isLoading,
-                                        control: form.control
-                                    })}
+                                    className={"basis-1/5"}
+                                    type={"Select"}
+                                    disabled={isLoading}
+                                    label={t('user.language', {lng: secNameLangFieldValue})}
+                                    placeholder={t('user.placeholder.language', {lng: secNameLangFieldValue})}
+                                    description={t('user.description.secNameLang', {lng: secNameLangFieldValue})}
+                                    optionValues={languageValues}
                                 />
                                 <div className={`flex items-start gap-x-[1.25rem] basis-4/5 ${['zh-TW'].indexOf(secNameLangFieldValue) >= 0 ? " flex-row-reverse":""}`}>
-                                    <FormField
+                                    <FormFieldRenderer
                                         control={form.control}
                                         name="secFirstName"
-                                        render={({ field })=>(
-                                            <FormItem className={"flex-grow"}>
-                                                <FormLabel>{t("user.firstName", {lng: secNameLangFieldValue})}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder={t("generic.name.first", {lng: secNameLangFieldValue})}
-                                                        disabled={isLoading}
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormDescription>{t("user.description.firstName", {lng: secNameLangFieldValue})}</FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                        className={"flex-grow"}
+                                        type={"Input"}
+                                        disabled={isLoading}
+                                        label={t("user.firstName", {lng: secNameLangFieldValue})}
+                                        placeholder={t("generic.name.first", {lng: secNameLangFieldValue})}
+                                        description={t("user.description.firstName", {lng: secNameLangFieldValue})}
                                     />
-                                    <FormField
+                                    <FormFieldRenderer
                                         control={form.control}
                                         name="secLastName"
-                                        render={({ field })=>(
-                                            <FormItem className={"flex-grow"}>
-                                                <FormLabel>{t("user.lastName", {lng: secNameLangFieldValue})}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder={t("generic.name.last", {lng: secNameLangFieldValue})}
-                                                        disabled={isLoading}
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormDescription>{t("user.description.lastName", {lng: secNameLangFieldValue})}</FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                        className={"flex-grow"}
+                                        type={"Input"}
+                                        disabled={isLoading}
+                                        label={t("user.lastName", {lng: secNameLangFieldValue})}
+                                        placeholder={t("generic.name.last", {lng: secNameLangFieldValue})}
+                                        description={t("user.description.lastName", {lng: secNameLangFieldValue})}
                                     />
                                 </div>
                             </div>
@@ -444,137 +405,59 @@ export default function UserEditForm() {
                     )}
                     <FormSectionHeading>{t('user.heading.personal')}</FormSectionHeading>
                     <div className="flex items-start gap-x-[1.25rem]">
-                        <FormField
+                        <FormFieldRenderer
                             control={form.control}
                             name="gender"
-                            render={RadioGroupRenderer({
-                                initFieldValueState: response?.data?.user?.gender || '',
-                                name: 'gender',
-                                label: t('user.gender'),
-                                optionValues: genderValues,
-                                className: "space-y-3 basis-1/2",
-                                disabled: isLoading,
-                                control: form.control
-                            })}
+                            className={"space-y-3 basis-1/2"}
+                            type={"RadioGroup"}
+                            disabled={isLoading}
+                            label={t('user.gender')}
+                            optionValues={genderValues}
                         />
-                        <FormField
+                        <FormFieldRenderer
                             control={form.control}
                             name="dateOfBirth"
-                            render={DateTimePickerRenderer({
-                                initFieldValueState: new Date(response?.data?.user?.dateOfBirth),
-                                name: "dateOfBirth",
-                                label: t('user.dateOfBirth'),
-                                className: "space-y-3 basis-1/2",
-                                disabled: isLoading,
-                                control: form.control
-                            })}
+                            className={"space-y-3 basis-1/2"}
+                            type={"DateTimePicker"}
+                            disabled={isLoading}
+                            label={t('user.dateOfBirth')}
                         />
                     </div>
                     <Separator />
                     <h3 className="!scroll-m-8 text-xl font-semibold tracking-tight underline underline-offset-4 text-blue-500">Contact Info</h3>
                     <div className="flex items-start gap-x-[1.25rem]">
-                        <FormField
+                        <FormFieldRenderer
                             control={form.control}
-                            name="countryCode"
-                            render={({ field })=>(
-                                <FormItem className="flex flex-col basis-1/5">
-                                    <div>
-                                        <FormLabel className="!inline">{t("user.countryCode")}</FormLabel>
-                                    </div>
-                                    <Popover>
-                                        <PopoverTrigger className="w-full" asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    disabled={isLoading}
-                                                    className={cn(
-                                                        "justify-between",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value
-                                                        ? countryCodeValues.find(
-                                                            (code) => code.value === field.value
-                                                        )?.label
-                                                        : t("user.placeholder.countryCode")}
-                                                    <CaretSortIcon className="opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-full p-0">
-                                            <Command>
-                                                <CommandInput
-                                                    placeholder="Search country code..."
-                                                    className="h-9"
-                                                />
-                                                <CommandList>
-                                                    <CommandEmpty>No country code found.</CommandEmpty>
-                                                    <CommandGroup>
-                                                        {countryCodeValues.map((code) => (
-                                                            <CommandItem
-                                                                value={code.label}
-                                                                key={code.value}
-                                                                onSelect={() => {
-                                                                    form.setValue("countryCode", code.value)
-                                                                }}
-                                                            >
-                                                                {code.label}
-                                                                <CheckIcon
-                                                                    className={cn(
-                                                                        "ml-auto",
-                                                                        code.value === field.value
-                                                                        ? "opacity-100"
-                                                                        : "opacity-0"
-                                                                    )}
-                                                                />
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormDescription>{t("user.description.countryCode")}</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            name={"countryCode"}
+                            className={"flex flex-col basis-1/5"}
+                            type={"ComboBox"}
+                            disabled={isLoading}
+                            label={t("user.countryCode")}
+                            placeholder={t("user.placeholder.countryCode")}
+                            optionValues={countryCodeValues}
+                            onSelected={(name, value) => {
+                                form.setValue(name as keyof FormShape, value);
+                            }}
                         />
-                        <FormField
+                        <FormFieldRenderer
                             control={form.control}
                             name="mobileNum"
-                            render={({ field })=>(
-                                <FormItem className="basis-2/5">
-                                    <FormLabel>{t("user.mobileNum")}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder={t("user.placeholder.mobileNum")}
-                                            disabled={isLoading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>{t("user.description.mobileNum")}</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            className={"basis-2/5"}
+                            type={"Input"}
+                            disabled={isLoading}
+                            label={t("user.mobileNum")}
+                            placeholder={t("user.placeholder.mobileNum")}
+                            description={t("user.description.mobileNum")}
                         />
-                        <FormField
+                        <FormFieldRenderer
                             control={form.control}
                             name="email"
-                            render={({ field })=>(
-                                <FormItem className="basis-2/5">
-                                    <FormLabel>{t("user.email")}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder={t("user.placeholder.email")}
-                                            disabled={isLoading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>{t("user.description.email")}</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            className={"basis-2/5"}
+                            type={"Input"}
+                            disabled={isLoading}
+                            label={t("user.email")}
+                            placeholder={t("user.placeholder.email")}
+                            description={t("user.description.email")}
                         />
                     </div>
                     <div className="flex justify-between">
