@@ -424,7 +424,7 @@ export default function UserEditForm() {
                         />
                     </div>
                     <Separator />
-                    <h3 className="!scroll-m-8 text-xl font-semibold tracking-tight underline underline-offset-4 text-blue-500">Contact Info</h3>
+                    <h3 className="!scroll-m-8 text-xl font-semibold tracking-tight underline underline-offset-4 text-blue-500">{t('user.heading.contact')}</h3>
                     <div className="flex items-start gap-x-[1.25rem]">
                         <FormFieldRenderer
                             control={form.control}
