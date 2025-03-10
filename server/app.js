@@ -1,4 +1,5 @@
 const express = require("express");
+// const methodOverride = require('method-override')
 const mongoose = require("mongoose");
 const { dirname, join } = require('path');
 const { readdirSync, lstatSync } = require('fs');
@@ -8,7 +9,11 @@ const Backend = require('i18next-fs-backend');
 const middleware = require('i18next-http-middleware');
 const cors = require("cors");
 const router = require("./router");
-const { commonNonActiveEndpointReply } = require('./utilities');
+const {
+    commonNonActiveEndpointReply,
+    genericLogErrors,
+    genericErrorHandler
+} = require('./utilities');
 const corsOptions = {
     origin: "http://localhost:5173"
 };
@@ -66,6 +71,9 @@ app.use(express.urlencoded(
 app.use('/', router);
 
 app.use(commonNonActiveEndpointReply);
+
+app.use(genericLogErrors);
+app.use(genericErrorHandler);
 
 app.listen(port, ()=>{
     console.log(`Server is now responsding on port ${port}!!!`);

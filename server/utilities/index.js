@@ -52,16 +52,15 @@ const standardErrorHandlerOnPost = (res, error) => {
 
 const customErrorHandler = (res, message, statusText = "error", code = 404, moreInfo) => {
     const resCode = code;
-    res.status(code);
-    res.json({
+    res.status(code).send({
         status: statusText,
         code: resCode,
-        message: message,
+        error: message,
         ...(moreInfo ? moreInfo : null),
         timestamp: Date.now()
     });
-    res.end();
-    return;
+    // res.end();
+    // return;
 }
 
 const customFaultHandler = (res, message) => {
@@ -122,7 +121,7 @@ const commonNonActiveEndpointReply = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     return customErrorHandler(
         res,
-        he.decode(t('endpoint.notFound', { ns: 'common', fullUrl: fullUrl })), "error", 400,
+        he.decode(t('endpoint.notFound', { ns: 'common', fullUrl: fullUrl })), "error", 500,
         {
             suggestions: [
                 t('endpoint.suggestions.checkTypo', { ns: 'common'}),
@@ -145,6 +144,18 @@ const payloadFilteringByKey = (_object, _keysToFilterOut) => {
 
 }
 
+function genericLogErrors (err, req, res, next) {
+    console.error(err.stack)
+    next(err)
+}
+
+function genericErrorHandler (err, req, res, next) {
+    res.status(500).json({
+        message: err.message || 'Internal Server Error',
+        error: err
+    })
+}
+
 // exports.standardErrorHandler = standardErrorHandler;
 //  customErrorHandler, customFaultHandler };
 
@@ -159,5 +170,7 @@ module.exports = {
     validateObjectId,
     packDataObjectWithCountryCodeByName,
     commonNonActiveEndpointReply,
-    payloadFilteringByKey
+    payloadFilteringByKey,
+    genericLogErrors,
+    genericErrorHandler
 };

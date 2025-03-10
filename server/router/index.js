@@ -3,10 +3,12 @@ const path = require('path');
 const he = require('he');
 const router = express.Router();
 const userRouter = require('./user');
+const errorRouter = require('./user/error');
 const { commonNonActiveEndpointReply } = require(path.join(__dirname, '../utilities'));
 const { LANGUAGES_LIB, COUNTRIES_OR_REGIONS } = require(path.join(__dirname, '../constants'));
 
 router.use('/user', userRouter);
+router.use('/error', errorRouter);
 
 router.get('/languages', async(req, res) => {
 
