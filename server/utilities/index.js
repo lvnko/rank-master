@@ -22,18 +22,50 @@ const path = require('path');
 const he = require('he');
 const { COUNTRIES_OR_REGIONS } = require(path.join(__dirname, '../constants'));
 
+/*
+    {
+        "error": {
+            "code": "internal_server_error",
+            "message": "BROKEN"
+        }
+    }
+
+    res.status(err.statusCode || 500).json({
+        error: {
+            code: err.code || 'internal_server_error',
+            message: err.message || 'An unexpected error occurred.',
+        }
+    })
+*/
+
+function genericLogErrors (err, req, res, next) {
+    console.error(err.stack)
+    next(err)
+}
+
+function genericErrorHandler (err, req, res, next) {
+    res.status(err.statusCode || 500).json({
+        error: {
+            code: err.code || 'internal_server_error',
+            message: err.message || 'An unexpected error occurred.',
+        }
+    })
+}
+
 const standardErrorHandler = (res, err) => {
-    res.status(err.code || 500);
+    
     console.log('err => ', err);
     console.log('err.status => ', err.status);
     console.log('err.errors => ', err.errors);
     console.log('err.message => ', err.message);
     console.log('Object.keys(err) => ', Object.keys(err));
-    res.json({
-        status: err.status || "error",
-        message: err.message,
-        // ...message ? { message } : null
-        ...err.code ? { code: err.code } : null
+
+    res.status(err.statusCode || 500)
+    .json({
+        error: {
+            code: err.code || "error",
+            message: err.message,
+        }
     });
     res.end();
     return;
@@ -44,23 +76,25 @@ const standardErrorHandlerOnPost = (res, error) => {
     const fullStatusText = error.message.split(/:/, 1)[0];
     const messageText = error.message.replace(fullStatusText, '').trim();
     return standardErrorHandler(res, {
-        status: fullStatusText.toLowerCase().indexOf('fail') >= 0 ? "fail" : "error",
-        code: 400,
+        code: fullStatusText.toLowerCase().indexOf('fail') >= 0 ? "fail" : "error",
+        statusCode: 400,
         message: messageText
     });
 }
 
 const customErrorHandler = (res, message, statusText = "error", code = 404, moreInfo) => {
     const resCode = code;
-    res.status(code).send({
-        status: statusText,
-        code: resCode,
-        error: message,
-        ...(moreInfo ? moreInfo : null),
-        timestamp: Date.now()
+    res.status(code)
+    .json({
+        error: {
+            message,
+            code: statusText,
+            ...(moreInfo ? moreInfo : null),
+            timestamp: Date.now()
+        }
     });
-    // res.end();
-    // return;
+    res.end();
+    return;
 }
 
 const customFaultHandler = (res, message) => {
@@ -142,18 +176,6 @@ const payloadFilteringByKey = (_object, _keysToFilterOut) => {
         };
     }, {});
 
-}
-
-function genericLogErrors (err, req, res, next) {
-    console.error(err.stack)
-    next(err)
-}
-
-function genericErrorHandler (err, req, res, next) {
-    res.status(500).json({
-        message: err.message || 'Internal Server Error',
-        error: err
-    })
 }
 
 // exports.standardErrorHandler = standardErrorHandler;

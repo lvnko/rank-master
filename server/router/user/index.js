@@ -111,8 +111,8 @@ router.get('/:id', async (req, res) => {
     } catch(error) {
 
         return standardErrorHandler(res, {
-            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
 
@@ -196,8 +196,8 @@ router.put('/:id', async (req, res) => {
     } catch(error) {
 
         return standardErrorHandler(res, {
-            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
 
@@ -233,8 +233,8 @@ router.delete('/:id', async (req, res) => {
     } catch(error) {
 
         return standardErrorHandler(res, {
-            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
 

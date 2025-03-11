@@ -44,6 +44,17 @@ export default function Surveys() {
         //     console.log('data =>', data);
         //     setIsLoading(false);
         // });
+        toast.promise(errorFetcher(), {
+            loading: 'Loading...',
+            success: (data) => {
+                console.log('data =>', data);
+                return `Success toast has been added`;
+            },
+            error: (error) => {
+                console.log('error =>', error);
+                return `Error toast has been added`;
+            },
+        });
     }
 
     return (

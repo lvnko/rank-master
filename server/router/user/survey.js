@@ -82,8 +82,8 @@ router.get('/', async (req, res) => {
         res.end();
     } catch (error) {
         return standardErrorHandler(res, {
-            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
     }
@@ -161,8 +161,8 @@ router.get('/:survey_id', async (req, res) => {
     } catch (error) {
 
         return standardErrorHandler(res, {
-            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
 
@@ -222,8 +222,8 @@ router.put('/:survey_id', async (req, res) => {
     } catch (error) {
 
         return standardErrorHandler(res, {
-            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
 
@@ -266,8 +266,8 @@ router.delete('/:survey_id', async (req, res) => {
     } catch (error) {
 
         return standardErrorHandler(res, {
-            status: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            code: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
 
