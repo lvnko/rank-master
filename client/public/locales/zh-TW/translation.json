@@ -298,15 +298,15 @@
         },
         "success": {
             "create": {
-                "title": "用戶成功建立！",
+                "title": "用戶檔案成功建立！",
                 "description": "已建立 {{fullName}} 的用戶記錄。"
             },
             "update": {
-                "title": "用戶成功更新！",
-                "description": "已更新 {{fullName}} 的用戶記錄資料。"
+                "title": "用戶的資料已更新！",
+                "description": "{{fullName}} 的用戶記錄資料已更新。"
             },
             "delete": {
-                "title": "用戶成功刪除！",
+                "title": "用戶已刪除！",
                 "description": "已從系統移除 {{fullName}} 的用戶記錄。"
             }
         }

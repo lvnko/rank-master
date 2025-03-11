@@ -13,7 +13,8 @@
         "confirm": "確認",
         "done": "完成"
     },
-    "loading": "先請等一下...",
+    "loading": "讀取中，請稍候...",
+    "wait": "先請等一下...",
     "placeholder": {
         "search": "尋找{{name}}..."
     },

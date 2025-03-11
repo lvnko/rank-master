@@ -136,3 +136,13 @@ export function extractUserFormData(response: DataResponse): {
 
 }
 
+export function composeFullName(args: {
+  firstName: string, lastName: string, language: string
+}): string {
+  const { firstName, lastName, language } = args;
+  const nameArr = [firstName, lastName];
+  const familyNameFirst = ['zh-Hans', 'zh-TW', 'zh'].indexOf(language) > -1;
+
+  return (familyNameFirst ? nameArr.reverse() : nameArr).join(" ");
+}
+

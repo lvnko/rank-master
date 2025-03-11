@@ -52,7 +52,11 @@ export default function Surveys() {
             },
             error: (error) => {
                 console.log('error =>', error);
-                return `Error toast has been added`;
+                console.table(error);
+                return {
+                    message: `Error toast has been added`,
+                    description: 'Error description.'
+                };
             },
         });
     }

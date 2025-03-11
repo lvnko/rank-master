@@ -6,7 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { cn, extractUserFormData } from "@/lib/utils";
+import { cn, composeFullName, extractUserFormData } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -20,7 +20,6 @@ import FormSectionHeading from "@/components/form-section-heading";
 import { UserPayloadType } from "@/types/user";
 import { ApiFetchPromiseMessage } from "@/types/data-response";
 import FormFieldRenderer from "@/components/form-field-renderer";
-import useToastPromise from "@/hooks/useToastPromise";
 
 const formSchemaBase = z.object({
     primFirstName:
@@ -169,27 +168,37 @@ export default function UserEditForm() {
         form.setValue("secNameLang", primNameValInst.lang, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
     }
 
-    const toastPromise = useToastPromise();
-
-    const callToastPromise = async (args: {
+    const callToastPromise = (args: {
         id: string;
         payload: UserPayloadType;
         language: string;
     }) => {
-        await toastPromise(
-            createUserUpdatePromise,
-            [args.id, args.payload, args.language],
-            (data: any) => {
-                console.log('Successfully updated return => ', data);
-                return {
-                    message: 'Success',
-                    description: 'Success message description.'
-                };
-            },
-            (data: any) => {
-                console.log('data =>', data);
-                setIsLoading(false);
-                navigate("/users");
+        toast.promise(
+            createUserUpdatePromise(args.id, args.payload, args.language),
+            {
+                loading: t('loading', { ns: 'common' }),
+                success: (resData) => {
+                    console.log('resData =>', resData);
+                    const { message, data: { user } } = resData as {
+                        message: string,
+                        data: {
+                            user: any
+                        }
+                    };
+                    const { firstName, lastName } = user.translations[language || 'en-US'];
+                    const userFullName = composeFullName({firstName, lastName, language});
+                    setIsLoading(false);
+                    navigate("/users");
+                    return {
+                        message: t('user.success.update.title') || message || `Success toast has been added`,
+                        description: t('user.success.update.description', { fullName: userFullName }) || `Success description.`
+                    };
+                },
+                error: (error) => {
+                    console.log('error =>', error);
+                    setIsLoading(false);
+                    return `Error toast has been added`;
+                },
             }
         );
     };
@@ -243,7 +252,7 @@ export default function UserEditForm() {
                 ...(dirtyFields.email ? { email: data.email }: null),
             };
 
-            await callToastPromise({id, payload: payloadCollection, language});
+            callToastPromise({id, payload: payloadCollection, language});
         }
     }
     
