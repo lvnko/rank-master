@@ -7,8 +7,9 @@ export interface ToastMessage {
 
 const useToastPromise = () => {
 
-    const toastPromise = async (
-        promise: () => Promise<any>,
+    const toastPromise = async <T extends any[]> (
+        promise: (...args: T) => Promise<any>,
+        args: T,
         successMessage: ToastMessage | ((data: any) => ToastMessage),
         callback?: (data: any) => void
     ) => {
@@ -16,7 +17,7 @@ const useToastPromise = () => {
         const toastId = toast.loading('Loading...');
 
         try {
-            const data = await promise();
+            const data = await promise(...args);
             toast.dismiss(toastId);
             const successMsg = typeof successMessage === 'function' ? successMessage(data) : successMessage;
             toast.success(
@@ -47,7 +48,7 @@ const useToastPromise = () => {
                 callback(error);
             }
         }
-        
+
     };
 
     return toastPromise;

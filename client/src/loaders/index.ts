@@ -1,7 +1,7 @@
 import { LoaderFunction, LoaderFunctionArgs } from 'react-router-dom';
 import { ApiFetchPromiseMessage, DataResponse } from "@/types/data-response";
 import { UserFormDataType, UserPayloadType } from '@/types/user';
-import { toast } from 'sonner';
+import { useTranslation } from "react-i18next";
 
 export const usersLoader : LoaderFunction = async ():Promise<DataResponse> => {
     const response = await fetch(`http://localhost:8081/user`);
@@ -53,7 +53,50 @@ export const userFormLoader: LoaderFunction = async ({ params }: LoaderFunctionA
   }
 }
 
+interface PromiseOptionsType {
+  method: 'PUT' | 'POST' | 'GET' | 'DELETE',
+  language: string,
+  body?: any
+}
 
+function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> {
+
+  const { method, language, ...alternativeOptions } = options;
+
+  return new Promise(async (resolve, reject)=>{
+    try {
+      const response = await fetch(url, { // Replace with your API endpoint
+        method,
+        headers: {
+          'Content-Type': 'application/json', // Important: Specify content type
+          'Accept-Language': language
+        },
+        ...(
+          alternativeOptions.body ? {
+            body: JSON.stringify(alternativeOptions.body) // Convert form data to JSON
+          } :
+          {}
+        )
+      });
+      if (response.ok) {
+        const data = await response.json();
+        resolve(data);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  })
+}
+
+export function createUserUpdatePromise<T> (id: string, body: any, language: string) : Promise<T> {
+
+  return createPromise(`http://localhost:8081/user/${id}`, {
+    method: 'PUT',
+    language,
+    ...(body ? { body } : {})
+  });
+
+}
 
 export async function userPoster({ body, language } : {
   body: UserFormDataType,

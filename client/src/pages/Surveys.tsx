@@ -36,14 +36,14 @@ export default function Surveys() {
     }
 
     const clickHandler = async () => {
-        setIsLoading(true);
-        toastPromise(errorFetcher, {
-            message: 'Success',
-            description: 'Success message description.'
-        }, (data) => {
-            console.log('data =>', data);
-            setIsLoading(false);
-        });
+        // setIsLoading(true);
+        // toastPromise(errorFetcher, {
+        //     message: 'Success',
+        //     description: 'Success message description.'
+        // }, (data) => {
+        //     console.log('data =>', data);
+        //     setIsLoading(false);
+        // });
     }
 
     return (

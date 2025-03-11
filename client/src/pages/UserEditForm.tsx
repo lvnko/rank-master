@@ -9,40 +9,18 @@ import { z } from "zod";
 import { cn, extractUserFormData } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
-import { CaretSortIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { Form } from "@/components/ui/form";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
-import { ArrowLeftIcon, ArrowUpDown, CheckIcon, DeleteIcon, Loader2, Trash2Icon } from "lucide-react";
+import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon } from "lucide-react";
 
-import { userUpdater } from "@/loaders";
+import { createUserUpdatePromise, userUpdater } from "@/loaders";
 import { Separator } from "@/components/ui/separator";
-import { DateTimePickerRenderer, RadioGroupRenderer, SelectFieldRenderer } from "@/components/form-item-renderer";
 import FormSectionHeading from "@/components/form-section-heading";
 import { UserPayloadType } from "@/types/user";
 import { ApiFetchPromiseMessage } from "@/types/data-response";
 import FormFieldRenderer from "@/components/form-field-renderer";
+import useToastPromise from "@/hooks/useToastPromise";
 
 const formSchemaBase = z.object({
     primFirstName:
@@ -191,6 +169,31 @@ export default function UserEditForm() {
         form.setValue("secNameLang", primNameValInst.lang, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
     }
 
+    const toastPromise = useToastPromise();
+
+    const callToastPromise = async (args: {
+        id: string;
+        payload: UserPayloadType;
+        language: string;
+    }) => {
+        await toastPromise(
+            createUserUpdatePromise,
+            [args.id, args.payload, args.language],
+            (data: any) => {
+                console.log('Successfully updated return => ', data);
+                return {
+                    message: 'Success',
+                    description: 'Success message description.'
+                };
+            },
+            (data: any) => {
+                console.log('data =>', data);
+                setIsLoading(false);
+                navigate("/users");
+            }
+        );
+    };
+
     // 2. Define a submit handler.
     const onSubmit: SubmitHandler<FormShape> = async (data) => {
         // Do something with the form values.
@@ -239,29 +242,8 @@ export default function UserEditForm() {
                 ...(dirtyFields.mobileNum ? { mobileNum: data.mobileNum }: null),
                 ...(dirtyFields.email ? { email: data.email }: null),
             };
-            toast.promise(userUpdater({
-                id: id,
-                body: payloadCollection,
-                language: language,
-                successMessage: {
-                    title: t("user.success.update.title"),
-                    description: t("user.success.update.description", {
-                        fullName: ["zh-TW"].indexOf(language) < 0 ?
-                            `${data.primFirstName} ${data.primLastName}` :
-                            `${data.primLastName}${data.primFirstName}`
-                    })
-                }
-            }), {
-                loading: t('loading', { ns: 'common' }),
-                success: (data: { title: string, description: string }) => {
-                    navigate("/users");
-                    return {
-                        message: data.title,
-                        description: data.description
-                    };
-                },
-                error: 'Error',
-            });
+
+            await callToastPromise({id, payload: payloadCollection, language});
         }
     }
     
