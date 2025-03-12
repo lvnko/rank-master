@@ -14,11 +14,10 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon } from "lucide-react";
 
-import { createUserUpdatePromise, userUpdater } from "@/loaders";
+import { createUserUpdatePromise } from "@/loaders";
 import { Separator } from "@/components/ui/separator";
 import FormSectionHeading from "@/components/form-section-heading";
 import { UserPayloadType } from "@/types/user";
-import { ApiFetchPromiseMessage } from "@/types/data-response";
 import FormFieldRenderer from "@/components/form-field-renderer";
 
 const formSchemaBase = z.object({
