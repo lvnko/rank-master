@@ -225,7 +225,7 @@ router.delete('/:id', async (req, res) => {
             status: "success",
             message: t('user.deleted', { ns: 'message' }),
             data: {
-                user: result
+                operationResult: result
             }
         }));
         res.end();

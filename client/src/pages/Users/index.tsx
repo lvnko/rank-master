@@ -75,41 +75,47 @@ export default function Users() {
     const [tableData, setTableData] = useState<UserTableRow[]>([...userDataRows]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleTableActione = (args: {
-        action: string;
+    const handleTableActione = (action: string, {
+        id, payload = {}
+    }: {
         id: string;
         payload?: UserPayloadType;
-        language: string;
     }) => {
         const actionPromise = getActionPromise(action);
-        toast.promise(
-            createUserUpdatePromise(args.id, args.payload, args.language),
-            {
-                loading: t('loading', { ns: 'common' }),
-                success: (resData) => {
-                    console.log('resData =>', resData);
-                    const { message, data: { user } } = resData as {
-                        message: string,
-                        data: {
-                            user: any
-                        }
-                    };
-                    const { firstName, lastName } = user.translations[language || 'en-US'];
-                    const userFullName = composeFullName({firstName, lastName, language});
-                    setIsLoading(false);
-                    navigate("/users");
-                    return {
-                        message: t('user.success.update.title') || message || `Success toast has been added`,
-                        description: t('user.success.update.description', { fullName: userFullName }) || `Success description.`
-                    };
-                },
-                error: (error) => {
-                    console.log('error =>', error);
-                    setIsLoading(false);
-                    return `Error toast has been added`;
-                },
-            }
-        );
+        if (actionPromise) {
+            toast.promise(
+                actionPromise(...[
+                    id,
+                    language
+                ]),
+                {
+                    loading: t('loading', { ns: 'common' }),
+                    success: (resData) => {
+                        console.log('resData =>', resData);
+                        const { message, data } = resData as {
+                            message: string,
+                            data: {}
+                        };
+                        console.log('data => ', data);
+                        // const { firstName, lastName } = user.translations[language || 'en-US'];
+                        // const userFullName = composeFullName({firstName, lastName, language});
+                        setIsLoading(false);
+                        // navigate("/users");
+                        return {
+                            message: t(`user.success.${action.toLowerCase()}.title`) || message || `Success toast has been added`,
+                            description: t(`user.success.${action.toLowerCase()}.description`) || `Success description.`
+                        };
+                    },
+                    error: (error) => {
+                        console.log('error =>', error);
+                        setIsLoading(false);
+                        return `Error toast has been added`;
+                    },
+                }
+            );
+        } else {
+            console.log('Nothing can be done!!!');
+        }
     };
 
     const handleRowClick = (user: (typeof users)[0]) => {
@@ -120,9 +126,9 @@ export default function Users() {
     const getActionPromise = (type: string) => {
         switch(type) {
             case "DELETE":
-            default:
                 return createUserDeletePromise;
-                break;
+            default:
+                return;
         }
     }
 
@@ -155,6 +161,7 @@ export default function Users() {
                                 columns={columns}
                                 data={tableData} setDataFunc={setTableData}
                                 isLoading={isLoading} setIsLoading={setIsLoading}
+                                actionHandler={handleTableActione}
                             />
                         </div>
                     </CardContent>

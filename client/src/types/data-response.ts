@@ -10,6 +10,12 @@ export interface DataItem {
     surveys?: Array<SurveyType>;
     countryCodes?: Array<CountryCodeType>;
     languages?: Array<LanguageType>;
+    operationResult?: OperaionResult;
+}
+
+export interface OperaionResult {
+    acknowledged: boolean;
+    deletedCount: number;
 }
 
 export interface DataResponse {

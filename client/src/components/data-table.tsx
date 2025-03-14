@@ -18,6 +18,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { useTranslation } from "react-i18next"
+import { UserPayloadType } from "@/types/user"
    
 interface DataTableProps<TData extends { recordId: string }, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -25,6 +26,7 @@ interface DataTableProps<TData extends { recordId: string }, TValue> {
     setDataFunc: React.Dispatch<React.SetStateAction<TData[]>>
     isLoading: boolean
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+    actionHandler: (action: string, options: { id: string, payload?: UserPayloadType }) => void
 }
 
 declare module '@tanstack/react-table' {
@@ -33,6 +35,7 @@ declare module '@tanstack/react-table' {
         setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
         setDataFunc: React.Dispatch<React.SetStateAction<TData[]>>;
         removeRow: (originalId: string) => void;
+        actionHandler: (action: string, options: { id: string, payload?: UserPayloadType }) => void
     }
 }
    
@@ -41,7 +44,8 @@ export function DataTable<TData extends { recordId: string }, TValue>({
     data,
     setDataFunc,
     isLoading,
-    setIsLoading
+    setIsLoading,
+    actionHandler
 }: DataTableProps<TData, TValue>) {
 
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -62,6 +66,7 @@ export function DataTable<TData extends { recordId: string }, TValue>({
             isLoading,
             setIsLoading,
             setDataFunc,
+            actionHandler,
             removeRow: (originalId: string) => {
                 setDataFunc((prevData) => prevData.filter((row) => (row as { recordId: string }).recordId !== originalId));
                 setIsLoading(false);

@@ -131,7 +131,8 @@ export const columns: ColumnDef<UserTableRow>[] = [
                         <DropdownMenuItem
                             onClick={() => {
                                 if (meta?.setIsLoading) meta?.setIsLoading(true);
-                                meta?.removeRow(user.recordId);
+                                // meta?.removeRow(user.recordId);
+                                meta?.actionHandler('DELETE', { id: user.recordId })
                             }}
                         >
                             {t("user.action.deleteUser")}
