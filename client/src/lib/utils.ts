@@ -1,9 +1,10 @@
-import { UserTranslationType } from "@/types/user"
+import { UserTranslationType, UserRawType } from "@/types/user"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { UserFormDataType } from "@/types/user";
 import { DataResponse } from "@/types/data-response";
 import CountryCodeType from "@/types/country-code";
+import { UserTableRow } from "@/pages/Users/columns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -51,20 +52,24 @@ function extractSecondaryNameLang(translations: Map<string, {
 //   const translationLangKeys = Object.keys(translations);
 // }
 
-interface UserRawType {
-  translations: Record<string, { firstName: string; lastName: string, isPrimary: boolean }>;
-  gender: string;
-  dateOfBirth: Date;
-  mobileCountryCode: string;
-  mobileNum: string;
-  email: string;
-}
 
-function convertUserTranslationsObjectToMap (userRaw: UserRawType) {
+function convertUserTranslationsObjectToMap ({ mobileNum, mobileCountryCode, ...userRaw }: UserRawType) {
   return {
     ...userRaw,
+    ...(mobileNum ? { mobileNum } : {mobileNum:''}),
+    ...(mobileCountryCode ? { mobileCountryCode } : {mobileCountryCode:''}),
     translations: new Map(Object.keys(userRaw.translations).map((key)=>[key, userRaw.translations[key]]))
   }
+}
+
+export function composeFullName(args: {
+  firstName: string, lastName: string, language: string
+}): string {
+  const { firstName, lastName, language } = args;
+  const nameArr = [firstName, lastName];
+  const familyNameFirst = ['zh-Hans', 'zh-TW', 'zh'].indexOf(language) > -1;
+
+  return (familyNameFirst ? nameArr.reverse() : nameArr).join(" ");
 }
 
 export function extractUserFormData(response: DataResponse): {
@@ -92,7 +97,8 @@ export function extractUserFormData(response: DataResponse): {
     dateOfBirth: new Date(),
     email: "",
     mobileNum: "",
-    mobileCountryCode: ""
+    mobileCountryCode: "",
+    status: "pending"
   };
   const userData: UserFormDataType = convertUserTranslationsObjectToMap(userDataRaw);
   const countryCodes: CountryCodeType[] = response?.data?.countryCodes || [];
@@ -136,13 +142,70 @@ export function extractUserFormData(response: DataResponse): {
 
 }
 
-export function composeFullName(args: {
-  firstName: string, lastName: string, language: string
-}): string {
-  const { firstName, lastName, language } = args;
-  const nameArr = [firstName, lastName];
-  const familyNameFirst = ['zh-Hans', 'zh-TW', 'zh'].indexOf(language) > -1;
+export function covertRawUsersToTableData (usersRaw: UserRawType[]): UserTableRow[] {
 
-  return (familyNameFirst ? nameArr.reverse() : nameArr).join(" ");
+  return usersRaw.map(({
+    _id: recordId = '',
+    translations,
+    mobileNum = '',
+    mobileCountryCode = '',
+    subscription = '',
+    ...props
+  }: UserRawType) => {
+
+    const composeNameSet = (nameSet: { firstName: string; lastName: string, isPrimary: boolean }, lang: string) => {
+        return {
+            name: composeFullName({
+                firstName: nameSet.firstName,
+                lastName: nameSet.lastName,
+                language: lang
+            }),
+            lang: lang
+        };
+    }
+
+    const {
+        prim: {
+            name: primName,
+            lang: primNameLang
+        },
+        sec: {
+            name: secName,
+            lang: secNameLang
+        }
+    } = Object.keys(translations).reduce((accm, key)=>{
+
+        if (translations[key].isPrimary) {
+            return {
+                ...accm,
+                prim: composeNameSet(translations[key], key)
+            };
+        } else {
+            return {
+                ...accm,
+                sec: composeNameSet(translations[key], key)
+            };
+        }
+
+    }, {
+        prim: {
+            name: "", lang: ""
+        },
+        sec: {
+            name: "", lang: ""
+        }
+    });
+    return {
+        recordId,
+        primName,
+        primNameLang,
+        secName,
+        secNameLang,
+        mobileNum,
+        mobileCountryCode,
+        subscription,
+        ...props
+    };
+  });
 }
 

@@ -6,7 +6,7 @@ import { usersLoader, userLoader, countryCodesLoader, userFormLoader } from "@/l
 import ErrorFallback from "@/components/error-fallback";
 import NoMatch from "./pages/NoMatch";
 import Dashboard from "./pages/Dashboard";
-import Users from "./pages/Users";
+import Users from "./pages/Users/index";
 import Surveys from "./pages/Surveys";
 import User from "./pages/User";
 import UserNewForm from "./pages/UserNewForm";

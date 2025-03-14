@@ -17,6 +17,7 @@ export default interface UserType {
     mobileNum: string;
     mobileCountryCode: string;
     role: string;
+    status: "active" | "inactive" | "pending" | "suspended" | "deleted";
     subscription: string;
     updatedAt: Date;
     createdAt: Date;
@@ -25,6 +26,23 @@ export default interface UserType {
     surveysCreated?: number;
     surveysParticipated?: number;
 };
+
+export interface UserRawType {
+    _id?: string;
+    translations: Record<string, { firstName: string; lastName: string, isPrimary: boolean }>;
+    gender: string;
+    dateOfBirth: Date;
+    email: string;
+    role?: string;
+    status: "active" | "inactive" | "pending" | "suspended" | "deleted";
+    mobileCountryCode?: string;
+    mobileNum?: string;
+    subscription?: string;
+    surveysCreated?: number;
+    surveysParticipated?: number;
+    updatedAt?: Date;
+    createdAt?: Date;
+}
 
 export type UserPayloadType = {
     translations?: Record<string, Pick<UserTranslationType, 'firstName' | 'lastName' | 'isPrimary'>>

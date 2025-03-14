@@ -98,6 +98,15 @@ export function createUserUpdatePromise<T> (id: string, body: any, language: str
 
 }
 
+export function createUserDeletePromise<T> (id: string, language: string) : Promise<T> {
+
+  return createPromise(`http://localhost:8081/user/${id}`, {
+    method: 'DELETE',
+    language
+  });
+
+}
+
 export async function userPoster({ body, language } : {
   body: UserFormDataType,
   language: string

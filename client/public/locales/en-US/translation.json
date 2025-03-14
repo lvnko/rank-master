@@ -37,6 +37,12 @@
             "mobileNum": "E.g. 123 456 7890",
             "email": "john.smith@abc.com"
         },
+        "action": {
+            "copyId": "Copy user ID",
+            "viewDetails": "View details",
+            "editProfile": "Edit profile",
+            "deleteUser": "Delete user"
+        },
         "valueLabel": {
             "gender": {
                 "M": "Male",
@@ -285,6 +291,13 @@
                 "yemen": "Yemen",
                 "zambia": "Zambia",
                 "zimbabwe": "Zimbabwe"
+            },
+            "status": {
+                "pending": "Pending",
+                "active": "Active",
+                "inactive": "Inactive",
+                "deleted": "Deleted",
+                "suspended": "Suspended"
             }
         },
         "heading": {
@@ -295,6 +308,14 @@
             "secName": "Secondary Name",
             "contact": "Contact Info",
             "personal": "Personal Info"
+        },
+        "column": {
+            "primName": "Primary Name",
+            "primNameLang": "Prim. Name Lang.",
+            "secName": "2nd Name",
+            "secNameLang": "2nd Name Lang.",
+            "status": "Status",
+            "actions": "Actions"
         },
         "success": {
             "create": {

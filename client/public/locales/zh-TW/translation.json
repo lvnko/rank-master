@@ -37,6 +37,12 @@
             "mobileNum": "例： 123 456 7890",
             "email": "man.chen@abc.com"
         },
+        "action": {
+            "copyId": "複製用戶ID",
+            "viewDetails": "檢視詳情",
+            "editProfile": "編輯用戶資料",
+            "deleteUser": "刪除此用戶"
+        },
         "valueLabel": {
             "gender": {
                 "M": "男",
@@ -285,6 +291,13 @@
                 "yemen": "也門",
                 "zambia": "贊比亞",
                 "zimbabwe": "津巴布韋"
+            },
+            "status": {
+                "pending": "待處理",
+                "active": "啟用",
+                "inactive": "停用",
+                "deleted": "已刪除",
+                "suspended": "已封鎖"
             }
         },
         "heading": {
@@ -295,6 +308,14 @@
             "secName": "次要名稱",
             "contact": "聯絡資訊",
             "personal": "個人資訊"
+        },
+        "column": {
+            "primName": "主要名稱",
+            "primNameLang": "主名稱語言",
+            "secName": "副名稱",
+            "secNameLang": "副名稱語言",
+            "status": "狀態",
+            "actions": "指令"
         },
         "success": {
             "create": {

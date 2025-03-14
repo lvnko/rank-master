@@ -4,12 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator"
-import { Link, useLoaderData } from 'react-router-dom';
+import { Separator } from "@/components/ui/separator";
+import { DataTable } from "@/components/data-table";
+import { Link, useNavigate, useLoaderData } from 'react-router-dom';
+import { columns, UserTableRow } from "./columns";
 
 import type UserType from "@/types/user"
+import type { UserPayloadType, UserRawType } from "@/types/user"
 import { PlusIcon } from "@radix-ui/react-icons";
 import { UserPageDataType } from "@/types/user";
+import { composeFullName, covertRawUsersToTableData } from "@/lib/utils";
+import { createUserDeletePromise } from "@/loaders";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 interface UserTableProps {
     users: UserPageDataType[]
@@ -49,22 +56,11 @@ function UserTable({ users, onSelectUser, selectedUserId }: UserTableProps) {
 export default function Users() {
 
     const response: any = useLoaderData();
+    const { t, i18n } = useTranslation();
+    const { language } = i18n;
+    const navigate = useNavigate();
     // const users: UserType[] = response?.data?.users || [];
     const usersRaw = response?.data?.users || [];
-
-    interface UserRawType {
-        _id: string;
-        email: string;
-        role: string;
-        updatedAt: Date;
-        createdAt: Date;
-        translations: Record<string, { firstName: string; lastName: string, isPrimayr: boolean }>;
-        mobileCountryCode?: string;
-        mobileNum?: string;
-        subscription?: string;
-        surveysCreated?: number;
-        surveysParticipated?: number;
-    }
 
     const users: UserPageDataType[] = usersRaw.map((userRaw: UserRawType) => {
         return {
@@ -73,11 +69,61 @@ export default function Users() {
         };
     });
 
+    const userDataRows: UserTableRow[] = covertRawUsersToTableData(usersRaw);
+
     const [selectedUser, setSelectedUser] = useState<(typeof users)[0] | null>(null)
+    const [tableData, setTableData] = useState<UserTableRow[]>([...userDataRows]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleTableActione = (args: {
+        action: string;
+        id: string;
+        payload?: UserPayloadType;
+        language: string;
+    }) => {
+        const actionPromise = getActionPromise(action);
+        toast.promise(
+            createUserUpdatePromise(args.id, args.payload, args.language),
+            {
+                loading: t('loading', { ns: 'common' }),
+                success: (resData) => {
+                    console.log('resData =>', resData);
+                    const { message, data: { user } } = resData as {
+                        message: string,
+                        data: {
+                            user: any
+                        }
+                    };
+                    const { firstName, lastName } = user.translations[language || 'en-US'];
+                    const userFullName = composeFullName({firstName, lastName, language});
+                    setIsLoading(false);
+                    navigate("/users");
+                    return {
+                        message: t('user.success.update.title') || message || `Success toast has been added`,
+                        description: t('user.success.update.description', { fullName: userFullName }) || `Success description.`
+                    };
+                },
+                error: (error) => {
+                    console.log('error =>', error);
+                    setIsLoading(false);
+                    return `Error toast has been added`;
+                },
+            }
+        );
+    };
 
     const handleRowClick = (user: (typeof users)[0]) => {
         console.log('a click on =>', user);
         setSelectedUser(user)
+    }
+
+    const getActionPromise = (type: string) => {
+        switch(type) {
+            case "DELETE":
+            default:
+                return createUserDeletePromise;
+                break;
+        }
     }
 
     useEffect(() => {  
@@ -88,11 +134,13 @@ export default function Users() {
         <>
             <PageHeader className="flex justify-between">
                 <PageHeaderHeading>Users Page</PageHeaderHeading>
-                <Link to="/user/add">
-                    <Button variant={"ghost"} className="w-9 px-0">
-                        <PlusIcon className="!h-[1.2rem] !w-[1.2rem]" />
-                    </Button>
-                </Link>
+                <Button
+                    variant={"ghost"} className="w-9 px-0"
+                    disabled={isLoading}
+                    onClick={()=>navigate("/user/add")}
+                >
+                    <PlusIcon className="!h-[1.2rem] !w-[1.2rem]" />
+                </Button>
             </PageHeader>
             <Card>
                 {/* <CardHeader>
@@ -101,7 +149,14 @@ export default function Users() {
                 </CardHeader> */}
                 {users.length > 0 && (
                     <CardContent>
-                        <UserTable users={users} onSelectUser={handleRowClick} selectedUserId={selectedUser?._id || null} />
+                        {/* <UserTable users={users} onSelectUser={handleRowClick} selectedUserId={selectedUser?._id || null} /> */}
+                        <div className="container mx-auto py-10">
+                            <DataTable
+                                columns={columns}
+                                data={tableData} setDataFunc={setTableData}
+                                isLoading={isLoading} setIsLoading={setIsLoading}
+                            />
+                        </div>
                     </CardContent>
                 )}
             </Card>
