@@ -108,9 +108,8 @@ export default function Users() {
                         };
                     },
                     error: (error) => {
-                        console.log('error =>', error);
                         setIsLoading(false);
-                        return `Error toast has been added`;
+                        return error instanceof Error ? `${t(error.name)} : ${t(error.message)}` : `Error toast has been added`;
                     },
                 }
             );

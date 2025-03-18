@@ -2,7 +2,8 @@
     "generic": {
         "error": {
             "opening": "Oops!",
-            "description": "Sorry, an unexpected error has occurred."
+            "description": "Sorry, an unexpected error has occurred.",
+            "bad_request": "Bad Request"
         },
         "name": {
             "first": "John",

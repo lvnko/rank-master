@@ -55,14 +55,24 @@ export const userFormLoader: LoaderFunction = async ({ params }: LoaderFunctionA
 }
 
 interface PromiseOptionsType {
-  method: 'PUT' | 'POST' | 'GET' | 'DELETE',
-  language: string,
-  body?: any
+  method: 'PUT' | 'POST' | 'GET' | 'DELETE';
+  language: string;
+  body?: any;
+  validationErrorBook?: (type?:string) => Error;
 }
 
 function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> {
 
-  const { method, language, ...alternativeOptions } = options;
+  const {
+    method,
+    language,
+    validationErrorBook = () => {
+      const error = new Error('generic.error.description');
+      error.name = 'generic.error.opening';
+      return error;
+    },
+    ...alternativeOptions
+  } = options;
 
   return new Promise(async (resolve, reject)=>{
     try {
@@ -83,10 +93,17 @@ function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> 
         const data = await response.json();
         resolve(data);
       } else {
-        throw new Error('user.fail'); // If the API call fails, the promise will reject
+        console.log('not ok ... ', response);
+        const responseJSON = await response.json();
+        // console.log('response.json() ... ', responseJSON.error || 'NA');
+        if (responseJSON.error) {
+          const errorToThrow = new Error(responseJSON.error.message? responseJSON.error?.message : 'generic.error.description');
+          errorToThrow.name = responseJSON.error.code? `generic.error.${responseJSON.error.code}` : 'generic.error.opening';
+          throw errorToThrow; // If the API response is not ok, the promise will reject
+        } else throw validationErrorBook();
       }
     } catch (error) {
-      console.log('error @base Promise  => ', error);
+      // if (error instanceof Error) console.log('error @base Promise  => ', error.message);
       reject(error);
     }
   })
@@ -160,7 +177,6 @@ export function createUserDeleteThenUsersRetrivalPromise<T> (id: string, languag
         reject(new Error('user.fail.get.plural')); // If the retrival of users list is failed, the promise will reject}
       }
     } catch (error) {
-      console.log('error => ', error);
       reject(error);
     }
 
