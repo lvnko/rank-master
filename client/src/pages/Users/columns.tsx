@@ -132,7 +132,9 @@ export const columns: ColumnDef<UserTableRow>[] = [
                             onClick={() => {
                                 if (meta?.setIsLoading) meta?.setIsLoading(true);
                                 // meta?.removeRow(user.recordId);
-                                meta?.actionHandler('DELETE', { id: user.recordId })
+                                meta?.actionHandler('DELETE', { id: user.recordId, payload: {
+                                    primName: user.primName,
+                                } });
                             }}
                         >
                             {t("user.action.deleteUser")}

@@ -42,7 +42,7 @@ export function LanguageToggle() {
         // console.log('LanguageToggle => i18n =>', i18n);
         // console.log('LanguageToggle => language =>', language);
         fetchLanguages().then((res)=>{
-            if (res.status && res.status === "success") {
+            if (res.statusText && res.statusText === "success") {
                 console.log('LanguageToggle => languagesLib =>', res.data);
                 return res.data.languages;
             }

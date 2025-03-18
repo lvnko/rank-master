@@ -330,6 +330,22 @@
                 "title": "用戶已刪除！",
                 "description": "已從系統移除 {{fullName}} 的用戶記錄。"
             }
+        },
+        "fail": {
+            "get" : {
+                "singular": {
+                    "title": "無法取得用戶記錄！",
+                    "description": "嘗試取得 {{fullName}} 的用戶記錄時發生錯誤。"
+                },
+                "plural": {
+                    "title": "無法取得用戶記錄！",
+                    "description": "嘗試取得用戶記錄時發生錯誤。"
+                }
+            },
+            "delete": {
+                "title": "刪除用戶記錄時發生錯誤！",
+                "description": "嘗試刪除 {{fullName}} 的用戶記錄時發生錯誤。"
+            }
         }
     }
 }

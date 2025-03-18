@@ -14,13 +14,17 @@ export interface DataItem {
 }
 
 export interface OperaionResult {
-    acknowledged: boolean;
-    deletedCount: number;
+    acknowledged?: boolean;
+    deletedCount?: number;
+    matchedCount?: number;
+    modifiedCount?: number;
+    upsertedId?: string;
+    upsertedCount?: number;
 }
 
 export interface DataResponse {
     status: string;
-    message: string;
+    message: string | string[];
     code?: string;
     data?: DataItem;
 };

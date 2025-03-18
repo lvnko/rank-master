@@ -26,7 +26,7 @@ interface DataTableProps<TData extends { recordId: string }, TValue> {
     setDataFunc: React.Dispatch<React.SetStateAction<TData[]>>
     isLoading: boolean
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-    actionHandler: (action: string, options: { id: string, payload?: UserPayloadType }) => void
+    actionHandler: (action: string, options: { id: string, payload?: UserPayloadType | { primName: string } }) => void
 }
 
 declare module '@tanstack/react-table' {
@@ -35,7 +35,7 @@ declare module '@tanstack/react-table' {
         setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
         setDataFunc: React.Dispatch<React.SetStateAction<TData[]>>;
         removeRow: (originalId: string) => void;
-        actionHandler: (action: string, options: { id: string, payload?: UserPayloadType }) => void
+        actionHandler: (action: string, options: { id: string, payload?: UserPayloadType | { primName: string } }) => void
     }
 }
    

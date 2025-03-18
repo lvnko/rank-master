@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
             const result = await Survey.create(payload);
             res.setHeader('Content-Type', 'application/json');
             res.write(JSON.stringify({
-                status: "success",
+                statusText: "success",
                 message: t('user.survey.created', { ns: 'message' }),
                 data: {
                     survey: result
@@ -82,7 +82,7 @@ router.get('/', async (req, res) => {
         res.end();
     } catch (error) {
         return standardErrorHandler(res, {
-            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
             statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
@@ -149,7 +149,7 @@ router.get('/:survey_id', async (req, res) => {
                 status: "fail",
                 message: t('user.survey.notFound', { ns: 'message' })
             } : {
-                status: "success",
+                statusText: "success",
                 messsage: t('user.survey.found', { ns: 'message' })
             },
             data: {
@@ -161,7 +161,7 @@ router.get('/:survey_id', async (req, res) => {
     } catch (error) {
 
         return standardErrorHandler(res, {
-            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
             statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
@@ -210,7 +210,7 @@ router.put('/:survey_id', async (req, res) => {
                 status: "fail",
                 message: t('user.survey.cannotFoundToDo', { ns: "message", action: apiAction })
             } : {
-                status: "success",
+                statusText: "success",
                 messsage: t("user.survey.updted", { ns: "message" })
             },
             data: {
@@ -222,7 +222,7 @@ router.put('/:survey_id', async (req, res) => {
     } catch (error) {
 
         return standardErrorHandler(res, {
-            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
             statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
@@ -254,7 +254,7 @@ router.delete('/:survey_id', async (req, res) => {
                 status: "fail",
                 message: t('user.survey.cannotFoundToDo', { ns: "message", action: apiAction })
             } : {
-                status: "success",
+                statusText: "success",
                 messsage: t("user.survey.deleted", { ns: "message" })
             },
             data: {
@@ -266,7 +266,7 @@ router.delete('/:survey_id', async (req, res) => {
     } catch (error) {
 
         return standardErrorHandler(res, {
-            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
             statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });

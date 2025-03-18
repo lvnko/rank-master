@@ -14,9 +14,10 @@ import type { UserPayloadType, UserRawType } from "@/types/user"
 import { PlusIcon } from "@radix-ui/react-icons";
 import { UserPageDataType } from "@/types/user";
 import { composeFullName, covertRawUsersToTableData } from "@/lib/utils";
-import { createUserDeletePromise } from "@/loaders";
+import { createUserDeletePromise, createUserDeleteThenUsersRetrivalPromise } from "@/loaders";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { DataItem } from "@/types/data-response";
 
 interface UserTableProps {
     users: UserPageDataType[]
@@ -79,7 +80,7 @@ export default function Users() {
         id, payload = {}
     }: {
         id: string;
-        payload?: UserPayloadType;
+        payload?: UserPayloadType | { primName: string };
     }) => {
         const actionPromise = getActionPromise(action);
         if (actionPromise) {
@@ -91,19 +92,19 @@ export default function Users() {
                 {
                     loading: t('loading', { ns: 'common' }),
                     success: (resData) => {
-                        console.log('resData =>', resData);
+                        // console.log('resData =>', resData);
                         const { message, data } = resData as {
                             message: string,
-                            data: {}
+                            data: DataItem
                         };
                         console.log('data => ', data);
-                        // const { firstName, lastName } = user.translations[language || 'en-US'];
-                        // const userFullName = composeFullName({firstName, lastName, language});
+                        // Success Callback
+                        const userDataRows: UserTableRow[] = covertRawUsersToTableData(data?.users || []);
+                        setTableData(userDataRows);
                         setIsLoading(false);
-                        // navigate("/users");
                         return {
                             message: t(`user.success.${action.toLowerCase()}.title`) || message || `Success toast has been added`,
-                            description: t(`user.success.${action.toLowerCase()}.description`) || `Success description.`
+                            description: t(`user.success.${action.toLowerCase()}.description`, { fullName: 'primName' in payload ? payload.primName : '' }) || `Success description.`
                         };
                     },
                     error: (error) => {
@@ -126,7 +127,7 @@ export default function Users() {
     const getActionPromise = (type: string) => {
         switch(type) {
             case "DELETE":
-                return createUserDeletePromise;
+                return createUserDeleteThenUsersRetrivalPromise;
             default:
                 return;
         }

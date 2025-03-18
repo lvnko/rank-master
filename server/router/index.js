@@ -19,7 +19,7 @@ router.get('/languages', async(req, res) => {
     
     res.setHeader('Content-Type', 'application/json');
     res.write(JSON.stringify({
-        status: "success",
+        statusText: "success",
         message: t('languages.found', { ns: 'message' }),
         data: {
             languages: result
@@ -37,7 +37,7 @@ router.get('/country-codes', async(req, res) => {
     });
     res.setHeader('Content-Type', 'application/json');
     res.write(JSON.stringify({
-        status: "success",
+        statusText: "success",
         message: t('countryCodes.found', { ns: 'message' }),
         data: {
             countryCodes: result

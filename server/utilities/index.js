@@ -67,8 +67,6 @@ const standardErrorHandler = (res, err) => {
             message: err.message,
         }
     });
-    res.end();
-    return;
 }
 
 const standardErrorHandlerOnPost = (res, error) => {

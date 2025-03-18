@@ -8,6 +8,8 @@
     "user": {
         "created": "A new user has been created.",
         "notFound": "No user profile is found.",
+        "fail": "Requested action on user is failed.",
+        "fails": "Requested actions on users are failed.",
         "cannotFound": "We couldn't find this user profile.",
         "found": "A user profile is found.",
         "founds": "User profiles are found.",

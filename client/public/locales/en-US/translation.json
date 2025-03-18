@@ -330,6 +330,22 @@
                 "title": "User successfully deleted!",
                 "description": "A user record of {{fullName}} is removed from the system."
             }
+        },
+        "fail": {
+            "get" : {
+                "singular": {
+                    "title": "Failed to get user record!",
+                    "description": "An error occurred while trying to get a user record of {{fullName}}."
+                },
+                "plural": {
+                    "title": "Failed to get user records!",
+                    "description": "An error occurred while trying to get user records."
+                }
+            },
+            "delete": {
+                "title": "Failed to delete user!",
+                "description": "An error occurred while trying to delete a user record of {{fullName}}."
+            }
         }
     }
 }

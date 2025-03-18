@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
         const result = await User.create(payload);
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
-            status: "success",
+            statusText: "success",
             message: t('user.created', { ns: 'message' }),
             data: {
                 user: result
@@ -68,7 +68,7 @@ router.get('/', async (req, res) => {
         
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
-            status: "success",
+            statusText: "success",
             message: t(results.length > 0 ? 'user.founds' : 'user.notFound', { ns: 'message' }),
             data: {
                 users: results.map(packDataObjectWithCountryCodeByName)
@@ -111,7 +111,7 @@ router.get('/:id', async (req, res) => {
     } catch(error) {
 
         return standardErrorHandler(res, {
-            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
             statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
@@ -185,7 +185,7 @@ router.put('/:id', async (req, res) => {
 
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
-            status: "success",
+            statusText: "success",
             message: t('user.updted', { ns: 'message' }),
             data: {
                 user: result
@@ -196,7 +196,7 @@ router.put('/:id', async (req, res) => {
     } catch(error) {
 
         return standardErrorHandler(res, {
-            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
             statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
             message: error.message
         });
@@ -208,37 +208,44 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
 
     const { t } = req;
+    setTimeout(()=>{
 
-    try {
-        const apiAction = t('endpoint.action.delete');
-        validateObjectId(req.params.id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
-        const id = new mongoose.Types.ObjectId(`${req.params.id}`);
+        try {
+            const apiAction = t('endpoint.action.delete');
+            validateObjectId(req.params.id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
 
-        // console.log('params id =>', id);
-        const result = await User.deleteOne({
-            _id: id
-        });
-        console.log('result =>', result);
+            throw new Error(t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
+            
+            // const id = new mongoose.Types.ObjectId(`${req.params.id}`);
 
-        res.setHeader('Content-Type', 'application/json');
-        res.write(JSON.stringify({
-            status: "success",
-            message: t('user.deleted', { ns: 'message' }),
-            data: {
-                operationResult: result
-            }
-        }));
-        res.end();
+            // // console.log('params id =>', id);
+            // const result = await User.deleteOne({
+            //     _id: id
+            // });
+            // console.log('result =>', result);
 
-    } catch(error) {
+            // res.setHeader('Content-Type', 'application/json');
+            // res.write(JSON.stringify({
+            //     statusText: "success",
+            //     message: t('user.deleted', { ns: 'message' }),
+            //     data: {
+            //         operationResult: result
+            //     }
+            // }));
+            // res.end();
 
-        return standardErrorHandler(res, {
-            code: error.message.indexOf('fail') >= 0 ? "fail" : "error",
-            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
-            message: error.message
-        });
+        } catch(error) {
 
-    }
+            return standardErrorHandler(res, {
+                code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
+                statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
+                message: error.message
+            });
+
+        }
+
+            
+    }, 500);
 
 });
 

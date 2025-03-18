@@ -1,7 +1,8 @@
 import { LoaderFunction, LoaderFunctionArgs } from 'react-router-dom';
-import { ApiFetchPromiseMessage, DataResponse } from "@/types/data-response";
+import { ApiFetchPromiseMessage, DataItem, DataResponse } from "@/types/data-response";
 import { UserFormDataType, UserPayloadType } from '@/types/user';
 import { useTranslation } from "react-i18next";
+import { error } from 'console';
 
 export const usersLoader : LoaderFunction = async ():Promise<DataResponse> => {
     const response = await fetch(`http://localhost:8081/user`);
@@ -81,11 +82,23 @@ function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> 
       if (response.ok) {
         const data = await response.json();
         resolve(data);
+      } else {
+        throw new Error('user.fail'); // If the API call fails, the promise will reject
       }
     } catch (error) {
+      console.log('error @base Promise  => ', error);
       reject(error);
     }
   })
+}
+
+export function createUsersRetrievalPromise<T> (language: string) : Promise<T> {
+  
+  return createPromise(`http://localhost:8081/user`, {
+    method: 'GET',
+    language
+  });
+
 }
 
 export function createUserUpdatePromise<T> (id: string, body: any, language: string) : Promise<T> {
@@ -103,6 +116,54 @@ export function createUserDeletePromise<T> (id: string, language: string) : Prom
   return createPromise(`http://localhost:8081/user/${id}`, {
     method: 'DELETE',
     language
+  });
+
+}
+
+export function createUserDeleteThenUsersRetrivalPromise<T> (id: string, language: string) : Promise<T> {
+
+  interface ResponseType {
+    message?: string | string[]
+    data?: DataItem
+  }
+  
+  return new Promise(async (resolve, reject) => {
+
+    let result = {};
+    
+    try {
+      
+      const report: Response = await createUserDeletePromise(id, language);
+
+      if ([200, 204].indexOf(report.status) > -1 || report.statusText === 'success') {
+        result = {
+          ...report as ResponseType
+        };
+      } else {
+        reject(new Error('user.fail.delete')); // If the deletion failed, the promise will reject}
+      }
+
+      const response: Response = await createUsersRetrievalPromise(language);
+
+      if ([200, 204].indexOf(response.status) > -1 || response.statusText === 'success') {
+        const { message = '', data: resultContent = {} } = result as ResponseType;
+        const { message: responseMessage = '', data: responseContent = {} }  = response as ResponseType;
+        result = {
+          message: message !== '' ? [message, responseMessage] : responseMessage,
+          data: { 
+            ...resultContent,
+            ...responseContent
+          }
+        };
+        resolve(result as T);
+      } else {
+        reject(new Error('user.fail.get.plural')); // If the retrival of users list is failed, the promise will reject}
+      }
+    } catch (error) {
+      console.log('error => ', error);
+      reject(error);
+    }
+
   });
 
 }
