@@ -13,37 +13,6 @@ export const userLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs)
   return result;
 }
 
-export const userFormLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs):Promise<DataResponse> => {
-  const { id } = params;
-
-  try {
-
-    const userLoaderResponse = await fetch(`http://localhost:8081/user/${id}`);
-    const { data, ...userResponse } = await userLoaderResponse.json();
-    const countryCodesLoaderResponse = await fetch(`http://localhost:8081/country-codes`);
-    const { data: countryCodesData } = await countryCodesLoaderResponse.json();
-    const languagesLoaderResponse = await fetch(`http://localhost:8081/languages`);
-    const { data: languagesData } = await languagesLoaderResponse.json();
-
-    if (!userLoaderResponse.ok || !countryCodesLoaderResponse.ok || !languagesLoaderResponse.ok)
-      throw new Error(`Failed to fetch user...`);
-
-    const result = {
-      ...userResponse,
-      data: {
-        ...data,
-        ...countryCodesData,
-        ...languagesData
-      }
-    }
-    
-    return result;
-
-  } catch(error) {
-    throw new Error(`Failed to fetch user...`);
-  }
-}
-
 interface PromiseOptionsType {
   method: 'PUT' | 'POST' | 'GET' | 'DELETE';
   language: string;
@@ -103,13 +72,46 @@ export const usersLoader : LoaderFunction = async ({ request }):Promise<DataResp
   const url = new URL(request.url);
   const language = url.searchParams.get("lng") || 'en-US';
   try {
-    const response = createPromise<DataResponse>(`http://localhost:8081/user`, {
+    const response = await createPromise<DataResponse>(`http://localhost:8081/user`, {
       method: 'GET',
       language
     });
     return response;
   } catch (error) {
     throw error;
+  }
+}
+
+export const userFormLoader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs):Promise<DataResponse> => {
+  const { id } = params;
+  const url = new URL(request.url);
+  const language = url.searchParams.get("lng") || 'en-US';
+
+  try {
+
+    const userLoaderResponse = await fetch(`http://localhost:8081/user/${id}`);
+    const { data, ...userResponse } = await userLoaderResponse.json();
+    const countryCodesLoaderResponse = await fetch(`http://localhost:8081/country-codes`);
+    const { data: countryCodesData } = await countryCodesLoaderResponse.json();
+    const languagesLoaderResponse = await fetch(`http://localhost:8081/languages`);
+    const { data: languagesData } = await languagesLoaderResponse.json();
+
+    if (!userLoaderResponse.ok || !countryCodesLoaderResponse.ok || !languagesLoaderResponse.ok)
+      throw new Error(`Failed to fetch user...`);
+
+    const result = {
+      ...userResponse,
+      data: {
+        ...data,
+        ...countryCodesData,
+        ...languagesData
+      }
+    }
+    
+    return result;
+
+  } catch(error) {
+    throw new Error(`Failed to fetch user...`);
   }
 }
 
