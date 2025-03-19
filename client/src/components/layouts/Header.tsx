@@ -20,11 +20,13 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Logo } from "../logo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useTheme } from "@/hooks/useTheme";
+import { useTranslation } from "react-i18next";
 
 export function Header() {
     const [open, setOpen] = useState(false)
     const location = useLocation();
     const { theme } = useTheme();
+    const { i18n: { language } } = useTranslation();
 
     useEffect(()=>{
         console.log('theme =>', theme);
@@ -34,7 +36,7 @@ export function Header() {
         <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur">
             <div className="px-4 md:px-8 flex h-14 items-center">
                 <div className="mr-4 hidden md:flex">
-                    <NavLink to="/" className="mr-6 flex items-center justify-between space-x-2">
+                    <NavLink to={`/?lng=${language}`} className="mr-6 flex items-center justify-between space-x-2">
                         <Logo />
                     </NavLink>
                     <nav className="flex items-center space-x-6 text-sm font-medium">
@@ -52,7 +54,7 @@ export function Header() {
                                     <DropdownMenuContent className='w-48' align="start" forceMount>
                                         {menu.items.map((subitem, subindex) =>
                                             subitem.to !== undefined ? (
-                                                <NavLink key={subindex} to={subitem.to}>
+                                                <NavLink key={subindex} to={`${subitem.to}?lng=${language}`}>
                                                     <DropdownMenuItem className={cn(
                                                         "hover:cursor-pointer",
                                                         { 'bg-muted': subitem.to === location.pathname }
@@ -73,12 +75,12 @@ export function Header() {
                             ) : (
                                 <NavLink
                                     key={index}
-                                    to={menu.to ?? ""}
+                                    to={`${menu.to ? menu.to : ''}?lng=${language}`}
                                     className={({ isActive }) => cn(
                                         "text-sm font-medium transition-colors hover:text-primary",
                                         isActive ? "text-foreground" : "text-foreground/60"
                                     )}>
-                                    {menu.title}
+                                        {menu.title}
                                 </NavLink>
                             )
                         )}
@@ -122,7 +124,7 @@ export function Header() {
                                                             submenu.to !== undefined ? (
                                                                 <NavLink
                                                                     key={subindex}
-                                                                    to={submenu.to}
+                                                                    to={`${submenu.to}?lng=${language}`}
                                                                     onClick={() => setOpen(false)}
                                                                     className={({ isActive }) => cn(
                                                                         "block justify-start py-1 h-auto font-normal hover:text-primary",
@@ -146,13 +148,13 @@ export function Header() {
                                         ) : (
                                             <NavLink
                                                 key={index}
-                                                to={menu.to ?? ""}
+                                                to={`${menu.to ?? ""}?lng=${language}`}
                                                 onClick={() => setOpen(false)}
                                                 className={({ isActive }) => cn(
                                                     "py-1 text-sm font-medium transition-colors hover:text-primary",
                                                     isActive ? "text-foreground" : "text-foreground/60"
                                                 )}>
-                                                {menu.title}
+                                                    {menu.title}
                                             </NavLink>
                                         )
                                     )}

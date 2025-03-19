@@ -17,7 +17,7 @@ interface NavItemWithChildren extends NavItem {
 export const mainMenu: NavItemWithChildren[] = [
     {
         title: 'Dashboard',
-        to: '',
+        to: '/',
     },
     {
         title: 'Data',

@@ -1,17 +1,7 @@
 import { LoaderFunction, LoaderFunctionArgs } from 'react-router-dom';
 import { ApiFetchPromiseMessage, DataItem, DataResponse } from "@/types/data-response";
 import { UserFormDataType, UserPayloadType } from '@/types/user';
-import { useTranslation } from "react-i18next";
 import { error } from 'console';
-
-export const usersLoader : LoaderFunction = async ():Promise<DataResponse> => {
-    const response = await fetch(`http://localhost:8081/user`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch users...`);
-    }
-    const result: DataResponse = await response.json();
-    return result;
-}
 
 export const userLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs):Promise<DataResponse> => {
   const { id } = params;
@@ -65,7 +55,7 @@ function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> 
 
   const {
     method,
-    language,
+    language = 'en-US',
     validationErrorBook = () => {
       const error = new Error('generic.error.description');
       error.name = 'generic.error.opening';
@@ -107,6 +97,20 @@ function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> 
       reject(error);
     }
   })
+}
+
+export const usersLoader : LoaderFunction = async ({ request }):Promise<DataResponse> => {
+  const url = new URL(request.url);
+  const language = url.searchParams.get("lng") || 'en-US';
+  try {
+    const response = createPromise<DataResponse>(`http://localhost:8081/user`, {
+      method: 'GET',
+      language
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export function createUsersRetrievalPromise<T> (language: string) : Promise<T> {
