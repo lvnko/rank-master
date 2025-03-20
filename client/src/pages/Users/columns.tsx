@@ -98,7 +98,7 @@ export const columns: ColumnDef<UserTableRow>[] = [
         cell: ({ row, table, ...props }) => {
             const user = row.original;
             const meta = table.options.meta;
-            const { t } = useTranslation();
+            const { t, i18n: { language } } = useTranslation();
             const navigate = useNavigate();
             // console.log('meta => ', meta);
             // console.log('row => ', row);
@@ -119,12 +119,12 @@ export const columns: ColumnDef<UserTableRow>[] = [
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                            onClick={() => navigate(`/user/${user.recordId}`)}
+                            onClick={() => navigate(`/user/${user.recordId}?lng=${language}`)}
                         >
                             {t("user.action.viewDetails")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                            onClick={() => navigate(`/user/edit/${user.recordId}`)}
+                            onClick={() => navigate(`/user/edit/${user.recordId}?lng=${language}`)}
                         >
                             {t("user.action.editProfile")}
                         </DropdownMenuItem>

@@ -3,16 +3,6 @@ import { ApiFetchPromiseMessage, DataItem, DataResponse } from "@/types/data-res
 import { UserFormDataType, UserPayloadType } from '@/types/user';
 import { error } from 'console';
 
-export const userLoader: LoaderFunction = async ({ params }: LoaderFunctionArgs):Promise<DataResponse> => {
-  const { id } = params;
-  const response = await fetch(`http://localhost:8081/user/${id}/survey`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch user...`);
-  }
-  const result: DataResponse = await response.json();
-  return result;
-}
-
 interface PromiseOptionsType {
   method: 'PUT' | 'POST' | 'GET' | 'DELETE';
   language: string;
@@ -34,6 +24,7 @@ function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> 
   } = options;
 
   return new Promise(async (resolve, reject)=>{
+    console.log('Promise to fetch url : ', url);
     try {
       const response = await fetch(url, { // Replace with your API endpoint
         method,
@@ -86,18 +77,24 @@ export const userFormLoader: LoaderFunction = async ({ request, params }: Loader
   const { id } = params;
   const url = new URL(request.url);
   const language = url.searchParams.get("lng") || 'en-US';
+  const promiseOptions: PromiseOptionsType = { method: 'GET', language };
 
   try {
 
-    const userLoaderResponse = await fetch(`http://localhost:8081/user/${id}`);
-    const { data, ...userResponse } = await userLoaderResponse.json();
-    const countryCodesLoaderResponse = await fetch(`http://localhost:8081/country-codes`);
-    const { data: countryCodesData } = await countryCodesLoaderResponse.json();
-    const languagesLoaderResponse = await fetch(`http://localhost:8081/languages`);
-    const { data: languagesData } = await languagesLoaderResponse.json();
+    const userLoaderResponse = await createPromise<DataResponse>(`http://localhost:8081/user/${id}`, promiseOptions);
+    const countryCodesLoaderResponse = await createPromise<DataResponse>(`http://localhost:8081/country-codes`, promiseOptions);
+    const languagesLoaderResponse = await createPromise<DataResponse>(`http://localhost:8081/languages`, promiseOptions);
 
-    if (!userLoaderResponse.ok || !countryCodesLoaderResponse.ok || !languagesLoaderResponse.ok)
+    if (
+      userLoaderResponse?.statusText !== 'success' ||
+      countryCodesLoaderResponse?.statusText !== 'success' ||
+      languagesLoaderResponse?.statusText !== 'success'
+    )
       throw new Error(`Failed to fetch user...`);
+
+    const { data, ...userResponse } = userLoaderResponse;
+    const { data: countryCodesData } = countryCodesLoaderResponse;
+    const { data: languagesData } = languagesLoaderResponse;
 
     const result = {
       ...userResponse,
@@ -111,6 +108,24 @@ export const userFormLoader: LoaderFunction = async ({ request, params }: Loader
     return result;
 
   } catch(error) {
+    console.log('error at userFormLoader => ', error);
+    throw new Error(`Failed to fetch user...`);
+  }
+}
+
+export const userLoader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs):Promise<DataResponse> => {
+  try {
+    const { id } = params;
+    const url = new URL(request.url);
+    const language = url.searchParams.get("lng") || 'en-US';
+    const promiseOptions: PromiseOptionsType = { method: 'GET', language };
+    const response = await createPromise<DataResponse>(`http://localhost:8081/user/${id}/survey`, promiseOptions);
+    if (response?.statusText !== 'success') {
+      throw new Error(`Failed to fetch user...`);
+    }
+    return response;
+  } catch (error) {
+    console.log('userLoader error => ', error);
     throw new Error(`Failed to fetch user...`);
   }
 }
@@ -211,6 +226,16 @@ export async function userPoster({ body, language } : {
       reject(error);
     }
   })
+}
+
+export async function createUserInsertionPromise<T> (body: any, language: string) : Promise<T> {
+
+  return createPromise(`http://localhost:8081/user`, {
+    method: 'POST',
+    language,
+    body
+  });
+
 }
 
 export async function userUpdater({ id, body, language, successMessage } : {

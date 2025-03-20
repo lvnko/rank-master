@@ -70,7 +70,7 @@ router.get('/', async (req, res) => {
 
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
-            status: results.length > 0 ? "success" : "fail",
+            statusText: results.length > 0 ? "success" : "fail",
             message: results.length > 0 ?
                 results[0].surveys.length > 0 ?
                     t('user.survey.founds', { ns: 'message' }) : t('user.survey.notFound', { ns: 'message' }) :
@@ -146,7 +146,7 @@ router.get('/:survey_id', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             ...result === null ? {
-                status: "fail",
+                statusText: "fail",
                 message: t('user.survey.notFound', { ns: 'message' })
             } : {
                 statusText: "success",
@@ -207,7 +207,7 @@ router.put('/:survey_id', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             ...result === null ? {
-                status: "fail",
+                statusText: "fail",
                 message: t('user.survey.cannotFoundToDo', { ns: "message", action: apiAction })
             } : {
                 statusText: "success",
@@ -251,7 +251,7 @@ router.delete('/:survey_id', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
             ...result === null || result?.deletedCount === 0 ? {
-                status: "fail",
+                statusText: "fail",
                 message: t('user.survey.cannotFoundToDo', { ns: "message", action: apiAction })
             } : {
                 statusText: "success",

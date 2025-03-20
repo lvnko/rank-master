@@ -100,7 +100,7 @@ router.get('/:id', async (req, res) => {
 
         res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify({
-            status: result === null ? "fail" : "success",
+            statusText: result === null ? "fail" : "success",
             message: t(result === null ? 'user.cannotFound' : 'user.found', { ns: 'message' }),
             data: {
                 user: packDataObjectWithCountryCodeByName(result.toJSON())

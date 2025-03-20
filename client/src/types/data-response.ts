@@ -23,7 +23,7 @@ export interface OperaionResult {
 }
 
 export interface DataResponse {
-    status: string;
+    statusText: string;
     message: string | string[];
     code?: string;
     data?: DataItem;
