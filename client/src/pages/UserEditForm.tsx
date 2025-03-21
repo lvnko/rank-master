@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import FormSectionHeading from "@/components/form-section-heading";
 import { UserPayloadType } from "@/types/user";
 import FormFieldRenderer from "@/components/form-field-renderer";
+import useToastPromise from "@/hooks/useToastPromise";
 
 const formSchemaBase = z.object({
     primFirstName:
@@ -94,6 +95,7 @@ interface NameValues {
 export default function UserEditForm() {
 
     const { t, i18n } = useTranslation();
+    const callToastPromiseHook = useToastPromise();
     const { language } = i18n;
     const navigate = useNavigate();
     const { id = "" } = useParams();

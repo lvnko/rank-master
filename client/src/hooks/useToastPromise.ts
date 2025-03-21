@@ -9,9 +9,11 @@ export interface ToastMessage {
 
 interface Labels {
     loading?: string;
+    success?: string;
+    error?: string;
 }
 
-const useToastPromise = ({ labels }: { labels: Labels }) => {
+const useToastPromise = (props?: { labels?: Labels }) => {
 
     // const toastPromise = async <T extends any[]> (
     //     promise: (...args: T) => Promise<any>,
@@ -56,16 +58,16 @@ const useToastPromise = ({ labels }: { labels: Labels }) => {
     //     // }
 
     // };
-
     const { t } = useTranslation();
-    const loadingLabelDefaultValue = labels.loading || t('loading', { ns: 'common' });
-    const successLabelDefaultValue = labels.loading || t('loading', { ns: 'common' });
-    const errorLabelDefaultValue = labels.loading || t('loading', { ns: 'common' });
+    const { labels } = props || {}
+    const loadingLabelDefaultValue = labels?.loading || t('loading', { ns: 'common' });
+    const successLabelDefaultValue = labels?.success || t('loading', { ns: 'common' });
+    const errorLabelDefaultValue = labels?.error || t('loading', { ns: 'common' });
 
     const toastPromise = <T extends any[]> ({
             promise,
             args,
-            loadingMessage,
+            loadingMessage = loadingLabelDefaultValue,
             successMessage = successLabelDefaultValue,
             errorMessage = errorLabelDefaultValue,
             callback,
@@ -82,7 +84,7 @@ const useToastPromise = ({ labels }: { labels: Labels }) => {
         toast.promise(
             promise(...args),
             {
-                loading: loadingLabelDefaultValue,
+                loading: loadingMessage,
                 success: (resData) => {
                     console.log('resData =>', resData);
                     if (callback) callback(resData);

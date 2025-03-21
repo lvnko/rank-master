@@ -81,6 +81,8 @@
     },
     "actions": "Actions",
     "loading": "Loading, please wait...",
+    "success": "Request succeeded!",
+    "error": "Oops! Something's wrong...",
     "wait": "Please wait...",
     "noResult": "No result found.",
     "placeholder": {
