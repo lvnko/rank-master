@@ -6,19 +6,18 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { cn, composeFullName, extractUserFormData } from "@/lib/utils";
-import { toast } from "sonner";
+import { composeFullName, covertObjectOfRecordsToMap, extractPrimaryNameLang, extractUserFormData } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon } from "lucide-react";
 
-import { createUserUpdatePromise } from "@/loaders";
 import { Separator } from "@/components/ui/separator";
 import FormSectionHeading from "@/components/form-section-heading";
 import { UserPayloadType } from "@/types/user";
 import FormFieldRenderer from "@/components/form-field-renderer";
+import { createUserUpdatePromise } from "@/loaders";
 import useToastPromise from "@/hooks/useToastPromise";
 
 const formSchemaBase = z.object({
@@ -174,34 +173,29 @@ export default function UserEditForm() {
         payload: UserPayloadType;
         language: string;
     }) => {
-        toast.promise(
-            createUserUpdatePromise(args.id, args.payload, args.language),
-            {
-                loading: t('loading', { ns: 'common' }),
-                success: (resData) => {
-                    console.log('resData =>', resData);
-                    const { message, data: { user } } = resData as {
-                        message: string,
-                        data: {
-                            user: any
-                        }
-                    };
-                    const { firstName, lastName } = user.translations[language || 'en-US'];
-                    const userFullName = composeFullName({firstName, lastName, language});
-                    setIsLoading(false);
-                    navigate("/users");
-                    return {
-                        message: t('user.success.update.title') || message || `Success toast has been added`,
-                        description: t('user.success.update.description', { fullName: userFullName }) || `Success description.`
-                    };
-                },
-                error: (error) => {
-                    console.log('error =>', error);
-                    setIsLoading(false);
-                    return `Error toast has been added`;
-                },
+        callToastPromiseHook({
+            promise: createUserUpdatePromise,
+            args: [args.id, args.payload, args.language],
+            loadingMessage: t('loading', { ns: 'common' }),
+            successMessage: ({data: {user}})=>{
+                const namesMap = covertObjectOfRecordsToMap(user.translations) as Map<string, { firstName: string; lastName: string; isPrimary: boolean }> || new Map([['en-US', {firstName: '', lastName: '', isPrimay: true}]]);
+                const primNameLang = extractPrimaryNameLang(namesMap) || 'en-US';
+                const { firstName, lastName } = namesMap.get(primNameLang) || {firstName: '', lastName: ''};
+                const primFullName = composeFullName({ firstName, lastName, language: primNameLang });
+                return {
+                    message: t('user.success.update.title'),
+                    description: t('user.success.update.description', { fullName: primFullName })
+                };
+            },
+            errorMessage: t('user.error.update'),
+            callback: () => {
+                setIsLoading(false);
+                navigate("/users");
+            },
+            errorCallback: ()=> {
+                setIsLoading(false);
             }
-        );
+        });
     };
 
     // 2. Define a submit handler.

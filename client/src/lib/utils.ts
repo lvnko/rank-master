@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-function extractPrimaryNameLang(translations: Map<string, {
+export function extractPrimaryNameLang(translations: Map<string, {
   firstName: string,
   lastName: string,
   isPrimary: boolean
@@ -52,13 +52,18 @@ function extractSecondaryNameLang(translations: Map<string, {
 //   const translationLangKeys = Object.keys(translations);
 // }
 
+export function covertObjectOfRecordsToMap<T extends any>(records: Record<string, T>): Map<string, T> {
+  return new Map(Object.keys(records).map((key)=>[key, records[key]]));
+}
 
 function convertUserTranslationsObjectToMap ({ mobileNum, mobileCountryCode, ...userRaw }: UserRawType) {
   return {
     ...userRaw,
     ...(mobileNum ? { mobileNum } : {mobileNum:''}),
     ...(mobileCountryCode ? { mobileCountryCode } : {mobileCountryCode:''}),
-    translations: new Map(Object.keys(userRaw.translations).map((key)=>[key, userRaw.translations[key]]))
+    translations: covertObjectOfRecordsToMap(userRaw.translations)
+    // translations: new Map(Object.keys(userRaw.translations).map((key)=>[key, userRaw.translations[key]]))
+    // covertObjectOfRecordsToMap(userRaw.translations)
   }
 }
 

@@ -61,8 +61,8 @@ const useToastPromise = (props?: { labels?: Labels }) => {
     const { t } = useTranslation();
     const { labels } = props || {}
     const loadingLabelDefaultValue = labels?.loading || t('loading', { ns: 'common' });
-    const successLabelDefaultValue = labels?.success || t('loading', { ns: 'common' });
-    const errorLabelDefaultValue = labels?.error || t('loading', { ns: 'common' });
+    const successLabelDefaultValue = labels?.success || t('success', { ns: 'common' });
+    const errorLabelDefaultValue = labels?.error || t('error', { ns: 'common' });
 
     const toastPromise = <T extends any[]> ({
             promise,
@@ -73,16 +73,20 @@ const useToastPromise = (props?: { labels?: Labels }) => {
             callback,
             errorCallback
         }: {
-            promise: (...args: T) => Promise<any>,
-            args: T,
-            loadingMessage: string,
-            successMessage: string | ToastMessage | ((data: any) => string | ToastMessage),
-            errorMessage: string | ((error: any) => string),
+            promise: ((id: string, body: any, language: string) => Promise<any>) | ((id: string, language: string) => Promise<any>) | ((language: string) => Promise<any>),
+            args: [string, any, string] | [string, string] | [string],
+            loadingMessage?: string,
+            successMessage?: string | ToastMessage | ((data: any) => string | ToastMessage),
+            errorMessage?: string | ((error: any) => string),
             callback?: (data?: any) => void,
             errorCallback?: (error?: any) => void
     }) => {
         toast.promise(
-            promise(...args),
+            args.length === 3 ?
+                (promise as (id: string, body: any, language: string) => Promise<any>)(args[0], args[1], args[2]) :
+                args.length === 2 ?
+                    (promise as (id: string, language: string) => Promise<any>)(args[0], args[1]) :
+                    (promise as (language: string) => Promise<any>)(args[0]),
             {
                 loading: loadingMessage,
                 success: (resData) => {
