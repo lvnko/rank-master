@@ -6,7 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { composeFullName, covertObjectOfRecordsToMap, extractPrimaryNameLang, extractUserFormData } from "@/lib/utils";
+import { extractUserFormData, extractFullNameFromRawTranslations } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { PlusIcon } from "@radix-ui/react-icons";
@@ -178,10 +178,7 @@ export default function UserEditForm() {
             args: [args.id, args.payload, args.language],
             loadingMessage: t('loading', { ns: 'common' }),
             successMessage: ({data: {user}})=>{
-                const namesMap = covertObjectOfRecordsToMap(user.translations) as Map<string, { firstName: string; lastName: string; isPrimary: boolean }> || new Map([['en-US', {firstName: '', lastName: '', isPrimay: true}]]);
-                const primNameLang = extractPrimaryNameLang(namesMap) || 'en-US';
-                const { firstName, lastName } = namesMap.get(primNameLang) || {firstName: '', lastName: ''};
-                const primFullName = composeFullName({ firstName, lastName, language: primNameLang });
+                const primFullName = extractFullNameFromRawTranslations(user.translations, { toGetPrimary: true });
                 return {
                     message: t('user.success.update.title'),
                     description: t('user.success.update.description', { fullName: primFullName })

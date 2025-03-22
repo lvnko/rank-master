@@ -15,49 +15,6 @@ interface Labels {
 
 const useToastPromise = (props?: { labels?: Labels }) => {
 
-    // const toastPromise = async <T extends any[]> (
-    //     promise: (...args: T) => Promise<any>,
-    //     args: T,
-    //     successMessage: ToastMessage | ((data: any) => ToastMessage),
-    //     callback?: (data: any) => void
-    // ) => {
-
-    //     // const toastId = toast.loading('Loading...');
-
-    //     // try {
-    //     //     const data = await promise(...args);
-    //     //     toast.dismiss(toastId);
-    //     //     const successMsg = typeof successMessage === 'function' ? successMessage(data) : successMessage;
-    //     //     toast.success(
-    //     //         ...[
-    //     //             typeof successMsg === 'string' ?
-    //     //                 successMsg :
-    //     //                 successMsg.message,
-    //     //             {   
-    //     //                 id: toastId,
-    //     //                 ...(
-    //     //                     typeof successMsg === 'object' && successMsg.description ?
-    //     //                         { description: successMsg.description } : null
-    //     //                 )
-    //     //             }
-    //     //         ]
-    //     //     );
-
-    //     //     if (callback) {
-    //     //         callback(data);
-    //     //     }
-
-    //     // } catch (error) {
-
-    //     //     console.error('Error:', error);
-    //     //     toast.error('Error', {id: toastId});
-
-    //     //     if (callback) {
-    //     //         callback(error);
-    //     //     }
-    //     // }
-
-    // };
     const { t } = useTranslation();
     const { labels } = props || {}
     const loadingLabelDefaultValue = labels?.loading || t('loading', { ns: 'common' });
@@ -73,8 +30,16 @@ const useToastPromise = (props?: { labels?: Labels }) => {
             callback,
             errorCallback
         }: {
-            promise: ((id: string, body: any, language: string) => Promise<any>) | ((id: string, language: string) => Promise<any>) | ((language: string) => Promise<any>),
-            args: [string, any, string] | [string, string] | [string],
+            promise:
+                ((id: string, body: any, language: string) => Promise<any>) |
+                ((id: string, language: string) => Promise<any>) |
+                ((body: any, language: string) => Promise<any>) |
+                ((language: string) => Promise<any>),
+            args:
+                [string, any, string] |
+                [string, string] |
+                [any, string] |
+                [string],
             loadingMessage?: string,
             successMessage?: string | ToastMessage | ((data: any) => string | ToastMessage),
             errorMessage?: string | ((error: any) => string),
@@ -85,6 +50,8 @@ const useToastPromise = (props?: { labels?: Labels }) => {
             args.length === 3 ?
                 (promise as (id: string, body: any, language: string) => Promise<any>)(args[0], args[1], args[2]) :
                 args.length === 2 ?
+                    typeof args[0] !== 'string' ?
+                    (promise as (body: any, language: string) => Promise<any>)(args[0], args[1]) :
                     (promise as (id: string, language: string) => Promise<any>)(args[0], args[1]) :
                     (promise as (language: string) => Promise<any>)(args[0]),
             {

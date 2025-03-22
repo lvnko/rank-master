@@ -81,8 +81,8 @@
     },
     "actions": "指令集",
     "loading": "讀取中，請稍候...",
-    "success": "Request succeeded!",
-    "error": "Oops! Something's wrong...",
+    "success": "請求已成功執行！",
+    "error": "噢! 好像有些地方出錯了...",
     "wait": "先請等一下...",
     "noResult": "沒有找到資料。",
     "placeholder": {

@@ -205,29 +205,6 @@ export function createUserDeleteThenUsersRetrivalPromise<T> (id: string, languag
 
 }
 
-export async function userPoster({ body, language } : {
-  body: UserFormDataType,
-  language: string
-}): Promise<({ name: string })> {
-  return new Promise(async (resolve, reject)=>{
-    try {
-      const response = await fetch(`http://localhost:8081/user`, { // Replace with your API endpoint
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Important: Specify content type
-          'Accept-Language': language
-        },
-        body: JSON.stringify(body), // Convert form data to JSON
-      });
-      if (response) {
-        resolve({ name: 'This is success!' });
-      }
-    } catch (error) {
-      reject(error);
-    }
-  })
-}
-
 export async function createUserInsertionPromise<T> (body: any, language: string) : Promise<T> {
 
   return createPromise(`http://localhost:8081/user`, {
@@ -236,31 +213,6 @@ export async function createUserInsertionPromise<T> (body: any, language: string
     body
   });
 
-}
-
-export async function userUpdater({ id, body, language, successMessage } : {
-  id: string,
-  body: UserPayloadType,
-  language: string,
-  successMessage: ApiFetchPromiseMessage
-}): Promise<(ApiFetchPromiseMessage)> {
-  return new Promise(async (resolve, reject)=>{
-    try {
-      const response = await fetch(`http://localhost:8081/user/${id}`, { // Replace with your API endpoint
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json', // Important: Specify content type
-          'Accept-Language': language
-        },
-        body: JSON.stringify(body), // Convert form data to JSON
-      });
-      if (response) {
-        resolve(successMessage);
-      }
-    } catch (error) {
-      reject(error);
-    }
-  })
 }
 
 export const fetchLanguages = async () => {

@@ -214,3 +214,19 @@ export function covertRawUsersToTableData (usersRaw: UserRawType[]): UserTableRo
   });
 }
 
+export function extractFullNameFromRawTranslations<T extends any>(
+  translations: Record<string, T>,
+  {
+    toGetPrimary = true
+  } : {
+    toGetPrimary: boolean
+  }
+): string {
+  const namesMap = covertObjectOfRecordsToMap(translations) as Map<string, { firstName: string; lastName: string; isPrimary: boolean }> || new Map([['en-US', {firstName: '', lastName: '', isPrimary: true}]]);
+  const nameLang = toGetPrimary ? extractPrimaryNameLang(namesMap) || 'en-US' : extractSecondaryNameLang(namesMap) || '';
+  if (nameLang === '') return '';
+  const { firstName, lastName } = namesMap.get(nameLang) || {firstName: '', lastName: ''};
+  const fullName = composeFullName({ firstName, lastName, language: nameLang });
+  return fullName;
+}
+

@@ -5,8 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { cn, extractFullNameFromRawTranslations } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -36,7 +35,8 @@ import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { ArrowLeftIcon, CheckIcon, Loader2 } from "lucide-react";
-import { userPoster } from "@/loaders";
+import { createUserInsertionPromise } from "@/loaders";
+import useToastPromise from "@/hooks/useToastPromise";
 
 /**
  interface UserTranslationType {
@@ -105,6 +105,7 @@ export default function UserNewForm() {
     // const { t, i18n } = useTranslation();
     const { t, i18n } = useTranslation();
     const { language } = i18n;
+    const callToastPromiseHook = useToastPromise();
     const navigate = useNavigate();
     const response: any = useLoaderData();
     const countryCodes: CountryCodeType[] = response?.data?.countryCodes || [];
@@ -177,6 +178,32 @@ export default function UserNewForm() {
     useEffect(()=>{
         console.log("tracking errors =>",form.formState.errors);
     },[form.formState.errors]);
+
+    const callToastPromise = (args: {
+        payload: any;
+        language: string;
+    }) => {
+        callToastPromiseHook({
+            promise: createUserInsertionPromise,
+            args: [args.payload, args.language],
+            successMessage: ({data: {user}})=>{
+                const primFullName = extractFullNameFromRawTranslations(user.translations, { toGetPrimary: true });
+                return {
+                    message: t('user.success.create.title'),
+                    description: t('user.success.create.description', { fullName: primFullName })
+                };
+            },
+            errorMessage: t('user.error.create'),
+            callback: () => {
+                setIsLoading(false);
+                navigate("/users");
+            },
+            errorCallback: ()=> {
+                setIsLoading(false);
+            }
+        });
+
+    }
    
     // 2. Define a submit handler.
     const onSubmit: SubmitHandler<FormShape> = async (data) => {
@@ -199,20 +226,8 @@ export default function UserNewForm() {
             mobileCountryCode,
             ...restFields
         };
-        toast.promise(userPoster({
-            body: body,
-            language: language
-        }), {
-            loading: t('loading', { ns: 'common' }),
-            success: (data: { name: string }) => {
-                navigate("/users");
-                return {
-                    message: `${data.name} toast has been added`,
-                    description: 'Custom description for the success state',
-                };
-            },
-            error: 'Error',
-        });
+        
+        callToastPromise({ payload: body, language });
     }
 
     return (
