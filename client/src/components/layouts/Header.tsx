@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { mainMenu } from "@/config/menu";
+import { mainMenu, NavItemWithChildren } from "@/config/menu";
 import { ChevronDownIcon, ViewVerticalIcon } from "@radix-ui/react-icons";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Logo } from "../logo";
@@ -26,7 +26,13 @@ export function Header() {
     const [open, setOpen] = useState(false)
     const location = useLocation();
     const { theme } = useTheme();
-    const { i18n: { language } } = useTranslation();
+    const { t, i18n: { language } } = useTranslation();
+
+    const extractMenuItemTitle = (mItem: NavItemWithChildren) => {
+        return mItem?.tranlationkey ? t(mItem.tranlationkey, {
+            ...(mItem?.tranlationOptions? {...mItem?.tranlationOptions}:null)
+        }): mItem.title;
+    }
 
     useEffect(()=>{
         console.log('theme =>', theme);
@@ -48,7 +54,7 @@ export function Header() {
                                         (menu.items.filter(subitem => subitem.to !== undefined).map(subitem => subitem.to))
                                             .includes(location.pathname) ? 'text-foreground' : 'text-foreground/60',
                                     )}>
-                                        {menu.title}
+                                        {extractMenuItemTitle(menu)}
                                         <ChevronDownIcon className="ml-1 -mr-1 h-3 w-3 text-muted-foreground" />
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className='w-48' align="start" forceMount>
@@ -59,12 +65,12 @@ export function Header() {
                                                         "hover:cursor-pointer",
                                                         { 'bg-muted': subitem.to === location.pathname }
                                                     )}>
-                                                        {subitem.title}
+                                                        {extractMenuItemTitle(subitem)}
                                                     </DropdownMenuItem>
                                                 </NavLink>
                                             ) : (
                                                 subitem.label ? (
-                                                    <DropdownMenuLabel key={subindex}>{subitem.title}</DropdownMenuLabel>
+                                                    <DropdownMenuLabel key={subindex}>{extractMenuItemTitle(subitem)}</DropdownMenuLabel>
                                                 ) : (
                                                     <DropdownMenuSeparator key={subindex} />
                                                 )
@@ -80,7 +86,7 @@ export function Header() {
                                         "text-sm font-medium transition-colors hover:text-primary",
                                         isActive ? "text-foreground" : "text-foreground/60"
                                     )}>
-                                        {menu.title}
+                                        {extractMenuItemTitle(menu)}
                                 </NavLink>
                             )
                         )}
@@ -116,7 +122,7 @@ export function Header() {
                                                     (menu.items.filter(subitem => subitem.to !== undefined).map(subitem => subitem.to))
                                                         .includes(location.pathname) ? 'text-foreground' : 'text-foreground/60',
                                                 )}>
-                                                    <div className="flex">{menu.title}</div>
+                                                    <div className="flex">{extractMenuItemTitle(menu)}</div>
                                                 </AccordionTrigger>
                                                 <AccordionContent className="pb-1 pl-4">
                                                     <div className="mt-1">
@@ -130,7 +136,7 @@ export function Header() {
                                                                         "block justify-start py-1 h-auto font-normal hover:text-primary",
                                                                         isActive ? 'text-foreground' : 'text-foreground/60',
                                                                     )}>
-                                                                    {submenu.title}
+                                                                    {extractMenuItemTitle(submenu)}
                                                                 </NavLink>
                                                             ) : (
                                                                 submenu.label !== '' ? (
@@ -154,7 +160,7 @@ export function Header() {
                                                     "py-1 text-sm font-medium transition-colors hover:text-primary",
                                                     isActive ? "text-foreground" : "text-foreground/60"
                                                 )}>
-                                                    {menu.title}
+                                                    {extractMenuItemTitle(menu)}
                                             </NavLink>
                                         )
                                     )}

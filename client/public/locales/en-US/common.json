@@ -6,6 +6,12 @@
         "dark": "Dark",
         "system": "System"
     },
+    "page": {
+        "dashboard": "Dashboard",
+        "data": "Data",
+        "users": "Platform Users",
+        "surveys": "Surveys"
+    },
     "button": {
         "submit": "Submit",
         "cancel": "Cancel",

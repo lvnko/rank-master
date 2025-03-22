@@ -6,6 +6,12 @@
         "dark": "暗色系",
         "system": "系統選項"
     },
+    "page": {
+        "dashboard": "儀表板",
+        "data": "資料",
+        "users": "平台使用者",
+        "surveys": "調查卷"
+    },
     "button": {
         "submit": "提交",
         "cancel": "取消",

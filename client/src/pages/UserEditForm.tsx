@@ -277,7 +277,7 @@ export default function UserEditForm() {
     return (
         <div className="flex flex-col justify-center items-center w-full">
             <PageHeader className="justify-start item-center space-x-4 w-full">
-                <PageHeaderHeading>{t(`user.heading.edit`)}</PageHeaderHeading>
+                <PageHeaderHeading>{t(`user.heading.edit`)}{t()}</PageHeaderHeading>
             </PageHeader>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 self-stretch">
