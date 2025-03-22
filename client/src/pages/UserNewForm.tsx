@@ -448,7 +448,7 @@ export default function UserNewForm() {
                     </div>
                     <div className="flex justify-between">
                         <Link to="/users">
-                            <Button variant="outline" disabled={isLoading}><ArrowLeftIcon />Back</Button>
+                            <Button variant="outline" disabled={isLoading}><ArrowLeftIcon />{t("action.back", { ns: "common" })}</Button>
                         </Link>
                         <Button type="submit" disabled={isLoading}>
                             {isLoading && (<Loader2 className="animate-spin" />)}

@@ -446,7 +446,7 @@ export default function UserEditForm() {
                     </div>
                     <div className="flex justify-between">
                         <Link to="/users">
-                            <Button variant="outline" disabled={isLoading}><ArrowLeftIcon />Back</Button>
+                            <Button variant="outline" disabled={isLoading}><ArrowLeftIcon />{t("action.back", { ns: "common" })}</Button>
                         </Link>
                         <Button type="submit" disabled={!form.formState.isDirty || Object.keys(form.formState.dirtyFields)?.length === 0 || isLoading}>
                             {isLoading && (<Loader2 className="animate-spin" />)}

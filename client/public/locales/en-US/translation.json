@@ -30,7 +30,8 @@
         },
         "button": {
             "anotherName": "Name in another language",
-            "swapName": "Swap"
+            "swapName": "Swap",
+            "addUser": "Add New User"
         },
         "placeholder": {
             "language": "Select Language",
@@ -308,7 +309,8 @@
             "primName": "Primary Name",
             "secName": "Secondary Name",
             "contact": "Contact Info",
-            "personal": "Personal Info"
+            "personal": "Personal Info",
+            "platformUsers": "Platform Users"
         },
         "column": {
             "primName": "Primary Name",

@@ -139,13 +139,14 @@ export default function Users() {
     return (
         <>
             <PageHeader className="flex justify-between">
-                <PageHeaderHeading>Users Page</PageHeaderHeading>
+                <PageHeaderHeading>{t("user.heading.platformUsers")}</PageHeaderHeading>
                 <Button
-                    variant={"ghost"} className="w-9 px-0"
+                    variant={"outline"} className="px-2"
                     disabled={isLoading}
-                    onClick={()=>navigate("/user/add")}
+                    onClick={()=>navigate(`/user/add?lng=${language}`)}
                 >
                     <PlusIcon className="!h-[1.2rem] !w-[1.2rem]" />
+                    {t("user.button.addUser")}
                 </Button>
             </PageHeader>
             <Card>

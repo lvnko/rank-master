@@ -30,7 +30,8 @@
         },
         "button": {
             "anotherName": "其他語言的名稱",
-            "swapName": "互換"
+            "swapName": "互換",
+            "addUser": "加入新用戶"
         },
         "placeholder": {
             "language": "選擇語言",
@@ -308,7 +309,8 @@
             "primName": "主要名稱",
             "secName": "次要名稱",
             "contact": "聯絡資訊",
-            "personal": "個人資訊"
+            "personal": "個人資訊",
+            "platformUsers": "平台用戶"
         },
         "column": {
             "primName": "主要名稱",
