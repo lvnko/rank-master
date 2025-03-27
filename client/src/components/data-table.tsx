@@ -19,6 +19,9 @@ import {
 } from "@/components/ui/table"
 import { useTranslation } from "react-i18next"
 import { UserPayloadType } from "@/types/user"
+import { SurveyPayloadType } from "@/types/survey"
+
+export type TableActionPayloadType = UserPayloadType | SurveyPayloadType | { primName: string } | { title: string };
    
 interface DataTableProps<TData extends { recordId: string }, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -26,7 +29,13 @@ interface DataTableProps<TData extends { recordId: string }, TValue> {
     setDataFunc: React.Dispatch<React.SetStateAction<TData[]>>
     isLoading: boolean
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-    actionHandler: (action: string, options: { id: string, payload?: UserPayloadType | { primName: string } }) => void
+    actionHandler: (
+        action: string,
+        options: {
+            id: string,
+            payload?: TableActionPayloadType
+        }
+    ) => void
 }
 
 declare module '@tanstack/react-table' {
@@ -35,7 +44,13 @@ declare module '@tanstack/react-table' {
         setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
         setDataFunc: React.Dispatch<React.SetStateAction<TData[]>>;
         removeRow: (originalId: string) => void;
-        actionHandler: (action: string, options: { id: string, payload?: UserPayloadType | { primName: string } }) => void
+        actionHandler: (
+            action: string,
+            options: {
+                id: string,
+                payload?: TableActionPayloadType
+            }
+        ) => void
     }
 }
    

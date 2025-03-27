@@ -26,5 +26,6 @@
 - 隨機用戶檔案生成器 ([連結](https://randomuser.me/api/?format=json&?nat=us,dk,fr,gb,ch,de,dk))
 - 全球語言碼速查 ([連結](https://simplelocalize.io/data/locales/))
 - Shadcn 官方以外的介面元件庫 ([連結](https://shadcnui-expansions.typeart.cc))
+- 一個採用 React-table 範例專案 ([連結](https://github.com/muhimasri/react-editable-table/))
 - Vercel REST API 報錯範例 ([連結](https://vercel.com/docs/rest-api/errors))
     - 因為有部分前端元件 (e.g. Sonner...) 是針對 Vercel 後台而開發，所以一些關於 API 請求的報錯格式需要與 Vercel 對齊。

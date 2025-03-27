@@ -1,10 +1,11 @@
-import { UserTranslationType, UserRawType } from "@/types/user"
+import { UserTranslationType, UserRawType, UserFormDataType } from "@/types/user"
+import { SurveyRawType } from "@/types/survey";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { UserFormDataType } from "@/types/user";
 import { DataResponse } from "@/types/data-response";
 import CountryCodeType from "@/types/country-code";
 import { UserTableRow } from "@/pages/Users/columns";
+import { SurveyTableRow } from "@/pages/Surveys/columns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -214,6 +215,36 @@ export function covertRawUsersToTableData (usersRaw: UserRawType[]): UserTableRo
   });
 }
 
+export function covertRawSurveysToTableData (surveysRaw: SurveyRawType[]): SurveyTableRow[] {
+  return surveysRaw.map(({
+    _id: recordId = '',
+    translations,
+    author,
+    status,
+    fullfilled,
+    minPairAppearance,
+    highestSingleAppearance,
+    voteCountEachSurvey,
+    updatedAt,
+    createdAt
+  }: SurveyRawType)=>{
+    
+   return {
+    recordId,
+    title: '',
+    authorName: '',
+    authorId: '',
+    status,
+    fullfilled,
+    minPairAppearance,
+    highestSingleAppearance,
+    voteCountEachSurvey,
+    updatedAt,
+    createdAt
+   }
+  });
+}
+
 export function extractFullNameFromRawTranslations<T extends any>(
   translations: Record<string, T>,
   {
@@ -229,4 +260,3 @@ export function extractFullNameFromRawTranslations<T extends any>(
   const fullName = composeFullName({ firstName, lastName, language: nameLang });
   return fullName;
 }
-

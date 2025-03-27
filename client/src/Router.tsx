@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { AppLayout } from "@/components/layouts/AppLayout";
-import { usersLoader, userLoader, countryCodesLoader, userFormLoader } from "@/loaders";
+import { usersLoader, userLoader, countryCodesLoader, userFormLoader, SurveysLoader } from "@/loaders";
 
 import ErrorFallback from "@/components/error-fallback";
 import NoMatch from "./pages/NoMatch";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users/index";
-import Surveys from "./pages/Surveys";
+import Surveys from "./pages/Surveys/index";
 import User from "./pages/User";
 import UserNewForm from "./pages/UserNewForm";
 import UserEditForm from "./pages/UserEditForm";
@@ -31,6 +31,8 @@ export const router = createBrowserRouter([
             {
                 path: "surveys",
                 element: <Surveys />,
+                loader: SurveysLoader,
+                errorElement: <ErrorFallback />,
             },
             {
                 path: "user",

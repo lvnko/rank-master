@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { DataTable } from "@/components/data-table";
+import { DataTable, TableActionPayloadType } from "@/components/data-table";
 import { Link, useNavigate, useLoaderData } from 'react-router-dom';
 import { columns, UserTableRow } from "./columns";
 
@@ -14,7 +14,7 @@ import type { UserPayloadType, UserRawType } from "@/types/user"
 import { PlusIcon } from "@radix-ui/react-icons";
 import { UserPageDataType } from "@/types/user";
 import { composeFullName, covertRawUsersToTableData } from "@/lib/utils";
-import { createUserDeletePromise, createUserDeleteThenUsersRetrivalPromise } from "@/loaders";
+import { createUserDeleteThenUsersRetrivalPromise } from "@/loaders";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { DataItem } from "@/types/data-response";
@@ -80,7 +80,7 @@ export default function Users() {
         id, payload = {}
     }: {
         id: string;
-        payload?: UserPayloadType | { primName: string };
+        payload?: TableActionPayloadType;
     }) => {
         const actionPromise = getActionPromise(action);
         if (actionPromise) {

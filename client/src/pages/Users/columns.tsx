@@ -1,5 +1,5 @@
 
-import { ColumnDef, TableMeta } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,

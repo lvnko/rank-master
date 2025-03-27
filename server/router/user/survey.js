@@ -100,11 +100,18 @@ router.get('/:survey_id', async (req, res) => {
         validateObjectId(params.user_id, t('user.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         validateObjectId(params.survey_id, t('user.survey.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const dataKeyConfigs = getModelDataKeys(Survey).filter(e=>['authorId'].indexOf(e) < 0).reduce((accm, curr)=>{
+            console.log(`'${curr}'.indexOf('.$*')`, curr.indexOf('.$*'));
+            if (curr.indexOf('.$*')>=0) return accm;
             accm[curr] = 1;
             return accm;
         }, {});
         const authorId = new mongoose.Types.ObjectId(`${params.user_id}`);
         const surveyId = new mongoose.Types.ObjectId(`${params.survey_id}`);
+
+            // console.log('user_id => ', authorId);
+            // console.log('survey_id => ', surveyId);
+            // console.log('getModelDataKeys(Survey) => ', getModelDataKeys(Survey));
+            // console.log('dataKeyConfigs => ', dataKeyConfigs);
 
         const results = await Survey.aggregate([
             {
@@ -119,11 +126,14 @@ router.get('/:survey_id', async (req, res) => {
                     as: "author"
                 }
             },{
+                $addFields: {
+                    author: { $arrayElemAt: ['$author', 0] }
+                }
+            },{
                 $project:  {
                     ...dataKeyConfigs,
-                    author: {
-                        $arrayElemAt: ["$author", 0],
-                    }
+                    // translations: 1,
+                    author: 1
                 }
             },{
                 $project: {
@@ -135,6 +145,7 @@ router.get('/:survey_id', async (req, res) => {
                         "subscription": 0,
                         "updatedAt": 0,
                         "createdAt": 0,
+                        "status": 0,
                         "__v": 0,
                     }
                 }

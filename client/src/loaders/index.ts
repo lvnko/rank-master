@@ -125,8 +125,25 @@ export const userLoader: LoaderFunction = async ({ request, params }: LoaderFunc
     }
     return response;
   } catch (error) {
-    console.log('userLoader error => ', error);
+    console.log('UserLoader error => ', error);
     throw new Error(`Failed to fetch user...`);
+  }
+}
+
+export const SurveysLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs):Promise<DataResponse> => {
+
+  try {
+    const url = new URL(request.url);
+    const language = url.searchParams.get("lng") || 'en-US';
+    const promiseOptions: PromiseOptionsType = { method: 'GET', language };
+    const response = await createPromise<DataResponse>(`http://localhost:8081/survey`, promiseOptions);
+    if (response?.statusText !== 'success') {
+      throw new Error(`Failed to fetch survey...`);
+    }
+    return response;
+  } catch (error) {
+    console.log('SurveysLoader error => ', error);
+    throw new Error(`Failed to fetch survey...`);
   }
 }
 
