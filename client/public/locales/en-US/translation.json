@@ -356,13 +356,13 @@
             "addSurvey": "Add Survey"
         },
         "column": {
-            "title": "Title",
+            "title": "Title & Author",
             "fullfilled": "Fullfilled",
             "status": "Status",
             "authorName": "Author",
             "minPairAppearance": "Min. PA",
             "highestSingleAppearance": "Max. SA",
-            "voteCountEachSurvey": "# Chall/Survey ",
+            "voteCountEachSurvey": "# Chall/Surv.",
             "updatedAt": "Last Updated At"
         },
         "valueLabel": {

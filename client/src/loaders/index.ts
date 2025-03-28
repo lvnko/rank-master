@@ -232,6 +232,16 @@ export async function createUserInsertionPromise<T> (body: any, language: string
 
 }
 
+export async function createSurveyInsertionPromise<T> (id: string, body: any, language: string) : Promise<T> {
+
+  return createPromise(`http://localhost:8081/user/${id}/survey`, {
+    method: 'POST',
+    language,
+    body
+  });
+
+}
+
 export const fetchLanguages = async () => {
   const response = await fetch(`http://localhost:8081/languages`); // Adjust API route
   if (!response.ok) {

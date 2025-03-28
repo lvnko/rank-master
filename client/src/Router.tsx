@@ -9,8 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users/index";
 import Surveys from "./pages/Surveys/index";
 import User from "./pages/User";
-import UserNewForm from "./pages/UserNewForm";
-import UserEditForm from "./pages/UserEditForm";
+import UserNewForm from "./pages/User/UserNewForm";
+import UserEditForm from "./pages/User/UserEditForm";
 
 
 export const router = createBrowserRouter([

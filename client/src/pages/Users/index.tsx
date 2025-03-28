@@ -141,7 +141,7 @@ export default function Users() {
             <PageHeader className="flex justify-between">
                 <PageHeaderHeading>{t("user.heading.platformUsers")}</PageHeaderHeading>
                 <Button
-                    variant={"outline"} className="px-2"
+                    variant={"outline"}  className="px-2 pr-3"
                     disabled={isLoading}
                     onClick={()=>navigate(`/user/add?lng=${language}`)}
                 >

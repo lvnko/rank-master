@@ -50,7 +50,7 @@ export default function Surveys() {
             <PageHeader className="flex justify-between">
                 <PageHeaderHeading>{t("survey.heading.platformSurveys")}</PageHeaderHeading>
                 <Button
-                    variant={"outline"} className="px-2"
+                    variant={"outline"} className="px-2 pr-3"
                     disabled={isLoading}
                     onClick={()=>navigate(`/user/add?lng=${language}`)}
                 >

@@ -12,8 +12,9 @@ import {
 import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format } from 'date-fns';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
 import SurveyType from "@/types/survey";
+import { PersonIcon } from "@radix-ui/react-icons";
 
 export type SurveyTableRow = Pick<
     SurveyType,
@@ -62,11 +63,25 @@ export const columns: ColumnDef<SurveyTableRow>[] = [
             // console.log('info', info);
             // console.log('info > row > original', info.row.original);
             // console.log('info > row', info.row);
+            const { i18n: { language } } = useTranslation();
+            const navigate = useNavigate();
+            const data = info.row.original;
+            const { authorName, authorId } = data;
             return (
-                <>
-                    <p>{String(info.getValue() || '')}</p>
-                    <p>{String(info.row.original.authorName || '')}</p>
-                </>
+                <div className="space-y-1">
+                    <p className="font-bold">{String(info.getValue() || '')}</p>
+                    {authorId ? (
+                        <Button
+                            variant={'ghost'}
+                            className='py-0 px-1 -mx-1 h-auto gap-1 text-foreground/60 font-light'
+                            onClick={()=>navigate(`/user/${authorId}?lng=${language}`)}
+                        >
+                            <PersonIcon />{String(authorName || '')}
+                        </Button>
+                    ) : (
+                        <p>{String(authorName || '')}</p>
+                    )}
+                </div>
             );
         }
     },
@@ -102,7 +117,7 @@ export const columns: ColumnDef<SurveyTableRow>[] = [
         accessorKey: "updatedAt",
         header: ({ column }) => renderSortingHeader(column), // to be sorted header
         cell: (info) => {
-            return format(info.getValue() as Date, 'yyyy-MM-dd');
+            return format(info.getValue() as Date, 'yyyy-MM-dd, HH:MM:SS');
         }
     }
 ];

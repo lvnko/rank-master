@@ -356,7 +356,7 @@
             "addSurvey": "新調查卷"
         },
         "column": {
-            "title": "標題",
+            "title": "標題+作者",
             "fullfilled": "已完成",
             "status": "狀態",
             "authorName": "作者",
