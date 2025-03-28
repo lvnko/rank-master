@@ -57,16 +57,23 @@ const renderSortingHeader = (column: any) => {
 export const columns: ColumnDef<SurveyTableRow>[] = [
     {
         accessorKey: "title",
-        header: () => headerLabelRetriever('survey.column.title'),
+        header: ({ column }) => renderSortingHeader(column), // to be sorted header
         cell: (info) => {
-            console.log(info);
-            return 'title';
+            // console.log('info', info);
+            // console.log('info > row > original', info.row.original);
+            // console.log('info > row', info.row);
+            return (
+                <>
+                    <p>{String(info.getValue() || '')}</p>
+                    <p>{String(info.row.original.authorName || '')}</p>
+                </>
+            );
         }
     },
-    {
-        accessorKey: "authorName",
-        header: ({ column }) => renderSortingHeader(column) // to be sorted header
-    },
+    // {
+    //     accessorKey: "authorName",
+    //     header: ({ column }) => renderSortingHeader(column) // to be sorted header
+    // },
     {
         accessorKey: "status",
         header: ({ column }) => renderSortingHeader(column), // to be sorted header
