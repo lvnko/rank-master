@@ -350,5 +350,31 @@
                 "description": "嘗試刪除 {{fullName}} 的用戶記錄時發生錯誤。"
             }
         }
+    },
+    "survey": {
+        "button": {
+            "addSurvey": "新調查卷"
+        },
+        "column": {
+            "title": "標題",
+            "fullfilled": "已完成",
+            "status": "狀態",
+            "authorName": "作者",
+            "minPairAppearance": "＃最低(對)",
+            "highestSingleAppearance": "＃最高(單)",
+            "voteCountEachSurvey": "＃問題/卷",
+            "updatedAt": "最後更新於"
+        },
+        "valueLabel": {
+            "status": {
+                "draft": "草稿",
+                "inactive": "未啟用",
+                "active": "啟用中",
+                "suspended": "暫停"
+            }
+        },
+        "heading": {
+            "platformSurveys": "用戶製造的調查卷"
+        }
     }
 }

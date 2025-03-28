@@ -48,14 +48,14 @@ export default function Surveys() {
     return (
         <>
             <PageHeader className="flex justify-between">
-                <PageHeaderHeading>{t("user.heading.platformUsers")}</PageHeaderHeading>
+                <PageHeaderHeading>{t("survey.heading.platformSurveys")}</PageHeaderHeading>
                 <Button
                     variant={"outline"} className="px-2"
                     disabled={isLoading}
                     onClick={()=>navigate(`/user/add?lng=${language}`)}
                 >
                     <PlusIcon className="!h-[1.2rem] !w-[1.2rem]" />
-                    {t("user.button.addUser")}
+                    {t("survey.button.addSurvey")}
                 </Button>
             </PageHeader>
             <Card>

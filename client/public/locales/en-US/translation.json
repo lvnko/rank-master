@@ -350,5 +350,31 @@
                 "description": "An error occurred while trying to delete a user record of {{fullName}}."
             }
         }
+    },
+    "survey": {
+        "button": {
+            "addSurvey": "Add Survey"
+        },
+        "column": {
+            "title": "Title",
+            "fullfilled": "Fullfilled",
+            "status": "Status",
+            "authorName": "Author",
+            "minPairAppearance": "Min. PA",
+            "highestSingleAppearance": "Max. SA",
+            "voteCountEachSurvey": "# Chall/Survey ",
+            "updatedAt": "Last Updated At"
+        },
+        "valueLabel": {
+            "status": {
+                "draft": "Draft",
+                "inactive": "Inactive",
+                "active": "Active",
+                "suspended": "Suspended"
+            }
+        },
+        "heading": {
+            "platformSurveys": "Surveys Created by Users"
+        }
     }
 }

@@ -215,7 +215,10 @@ export function covertRawUsersToTableData (usersRaw: UserRawType[]): UserTableRo
   });
 }
 
-export function covertRawSurveysToTableData (surveysRaw: SurveyRawType[]): SurveyTableRow[] {
+export function covertRawSurveysToTableData (
+  surveysRaw: SurveyRawType[],
+  options: { language: string; } = { language: 'en-US' }
+): SurveyTableRow[] {
   return surveysRaw.map(({
     _id: recordId = '',
     translations,
@@ -228,31 +231,42 @@ export function covertRawSurveysToTableData (surveysRaw: SurveyRawType[]): Surve
     updatedAt,
     createdAt
   }: SurveyRawType)=>{
-    
-   return {
-    recordId,
-    title: '',
-    authorName: '',
-    authorId: '',
-    status,
-    fullfilled,
-    minPairAppearance,
-    highestSingleAppearance,
-    voteCountEachSurvey,
-    updatedAt,
-    createdAt
-   }
+
+    console.log('!!!! Survey Data convertor !!!!');
+    console.log('translations =>', translations);
+    console.log('author =>', author);
+
+    const { language } = options;
+
+    const authorName = author? extractFullNameFromRawTranslations(author.translations) : '';
+    const surveyIntros = covertObjectOfRecordsToMap(translations) as Map<string, { title: string; body: string; }>;
+    const title = surveyIntros.get(language) ? surveyIntros.get(language)?.title || '' : surveyIntros.get('en-US')?.title || '';
+
+    return {
+      recordId,
+      title,
+      authorName,
+      authorId: author?._id || '',
+      status,
+      fullfilled,
+      minPairAppearance,
+      highestSingleAppearance,
+      voteCountEachSurvey,
+      updatedAt,
+      createdAt
+    }
   });
 }
 
 export function extractFullNameFromRawTranslations<T extends any>(
   translations: Record<string, T>,
   {
-    toGetPrimary = true
+    toGetPrimary
   } : {
     toGetPrimary: boolean
-  }
+  } = { toGetPrimary: true }
 ): string {
+  if (!translations) return '';
   const namesMap = covertObjectOfRecordsToMap(translations) as Map<string, { firstName: string; lastName: string; isPrimary: boolean }> || new Map([['en-US', {firstName: '', lastName: '', isPrimary: true}]]);
   const nameLang = toGetPrimary ? extractPrimaryNameLang(namesMap) || 'en-US' : extractSecondaryNameLang(namesMap) || '';
   if (nameLang === '') return '';
