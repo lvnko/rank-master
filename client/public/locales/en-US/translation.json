@@ -374,7 +374,8 @@
             }
         },
         "heading": {
-            "platformSurveys": "Surveys Created by Users"
+            "platformSurveys": "Surveys Created by Users",
+            "add": "Add New Survey"
         }
     }
 }

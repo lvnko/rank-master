@@ -374,7 +374,8 @@
             }
         },
         "heading": {
-            "platformSurveys": "用戶製造的調查卷"
+            "platformSurveys": "用戶製造的調查卷",
+            "add": "新增調查卷"
         }
     }
 }

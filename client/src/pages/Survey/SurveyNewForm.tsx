@@ -18,6 +18,7 @@ import { SurveyPayloadType } from "@/types/survey";
 import FormFieldRenderer from "@/components/form-field-renderer";
 import { createSurveyInsertionPromise } from "@/loaders";
 import useToastPromise from "@/hooks/useToastPromise";
+import LanguageType from "@/types/languages";
 
 const formSchema = z.object({
     translations: z.object({
@@ -31,10 +32,41 @@ const formSchema = z.object({
 
 export default function SurveyNewForm() {
 
-    // const { t, i18n } = useTranslation();
     const { t, i18n } = useTranslation();
     const { language } = i18n;
     const callToastPromiseHook = useToastPromise();
     const navigate = useNavigate();
+    const params = useParams();
+    const response: any = useLoaderData();
+
+    const languageSupportedLib: LanguageType[] = response?.data?.languages || [];
+    const languageValues = languageSupportedLib.map(({name, label})=>{
+        return {label, value: name};
+    });
+
+    const [isLoading, setIsLoading] = useState(false);
+    type FormShape = z.infer<typeof formSchema>;
+    const form = useForm<FormShape>({
+        resolver: zodResolver(formSchema),
+        shouldFocusError: false,
+        defaultValues: {
+
+        },
+        // shouldUnregister: false
+    });
+
+    useEffect(()=>{
+
+        console.log("form => ", form);
+
+    },[form.setValue]);
+
+    return (
+        <div className="flex flex-col justify-center items-center w-full">
+            <PageHeader className="justify-start item-center space-x-4 w-full">
+                <PageHeaderHeading>{t(`survey.heading.add`)}</PageHeaderHeading>
+            </PageHeader>
+        </div>
+    );
 
 }

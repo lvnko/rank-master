@@ -52,7 +52,7 @@ export default function Surveys() {
                 <Button
                     variant={"outline"} className="px-2 pr-3"
                     disabled={isLoading}
-                    onClick={()=>navigate(`/user/add?lng=${language}`)}
+                    onClick={()=>navigate(`/survey/add?lng=${language}`)}
                 >
                     <PlusIcon className="!h-[1.2rem] !w-[1.2rem]" />
                     {t("survey.button.addSurvey")}

@@ -250,6 +250,26 @@ export const fetchLanguages = async () => {
   return await response.json(); // Expected: ['en', 'fr', 'es']
 }
 
+export const SupportedLanguagesLoader: LoaderFunction = async ({ request }) => {
+
+  const url = new URL(request.url);
+  const language = url.searchParams.get("lng") || 'en-US';
+
+  try {
+    const response = await createPromise<DataResponse>(`http://localhost:8081/languages`, {
+      method: 'GET',
+      language
+    });
+    if (response?.statusText !== 'success') {
+      throw new Error(`Failed to fetch supported languages list...`);
+    }
+    return response;
+  } catch(error) {
+    throw new Error(`Failed to fetch supported languages list...`);
+  }
+
+}
+
 export const countryCodesLoader: LoaderFunction = async():Promise<DataResponse> => {
   const response = await fetch(`http://localhost:8081/country-codes`); // Adjust API route
   if (!response.ok) {
