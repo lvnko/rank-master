@@ -2,16 +2,16 @@ import React from 'react';
 import { FormField, FormControl, FormDescription, FormMessage } from './ui/form';
 import {
     InputFieldRenderer, SelectFieldRenderer, RadioGroupRenderer, DateTimePickerRenderer,
-    RendererPropsType, InputRendererPropsType, DateTimePickerRendererPropsType,
-    ComboBoxRendererPropsType,
-    ComboBoxRenderer
+    RendererPropsType, InputRendererPropsType, TextAreaFieldRenderer,
+    DateTimePickerRendererPropsType, ComboBoxRendererPropsType, ComboBoxRenderer,
+    TextAreaRendererPropsType
 } from "./form-item-renderer";
 import { Control } from 'react-hook-form';
 
 interface FormFieldRendererBasesProps {
     control: Control<any>;
     name: string;
-    type: 'Input' | 'Select' | 'RadioGroup' | 'DateTimePicker' | 'ComboBox';
+    type: 'Input' | 'TextArea' | 'Select' | 'RadioGroup' | 'DateTimePicker' | 'ComboBox';
 }
 
 type FormFieldRendererProps =
@@ -19,17 +19,19 @@ type FormFieldRendererProps =
     (
         RendererPropsType<any>
         | InputRendererPropsType<any>
+        | TextAreaRendererPropsType<any>
         | DateTimePickerRendererPropsType<any>
         | ComboBoxRendererPropsType<any>
     ) &
     {
         optionValues?: any[],
-        onSelected?: (name: string, value: any) => void
+        onSelected?: (name: string, value: any) => void,
+        resizable?: boolean
     };
 
 const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({
     control, name, type,
-    className, label, disabled = false,
+    className, label, disabled = false, resizable = false,
     description = '', placeholder = '',
     optionValues = [], onSelected = (name, value) => console.log(name, value)
 }) => {
@@ -71,6 +73,13 @@ const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({
                 disabled,
                 control,
                 onSelected
+            }) : type === 'TextArea' ? TextAreaFieldRenderer({
+                label,
+                description,
+                placeholder,
+                className,
+                disabled,
+                resizable
             }) : InputFieldRenderer({
                 label,
                 description,

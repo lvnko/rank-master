@@ -10,6 +10,25 @@ interface PromiseOptionsType {
   validationErrorBook?: (type?:string) => Error;
 }
 
+/**
+ * ||=> createPromise (Base)
+ * ||:: - Role:       Base function for Promise creation
+ * ||:: - Arguments:  url: string, options: PromiseOptionsType
+ * ||:: - Return:     Promise of <T>
+ * ||_____________________________________________________________
+ * ||‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+ * || \=> createSpecificPromise (e.g. createUserUpdatePromise, createUserDeletePromise...)
+ * ||  :: - Role:       Identify and pack required arguments for different kind of data Promise
+ * ||  :: - Arguments:  combination of id:string, body: any and language: string
+ * ||  :: - Return:     Promise of <T>
+ * ||_____________________________________________________________
+ * ||‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+ * ||   \=> LoaderFunction (e.g. userFormLoader...)
+ * ||    :: - Role:       Bring in different createSpecificPromise to server the need of page prefetch
+ * ||    :: - Arguments:  { request, params } = props
+ * ||    :: - Return:     Promise of <DataResponse>
+ */
+
 function createPromise<T>(url: string, options: PromiseOptionsType): Promise<T> {
 
   const {
@@ -242,6 +261,13 @@ export async function createSurveyInsertionPromise<T> (id: string, body: any, la
 
 }
 
+export async function createSupportedLanguagesPromise<T> (language: string) : Promise<T> {
+  return createPromise(`http://localhost:8081/languages`, {
+    method: 'GET',
+    language
+  });
+}
+
 export const fetchLanguages = async () => {
   const response = await fetch(`http://localhost:8081/languages`); // Adjust API route
   if (!response.ok) {
@@ -266,6 +292,38 @@ export const SupportedLanguagesLoader: LoaderFunction = async ({ request }) => {
     return response;
   } catch(error) {
     throw new Error(`Failed to fetch supported languages list...`);
+  }
+
+}
+
+export const SurveyNewFormLoader: LoaderFunction = async ({ request, params }) => {
+
+  const url = new URL(request.url);
+  const language = url.searchParams.get("lng") || "en-US";
+  try {
+    const supportedLanguagesLoaderResponse = await createSupportedLanguagesPromise<DataResponse>(language);
+    const usersLoaderResponse = await createUsersRetrievalPromise<DataResponse>(language);
+
+    if (
+      supportedLanguagesLoaderResponse?.statusText !== 'success' ||
+      usersLoaderResponse?.statusText !== 'success'
+    )
+      throw new Error(`Failed to fetch config data for new Survey form...`);
+
+    const { data, ...usersResponse } = usersLoaderResponse;
+    const { data: supportedLanguagesData } = supportedLanguagesLoaderResponse;
+
+    const result = {
+      ...usersResponse,
+      data: {
+        ...data,
+        ...supportedLanguagesData
+      }
+    }
+    
+    return result;
+  } catch (error) {
+    throw error;
   }
 
 }

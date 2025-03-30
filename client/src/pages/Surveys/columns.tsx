@@ -73,7 +73,7 @@ export const columns: ColumnDef<SurveyTableRow>[] = [
                     {authorId ? (
                         <Button
                             variant={'ghost'}
-                            className='py-0 px-1 -mx-1 h-auto gap-1 text-foreground/60 font-light'
+                            className='py-0 px-1 -ml-2 h-auto gap-1 text-foreground/60 font-light'
                             onClick={()=>navigate(`/user/${authorId}?lng=${language}`)}
                         >
                             <PersonIcon />{String(authorName || '')}

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { AppLayout } from "@/components/layouts/AppLayout";
-import { usersLoader, userLoader, countryCodesLoader, userFormLoader, SurveysLoader, SupportedLanguagesLoader } from "@/loaders";
+import { usersLoader, userLoader, countryCodesLoader, userFormLoader, SurveysLoader, SupportedLanguagesLoader, SurveyNewFormLoader } from "@/loaders";
 
 import ErrorFallback from "@/components/error-fallback";
 import NoMatch from "./pages/NoMatch";
@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
                     {
                         path: "add",
                         element: <SurveyNewForm />,
-                        loader: SupportedLanguagesLoader,
+                        loader: SurveyNewFormLoader,
                         errorElement: <ErrorFallback />
                     }
                 ]

@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/command";
 import { ControllerProps, FieldValues, FieldPath, useWatch, Control } from "react-hook-form";
 import { Input } from "./ui/input";
+import { Textarea } from "@/components/ui/textarea"
 import { Button } from "./ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { CheckIcon } from "lucide-react";
@@ -50,6 +51,8 @@ export interface RendererPropsType<T extends FieldValues> {
 }
 
 export type InputRendererPropsType<T extends FieldValues> = Omit<RendererPropsType<T>, 'optionValues' | 'name' | 'control'>
+
+export type TextAreaRendererPropsType<T extends FieldValues> = Omit<RendererPropsType<T>, 'optionValues' | 'name' | 'control'> & { resizable: boolean }
 
 export type DateTimePickerRendererPropsType<T extends FieldValues> = Omit<RendererPropsType<T>, 'optionValues'>;
 
@@ -71,6 +74,34 @@ export function InputFieldRenderer ({
                     <Input
                         placeholder={placeholder}
                         disabled={disabled}
+                        {...field}
+                    />
+                </FormControl>
+                <FormDescription>{description}</FormDescription>
+                <FormMessage />
+            </FormItem>
+        );
+    }
+}
+
+export function TextAreaFieldRenderer ({
+    label,
+    description = '',
+    placeholder,
+    className,
+    disabled = false,
+    resizable = false
+}: TextAreaRendererPropsType<any>) {
+
+    return function ({ field }: any) {
+        return (
+            <FormItem className={className}>
+                <FormLabel>{label}</FormLabel>
+                <FormControl>
+                    <Textarea
+                        placeholder={placeholder}
+                        disabled={disabled}
+                        className={resizable ? '' : 'resize-none'}
                         {...field}
                     />
                 </FormControl>

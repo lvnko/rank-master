@@ -353,7 +353,8 @@
     },
     "survey": {
         "button": {
-            "addSurvey": "Add Survey"
+            "addSurvey": "Add Survey",
+            "addIntroLang": "Add Intro & Description For Another Language"
         },
         "column": {
             "title": "Title & Author",
@@ -365,6 +366,21 @@
             "voteCountEachSurvey": "# Chall/Surv.",
             "updatedAt": "Last Updated At"
         },
+        "label": {
+            "introLang": "Description Language",
+            "title": "Survey Title",
+            "body": "Introduction"
+        },
+        "placeholder": {
+            "introLang": "Select Language",
+            "title": "Enter a descriptive title for your survey",
+            "body": "Briefly describe the purpose of this survey"
+        },
+        "description": {
+            "introLang": "The language of your survey.",
+            "title": "Provide a concise and clear title that accurately reflects the survey's content.",
+            "body": "Offer a short overview or instructions to guide participants before they begin the survey."
+        },
         "valueLabel": {
             "status": {
                 "draft": "Draft",
@@ -375,7 +391,8 @@
         },
         "heading": {
             "platformSurveys": "Surveys Created by Users",
-            "add": "Add New Survey"
+            "add": "Add New Survey",
+            "introDesc": "Intro & Description"
         }
     }
 }

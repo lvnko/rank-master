@@ -353,7 +353,8 @@
     },
     "survey": {
         "button": {
-            "addSurvey": "新調查卷"
+            "addSurvey": "新調查卷",
+            "addIntroLang": "加入其他語言的簡介及描述"
         },
         "column": {
             "title": "標題+作者",
@@ -365,6 +366,21 @@
             "voteCountEachSurvey": "＃問題/卷",
             "updatedAt": "最後更新於"
         },
+        "label": {
+            "introLang": "描述語言",
+            "title": "調查卷標題",
+            "body": "簡介"
+        },
+        "placeholder": {
+            "introLang": "選擇語言",
+            "title": "請輸入調查卷的描述性標題",
+            "body": "簡要描述本次調查的目的"
+        },
+        "description": {
+            "introLang": "調查卷的描述語言",
+            "title": "提供一個簡潔明瞭的標題，準確反映調查卷的內容。",
+            "body": "在開始調查之前，提供一個簡短的概述或說明以指導參與者參與。"
+        },
         "valueLabel": {
             "status": {
                 "draft": "草稿",
@@ -375,7 +391,8 @@
         },
         "heading": {
             "platformSurveys": "用戶製造的調查卷",
-            "add": "新增調查卷"
+            "add": "新增調查卷",
+            "introDesc": "簡介及描述"
         }
     }
 }
