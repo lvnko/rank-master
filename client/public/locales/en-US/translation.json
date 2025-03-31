@@ -45,6 +45,16 @@
             "editProfile": "Edit profile",
             "deleteUser": "Delete user"
         },
+        "label": {
+            "surveysCreated": "# Surv. Created",
+            "surveysParticipated": "# Surv. Participated",
+            "role": "Platform Role",
+            "subscription": "Subscription Plan"
+        },
+        "abbr": {
+            "role": "Role",
+            "subscription": "Sub."
+        },
         "valueLabel": {
             "gender": {
                 "M": "Male",
@@ -300,6 +310,16 @@
                 "inactive": "Inactive",
                 "deleted": "Deleted",
                 "suspended": "Suspended"
+            },
+            "role": {
+                "fair": "Normal",
+                "subject": "Subject",
+                "respondant": "Respondant"
+            },
+            "subscription": {
+                "fair": "Free",
+                "standard": "Standard",
+                "professional": "Professional"
             }
         },
         "heading": {
@@ -354,7 +374,7 @@
     "survey": {
         "button": {
             "addSurvey": "Add Survey",
-            "addIntroLang": "Add Intro & Description For Another Language"
+            "addIntroLang": "Intro & Description in Another Language"
         },
         "column": {
             "title": "Title & Author",
@@ -367,14 +387,19 @@
             "updatedAt": "Last Updated At"
         },
         "label": {
+            "survey": "Survey",
             "introLang": "Description Language",
             "title": "Survey Title",
-            "body": "Introduction"
+            "body": "Introduction",
+            "author": "Platform User",
+            "authorPreview": "Author Profile Preview"
         },
         "placeholder": {
             "introLang": "Select Language",
             "title": "Enter a descriptive title for your survey",
-            "body": "Briefly describe the purpose of this survey"
+            "body": "Briefly describe the purpose of this survey",
+            "author": "Select the survey author",
+            "authorPreview": "Please select an author to preview."
         },
         "description": {
             "introLang": "The language of your survey.",
@@ -392,7 +417,38 @@
         "heading": {
             "platformSurveys": "Surveys Created by Users",
             "add": "Add New Survey",
-            "introDesc": "Intro & Description"
+            "introDesc": "Intro & Description",
+            "author": "Survey Author    "
+        },
+        "success": {
+            "create": {
+                "title": "Survey successfully created!",
+                "description": "A survey named, {{title}} is created."
+            },
+            "update": {
+                "title": "Survey successfully updated!",
+                "description": "Data of a survey named, {{title}} is updated."
+            },
+            "delete": {
+                "title": "Survey successfully deleted!",
+                "description": "A survey named, {{title}} is removed from the system."
+            }
+        },
+        "fail": {
+            "get" : {
+                "singular": {
+                    "title": "Failed to get survey record!",
+                    "description": "An error occurred while trying to get a survey record named, {{title}}."
+                },
+                "plural": {
+                    "title": "Failed to get survey records!",
+                    "description": "An error occurred while trying to get survey records."
+                }
+            },
+            "delete": {
+                "title": "Failed to delete survey!",
+                "description": "An error occurred while trying to delete a survey record named, {{title}}."
+            }
         }
     }
 }

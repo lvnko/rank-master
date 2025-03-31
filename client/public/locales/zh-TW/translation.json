@@ -45,6 +45,16 @@
             "editProfile": "編輯用戶資料",
             "deleteUser": "刪除此用戶"
         },
+        "label": {
+            "surveysCreated": "# 製作的調查卷",
+            "surveysParticipated": "# 參與的調查卷",
+            "role": "平台角色",
+            "subscription": "付費級別"
+        },
+        "abbr": {
+            "role": "角色",
+            "subscription": "付費"
+        },
         "valueLabel": {
             "gender": {
                 "M": "男",
@@ -300,6 +310,16 @@
                 "inactive": "停用",
                 "deleted": "已刪除",
                 "suspended": "已封鎖"
+            },
+            "role": {
+                "fair": "普通",
+                "subject": "被試者",
+                "respondant": "約定被試者"
+            },
+            "subscription": {
+                "fair": "免費",
+                "standard": "基本",
+                "professional": "專業"
             }
         },
         "heading": {
@@ -354,7 +374,7 @@
     "survey": {
         "button": {
             "addSurvey": "新調查卷",
-            "addIntroLang": "加入其他語言的簡介及描述"
+            "addIntroLang": "其他語言的簡介及描述"
         },
         "column": {
             "title": "標題+作者",
@@ -367,14 +387,19 @@
             "updatedAt": "最後更新於"
         },
         "label": {
+            "survey": "調查卷",
             "introLang": "描述語言",
             "title": "調查卷標題",
-            "body": "簡介"
+            "body": "簡介",
+            "author": "平台用戶",
+            "authorPreview": "作者簡介預覽"
         },
         "placeholder": {
             "introLang": "選擇語言",
             "title": "請輸入調查卷的描述性標題",
-            "body": "簡要描述本次調查的目的"
+            "body": "簡要描述本次調查的目的",
+            "author": "選擇調查卷作者",
+            "authorPreview": "請選擇作者以在此預覽其資料。"
         },
         "description": {
             "introLang": "調查卷的描述語言",
@@ -392,7 +417,38 @@
         "heading": {
             "platformSurveys": "用戶製造的調查卷",
             "add": "新增調查卷",
-            "introDesc": "簡介及描述"
+            "introDesc": "簡介及描述",
+            "author": "調查卷作者"
+        },
+        "success": {
+            "create": {
+                "title": "調查卷成功建立！",
+                "description": "已建立標題為：{{title}} 的調查卷。"
+            },
+            "update": {
+                "title": "調查卷的資料已更新！",
+                "description": "調查卷：{{title}} 的資料已更新。"
+            },
+            "delete": {
+                "title": "調查卷已刪除！",
+                "description": "調查卷：{{title}} 已從系統移除。"
+            }
+        },
+        "fail": {
+            "get" : {
+                "singular": {
+                    "title": "無法取得調查卷記錄！",
+                    "description": "嘗試取得「{{title}}」的記錄時發生錯誤。"
+                },
+                "plural": {
+                    "title": "無法取得調查卷記錄！",
+                    "description": "嘗試取得調查卷記錄時發生錯誤。"
+                }
+            },
+            "delete": {
+                "title": "刪除調查卷記錄時發生錯誤！",
+                "description": "嘗試刪除「{{title}}」的記錄時發生錯誤。"
+            }
         }
     }
 }
