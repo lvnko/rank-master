@@ -25,7 +25,7 @@ export default function Surveys() {
     const navigate = useNavigate();
     
     const surveysRaw: SurveyRawType[] = response?.data?.surveys || [];
-    const surveyDataRows: SurveyTableRow[] = covertRawSurveysToTableData(surveysRaw);
+    const surveyDataRows: SurveyTableRow[] = covertRawSurveysToTableData(surveysRaw, { language: language});
     
     // const [selectedUser, setSelectedUser] = useState<(typeof users)[0] | null>(null)
     const [tableData, setTableData] = useState<SurveyTableRow[]>([...surveyDataRows]);

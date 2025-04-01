@@ -240,7 +240,9 @@ export function covertRawSurveysToTableData (
 
     const authorName = author? extractFullNameFromRawTranslations(author.translations) : '';
     const surveyIntros = covertObjectOfRecordsToMap(translations) as Map<string, { title: string; body: string; }>;
-    const title = surveyIntros.get(language) ? surveyIntros.get(language)?.title || '' : surveyIntros.get('en-US')?.title || '';
+    const title = Object.keys(translations).length > 0 ?
+      surveyIntros.get(language)?.title || surveyIntros.get(Object.keys(translations)[0])?.title || '' :
+      '';
 
     return {
       recordId,
