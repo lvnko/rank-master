@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
@@ -7,7 +6,7 @@ import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon } from "lucide-react";
+import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon, AsteriskIcon } from "lucide-react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -96,6 +95,17 @@ export default function SurveyNewForm() {
         });
     }
 
+    const removeTranslation = (e:any, index: number) => {
+        e.preventDefault();
+        console.log('removeTranslation => index => ', index);
+        if (index > -1) { // only splice array when item is found
+            // array.splice(index, 1); // 2nd parameter means remove one item only
+            const newTranslations = translationFields.filter((field, i)=>i !== index);
+            console.log('removeTranslation => newTranslations => ', newTranslations);
+            form.setValue("translations", [...newTranslations]);
+        }
+    }
+
     const callToastPromise = (args: {
         id: string;
         payload: SurveyPayloadType;
@@ -177,7 +187,7 @@ export default function SurveyNewForm() {
                             {index > 0 && (<Separator key={`${field.id}-separator`} lineStyle={"dotted"} />)}
                             <div
                                 key={field.id}
-                                className={`flex items-start gap-x-[1.25rem] !mt-4`}
+                                className={`flex items-start gap-x-[1.25rem] !mt-4 relative`}
                             >
                                 <FormFieldRenderer
                                     control={form.control}
@@ -212,6 +222,21 @@ export default function SurveyNewForm() {
                                         description={t("survey.description.body")}
                                     />
                                 </div>
+                                {index > 0 ? (
+                                    <Button
+                                        variant={"outline"}
+                                        size={"icon"}
+                                        onClick={(e)=>removeTranslation(e, index)}
+                                        disabled={isLoading}
+                                        className={"!w-10"}
+                                    >
+                                        <Trash2Icon />
+                                    </Button>
+                                ) : (
+                                    <div className="!w-10 flex items-center justify-center text-foreground/60">
+                                        <AsteriskIcon />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -255,7 +280,7 @@ export default function SurveyNewForm() {
                         />
                         <div className={`space-y-3 basis-4/5`}>
                             <p className="text-sm font-medium">{t(`survey.label.authorPreview`)}</p>
-                            <Card className={`px-3 py-2 flex space-x-4`}>
+                            <Card className={`rounded-md px-3 py-2 flex space-x-4 border border-input ${selectedAuthor ? 'ring-1 ring-ring border-opacity-50' : ''}`}>
                                 <Avatar
                                     className={`w-16 h-16`}
                                 >
@@ -298,6 +323,9 @@ export default function SurveyNewForm() {
                                     </div>
                                 )}
                             </Card>
+                        </div>
+                        <div className="!w-10 flex items-center justify-center text-foreground/60">
+                            <AsteriskIcon />
                         </div>
                     </div>
                     <div className="flex justify-between">
