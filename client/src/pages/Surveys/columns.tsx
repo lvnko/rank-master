@@ -159,7 +159,7 @@ export const columns: ColumnDef<SurveyTableRow>[] = [
                                 if (meta?.setIsLoading) meta?.setIsLoading(true);
                                 // meta?.removeRow(user.recordId);
                                 meta?.actionHandler('DELETE', { id: survey.recordId, payload: {
-                                    primName: user.primName,
+                                    title: survey.title,
                                 } });
                             }}
                         >

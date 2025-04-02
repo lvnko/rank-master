@@ -148,6 +148,38 @@ export function extractUserFormData(response: DataResponse): {
 
 }
 
+export function extractSurveyFormData (response: DataResponse, options: { language: string; } = { language: 'en-US' }): {
+  translations: Array<{
+    title: string;
+    body: string;
+    language: string;
+  }>,
+  authorId: string
+} {
+  const composeTranslationsFields = (
+    trans: Record<string, { title: string; body: string; }>,
+    options: { language: string; } = { language: 'en-US' }
+  ) => {
+    const { language } = options;
+    if (trans[language]) {
+      const { [language]: currLangTran, ...otherTrans  } = trans;
+      return [
+        {...currLangTran, language },
+        ...Object.keys(otherTrans).map((lang)=>({
+          ...otherTrans[lang],
+          language: lang
+        }))
+      ];
+    }
+  }
+  return {
+    translations: typeof response?.data?.survey?.translations === 'object'
+      ? composeTranslationsFields(response?.data?.survey?.translations, options) || []
+      : [],
+    authorId: response?.data?.survey?.author?._id || ''
+  }
+}
+
 export function covertRawUsersToTableData (usersRaw: UserRawType[]): UserTableRow[] {
 
   return usersRaw.map(({
@@ -215,6 +247,7 @@ export function covertRawUsersToTableData (usersRaw: UserRawType[]): UserTableRo
   });
 }
 
+
 export function covertRawSurveysToTableData (
   surveysRaw: SurveyRawType[],
   options: { language: string; } = { language: 'en-US' }
@@ -239,10 +272,7 @@ export function covertRawSurveysToTableData (
     const { language } = options;
 
     const authorName = author? extractFullNameFromRawTranslations(author.translations) : '';
-    const surveyIntros = covertObjectOfRecordsToMap(translations) as Map<string, { title: string; body: string; }>;
-    const title = Object.keys(translations).length > 0 ?
-      surveyIntros.get(language)?.title || surveyIntros.get(Object.keys(translations)[0])?.title || '' :
-      '';
+    const title = extractSurveyTitleFromRawTranslations(translations, { language });
 
     return {
       recordId,
@@ -275,4 +305,16 @@ export function extractFullNameFromRawTranslations<T extends any>(
   const { firstName, lastName } = namesMap.get(nameLang) || {firstName: '', lastName: ''};
   const fullName = composeFullName({ firstName, lastName, language: nameLang });
   return fullName;
+}
+
+export function extractSurveyTitleFromRawTranslations<T extends any>(
+  translations: Record<string, T>,
+  options: { language: string } = { language: 'en-US' }
+): string {
+  const { language } = options;
+  const surveyIntros = covertObjectOfRecordsToMap(translations) as Map<string, { title: string; body: string; }>;
+  const title = Object.keys(translations).length > 0 ?
+    surveyIntros.get(language)?.title || surveyIntros.get(Object.keys(translations)[0])?.title || '' :
+    '';
+  return title;
 }

@@ -112,7 +112,7 @@ export default function SurveyNewForm() {
         language: string;
     }) => {
         callToastPromiseHook({
-            promise: createSurveyInsertionPromise,
+            promise: createSurveyInsertionPromise as (id: string | string[], body: any, language: string) => Promise<any>,
             args: [args.id, args.payload, args.language],
             loadingMessage: t('loading', { ns: 'common' }),
             successMessage: ({data: {survey}})=>{

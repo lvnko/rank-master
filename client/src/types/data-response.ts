@@ -1,13 +1,13 @@
 import UserType from "./user";
-import SurveyType from "./survey";
+import SurveyType, { SurveyRawType } from "./survey";
 import CountryCodeType from "@/types/country-code";
 import LanguageType from "./languages";
 
 export interface DataItem {
     user?: UserType;
     users?: Array<UserType> | any;
-    survey?: SurveyType;
-    surveys?: Array<SurveyType>;
+    survey?: SurveyRawType;
+    surveys?: Array<SurveyRawType>;
     countryCodes?: Array<CountryCodeType>;
     languages?: Array<LanguageType>;
     operationResult?: OperaionResult;

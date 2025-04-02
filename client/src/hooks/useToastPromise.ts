@@ -31,13 +31,17 @@ const useToastPromise = (props?: { labels?: Labels }) => {
             errorCallback
         }: {
             promise:
-                ((id: string | string[], body: any, language: string) => Promise<any>) |
-                ((id: string | string[], language: string) => Promise<any>) |
+                ((id: string, body: any, language: string) => Promise<any>) |
+                ((id: string[], body: any, language: string) => Promise<any>) |
+                ((id: string, language: string) => Promise<any>) |
+                ((id: string[], language: string) => Promise<any>) |
                 ((body: any, language: string) => Promise<any>) |
                 ((language: string) => Promise<any>),
             args:
-                [string | string[], any, string] |
-                [string | string[], string] |
+                [string, any, string] |
+                [string[], any, string] |
+                [string, string] |
+                [string[], string] |
                 [any, string] |
                 [string],
             loadingMessage?: string,

@@ -4,7 +4,7 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations } from "@/lib/utils";
+import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations, extractSurveyFormData } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon } from "lucide-react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
@@ -59,6 +59,10 @@ export default function SurveyEditForm() {
             label: extractFullNameFromRawTranslations(translations)
         };
     });
+
+    const formDefaultValues = extractSurveyFormData(response);
+
+    console.log('formDefaultValues => ', formDefaultValues);
     
     const [isLoading, setIsLoading] = useState(false);
     type FormShape = z.infer<typeof formSchema>;
@@ -66,7 +70,7 @@ export default function SurveyEditForm() {
         resolver: zodResolver(formSchema),
         shouldFocusError: false,
         defaultValues: {
-            translations: [{ title: '', body: '', language: language}],
+            translations: [{ title: '', body: '', language: language }],
             authorId: ''
         },
         // shouldUnregister: false
@@ -110,6 +114,7 @@ export default function SurveyEditForm() {
             <PageHeader className="justify-start item-center space-x-4 w-full">
                 <PageHeaderHeading>{t(`survey.heading.edit`)}</PageHeaderHeading>
             </PageHeader>
+
         </div>
     );
 }
