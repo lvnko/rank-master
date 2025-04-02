@@ -420,6 +420,12 @@
             "introDesc": "簡介及描述",
             "author": "調查卷作者"
         },
+        "action": {
+            "copyId": "複製調查卷ID",
+            "viewDetails": "檢視詳情",
+            "editSurvey": "編輯調查卷資料",
+            "deleteSurvey": "刪除此調查卷"
+        },
         "success": {
             "create": {
                 "title": "調查卷成功建立！",

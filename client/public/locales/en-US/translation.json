@@ -420,6 +420,12 @@
             "introDesc": "Intro & Description",
             "author": "Survey Author    "
         },
+        "action": {
+            "copyId": "Copy survey ID",
+            "viewDetails": "View details",
+            "editSurvey": "Edit survey",
+            "deleteSurvey": "Delete survey"
+        },
         "success": {
             "create": {
                 "title": "Survey successfully created!",

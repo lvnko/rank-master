@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { AppLayout } from "@/components/layouts/AppLayout";
-import { usersLoader, userLoader, countryCodesLoader, userFormLoader, SurveysLoader, SupportedLanguagesLoader, SurveyNewFormLoader } from "@/loaders";
+import { usersLoader, userLoader, countryCodesLoader, userFormLoader, SurveysLoader, SupportedLanguagesLoader, SurveyNewFormLoader, SurveyEditFormLoader } from "@/loaders";
 
 import ErrorFallback from "@/components/error-fallback";
 import NoMatch from "./pages/NoMatch";
@@ -12,6 +12,7 @@ import User from "./pages/User/index";
 import UserNewForm from "./pages/User/UserNewForm";
 import UserEditForm from "./pages/User/UserEditForm";
 import SurveyNewForm from "./pages/Survey/SurveyNewForm";
+import SurveyEditForm from "./pages/Survey/SurveyEditForm";
 
 
 export const router = createBrowserRouter([
@@ -65,6 +66,12 @@ export const router = createBrowserRouter([
                         path: "add",
                         element: <SurveyNewForm />,
                         loader: SurveyNewFormLoader,
+                        errorElement: <ErrorFallback />
+                    },
+                    {
+                        path: "edit/:id",
+                        element: <SurveyEditForm />,
+                        loader: SurveyEditFormLoader,
                         errorElement: <ErrorFallback />
                     }
                 ]

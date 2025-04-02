@@ -119,5 +119,55 @@ export const columns: ColumnDef<SurveyTableRow>[] = [
         cell: (info) => {
             return format(info.getValue() as Date, 'yyyy-MM-dd, HH:MM:SS');
         }
+    },
+    {
+        id: 'actions',
+        cell: ({ row, table, ...props }) => {
+            const survey = row.original;
+            const meta = table.options.meta;
+            const { t, i18n: { language } } = useTranslation();
+            const navigate = useNavigate();
+            console.log('ROW : survey => ', survey)
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0" disabled={meta?.isLoading || false}>
+                            <span className="sr-only">{headerLabelRetriever("action.open-menu", { ns: 'common' })}</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>{t("actions", { ns: 'common' })}</DropdownMenuLabel>
+                        <DropdownMenuItem
+                            onClick={() => navigator.clipboard.writeText(survey.recordId)}
+                        >
+                            {t("survey.action.copyId")}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                            onClick={() => navigate(`/survey/${survey.recordId}?lng=${language}`)}
+                        >
+                            {t("survey.action.viewDetails")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => navigate(`/survey/edit/${survey.recordId}?lng=${language}`)}
+                        >
+                            {t("survey.action.editSurvey")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                if (meta?.setIsLoading) meta?.setIsLoading(true);
+                                // meta?.removeRow(user.recordId);
+                                meta?.actionHandler('DELETE', { id: survey.recordId, payload: {
+                                    primName: user.primName,
+                                } });
+                            }}
+                        >
+                            {t("survey.action.deleteSurvey")}
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            );
+        }
     }
 ];

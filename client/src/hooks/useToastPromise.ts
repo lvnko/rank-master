@@ -31,13 +31,13 @@ const useToastPromise = (props?: { labels?: Labels }) => {
             errorCallback
         }: {
             promise:
-                ((id: string, body: any, language: string) => Promise<any>) |
-                ((id: string, language: string) => Promise<any>) |
+                ((id: string | string[], body: any, language: string) => Promise<any>) |
+                ((id: string | string[], language: string) => Promise<any>) |
                 ((body: any, language: string) => Promise<any>) |
                 ((language: string) => Promise<any>),
             args:
-                [string, any, string] |
-                [string, string] |
+                [string | string[], any, string] |
+                [string | string[], string] |
                 [any, string] |
                 [string],
             loadingMessage?: string,
@@ -48,11 +48,11 @@ const useToastPromise = (props?: { labels?: Labels }) => {
     }) => {
         toast.promise(
             args.length === 3 ?
-                (promise as (id: string, body: any, language: string) => Promise<any>)(args[0], args[1], args[2]) :
+                (promise as (id: string | string[], body: any, language: string) => Promise<any>)(args[0], args[1], args[2]) :
                 args.length === 2 ?
                     typeof args[0] !== 'string' ?
                     (promise as (body: any, language: string) => Promise<any>)(args[0], args[1]) :
-                    (promise as (id: string, language: string) => Promise<any>)(args[0], args[1]) :
+                    (promise as (id: string | string[], language: string) => Promise<any>)(args[0], args[1]) :
                     (promise as (language: string) => Promise<any>)(args[0]),
             {
                 loading: loadingMessage,

@@ -48,6 +48,63 @@ export default function SurveyEditForm() {
         return {label, value: name};
     });
 
+    const authorsLib: UserRawType[] = response?.data?.users || [];
+    const [selectedAuthor, setSelectedAuthor] = useState<UserRawType & {
+        primName: string
+        secName: string
+    } | null>(null);
+    const authorValues = authorsLib.map(({ _id: id, translations })=>{
+        return {
+            value: id,
+            label: extractFullNameFromRawTranslations(translations)
+        };
+    });
+    
+    const [isLoading, setIsLoading] = useState(false);
+    type FormShape = z.infer<typeof formSchema>;
+    const form = useForm<FormShape>({
+        resolver: zodResolver(formSchema),
+        shouldFocusError: false,
+        defaultValues: {
+            translations: [{ title: '', body: '', language: language}],
+            authorId: ''
+        },
+        // shouldUnregister: false
+    });
+
+    const { fields: translationFields } = useFieldArray({ control: form.control, name: "translations" });
+
+    const insertTranslation = () => {
+        console.log('insertTranslation => translationFields => ',translationFields);
+        console.log('insertTranslation => form.getValues("translations") => ',form.getValues("translations"));
+        const newTranslationDefaultValues = { title: '', body: '', language: '' };
+        form.setValue("translations", [
+            ...form.getValues("translations"),
+            newTranslationDefaultValues
+        ]);
+    }
+    const authorSelectionHandler = (id: string) => {
+        console.log('selected author id => ', id);
+        const [selectedAuthorProfile] = authorsLib.filter(({_id})=>_id === id);
+        console.log('selected author profile => ', selectedAuthorProfile);
+        setSelectedAuthor({
+            ...selectedAuthorProfile,
+            primName: extractFullNameFromRawTranslations(selectedAuthorProfile.translations || {}),
+            secName: extractFullNameFromRawTranslations(selectedAuthorProfile.translations || {}, { toGetPrimary: false})
+        });
+    }
+
+    const removeTranslation = (e:any, index: number) => {
+        e.preventDefault();
+        console.log('removeTranslation => index => ', index);
+        if (index > -1) { // only splice array when item is found
+            // array.splice(index, 1); // 2nd parameter means remove one item only
+            const newTranslations = translationFields.filter((field, i)=>i !== index);
+            console.log('removeTranslation => newTranslations => ', newTranslations);
+            form.setValue("translations", [...newTranslations]);
+        }
+    }
+
     return (
         <div className="flex flex-col justify-center items-center w-full">
             <PageHeader className="justify-start item-center space-x-4 w-full">

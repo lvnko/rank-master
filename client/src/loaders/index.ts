@@ -166,6 +166,16 @@ export const SurveysLoader: LoaderFunction = async ({ request }: LoaderFunctionA
   }
 }
 
+export async function createUserInsertionPromise<T> (body: any, language: string) : Promise<T> {
+
+  return createPromise(`http://localhost:8081/user`, {
+    method: 'POST',
+    language,
+    body
+  });
+
+}
+
 export function createUsersRetrievalPromise<T> (language: string) : Promise<T> {
   
   return createPromise(`http://localhost:8081/user`, {
@@ -241,12 +251,11 @@ export function createUserDeleteThenUsersRetrivalPromise<T> (id: string, languag
 
 }
 
-export async function createUserInsertionPromise<T> (body: any, language: string) : Promise<T> {
-
-  return createPromise(`http://localhost:8081/user`, {
-    method: 'POST',
-    language,
-    body
+export function createSurveyRetrievalPromise<T> (id: string, language: string) : Promise<T> {
+  
+  return createPromise(`http://localhost:8081/survey/${id}`, {
+    method: 'GET',
+    language
   });
 
 }
@@ -265,6 +274,15 @@ export async function createSupportedLanguagesPromise<T> (language: string) : Pr
   return createPromise(`http://localhost:8081/languages`, {
     method: 'GET',
     language
+  });
+}
+
+export async function createSurveryUpdatePromise<T> (id: string[], body: any, language: string) : Promise<T> {
+  const [user_id, survey_id] = id;
+  return createPromise(`http://localhost:8081/user/${user_id}/survey/${survey_id}`, {
+    method: 'PUT',
+    language,
+    body
   });
 }
 
@@ -317,6 +335,43 @@ export const SurveyNewFormLoader: LoaderFunction = async ({ request, params }) =
       ...usersResponse,
       data: {
         ...data,
+        ...supportedLanguagesData
+      }
+    }
+    
+    return result;
+  } catch (error) {
+    throw error;
+  }
+
+}
+
+export const SurveyEditFormLoader: LoaderFunction = async ({ request, params }) => {
+
+  const url = new URL(request.url);
+  const language = url.searchParams.get("lng") || "en-US";
+  const { id = '' } = params;
+  try {
+    const supportedLanguagesLoaderResponse = await createSupportedLanguagesPromise<DataResponse>(language);
+    const usersLoaderResponse = await createUsersRetrievalPromise<DataResponse>(language);
+    const surveyLoaderResponse = await createSurveyRetrievalPromise<DataResponse>(id, language);
+
+    if (
+      supportedLanguagesLoaderResponse?.statusText !== 'success' ||
+      usersLoaderResponse?.statusText !== 'success' ||
+      surveyLoaderResponse?.statusText !== 'success'
+    )
+      throw new Error(`Failed to fetch data for Survey form...`);
+
+    const { data, ...surveyResponse } = surveyLoaderResponse;
+    const { data: usersData } = usersLoaderResponse;
+    const { data: supportedLanguagesData } = supportedLanguagesLoaderResponse;
+
+    const result = {
+      ...surveyResponse,
+      data: {
+        ...data,
+        ...usersData,
         ...supportedLanguagesData
       }
     }
