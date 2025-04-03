@@ -135,4 +135,70 @@ router.get('/:id', async (req, res) => {
 
 });
 
+router.put('/:id', async (req, res) => {
+
+    const { t } = req;
+
+    try {
+        const apiAction = t('endpoint.action.update');
+        validateObjectId(req.params.id, t('survey.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
+        const id = new mongoose.Types.ObjectId(`${req.params.id}`);
+        const payload = getReqBodyDataAsModelSchema(req, User);
+
+        // console.log('params id =>', id);
+        let result = {};
+        if (!payload.translations) {
+            result = await Survey.findOneAndUpdate(
+                { _id: id },
+                [
+                    {
+                        $set: {
+                            ...payload,
+                            updatedAt: new Date()
+                        }
+                    }
+                ],
+                { new: true }
+        );
+        } else {
+            const survey = await Survey.findOne({ _id: id });
+            const { translations } = survey;
+            const { translations: payloadTranslations, ...restOfPayload } = payload;
+            Object.keys(payloadTranslations).forEach((key)=>{
+                if (translations.get(key) !== undefined) {
+                    translations.set(key, {
+                        ...translations.toJSON()[key],
+                        ...payloadTranslations[key]
+                    });
+                } else {
+                    translations.set(key, payloadTranslations[key]);
+                }
+            });
+            result = await Survey.findOneAndUpdate(
+                { _id: id },
+                [
+                    {
+                        $set: {
+                            translations: translations,
+                            ...restOfPayload,
+                            updatedAt: new Date()
+                        }
+                    }
+                ],
+                { new: true }
+            );
+        }
+
+    } catch (error) {
+
+        return standardErrorHandler(res, {
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            message: error.message
+        });
+
+    }
+
+});
+
 module.exports = router;

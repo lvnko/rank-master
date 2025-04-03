@@ -417,6 +417,7 @@
         "heading": {
             "platformSurveys": "Surveys Created by Users",
             "add": "Add New Survey",
+            "edit": "Edit Survey Data",
             "introDesc": "Intro & Description",
             "author": "Survey Author    "
         },

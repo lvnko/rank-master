@@ -75,7 +75,8 @@ export default function SurveyNewForm() {
 
     const { fields: translationFields } = useFieldArray({ control: form.control, name: "translations" });
 
-    const insertTranslation = () => {
+    const insertTranslation = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         console.log('insertTranslation => translationFields => ',translationFields);
         console.log('insertTranslation => form.getValues("translations") => ',form.getValues("translations"));
         const newTranslationDefaultValues = { title: '', body: '', language: '' };

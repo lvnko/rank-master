@@ -417,6 +417,7 @@
         "heading": {
             "platformSurveys": "用戶製造的調查卷",
             "add": "新增調查卷",
+            "edit": "編輯調查卷資料",
             "introDesc": "簡介及描述",
             "author": "調查卷作者"
         },

@@ -6,7 +6,7 @@ import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations, extractSurveyFormData } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon } from "lucide-react";
+import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon, AsteriskIcon } from "lucide-react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -70,15 +70,15 @@ export default function SurveyEditForm() {
         resolver: zodResolver(formSchema),
         shouldFocusError: false,
         defaultValues: {
-            translations: [{ title: '', body: '', language: language }],
-            authorId: ''
+            ...formDefaultValues
         },
         // shouldUnregister: false
     });
 
     const { fields: translationFields } = useFieldArray({ control: form.control, name: "translations" });
 
-    const insertTranslation = () => {
+    const insertTranslation = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         console.log('insertTranslation => translationFields => ',translationFields);
         console.log('insertTranslation => form.getValues("translations") => ',form.getValues("translations"));
         const newTranslationDefaultValues = { title: '', body: '', language: '' };
@@ -109,12 +109,193 @@ export default function SurveyEditForm() {
         }
     }
 
+    const onSubmit: SubmitHandler<FormShape> = async (data) => {
+
+        console.log("!!! Form Submitted !!! data => ", data);
+        console.log("form isDirty?", form?.formState?.isDirty);
+        console.log("form dirtyFields => ", form?.formState?.dirtyFields);
+
+    }
+    
+    useEffect(()=>{
+
+        // console.log("form => ", form);
+        // console.log("translationFields => ", translationFields);
+        console.log("formDefaultValues.authorId => ", formDefaultValues.authorId);
+        authorSelectionHandler(formDefaultValues.authorId);
+
+    },[form.setValue]);
+
+    useEffect(()=>{
+        console.log("tracking errors =>",form.formState.errors);
+    },[form.formState.errors]);
+
     return (
         <div className="flex flex-col justify-center items-center w-full">
             <PageHeader className="justify-start item-center space-x-4 w-full">
                 <PageHeaderHeading>{t(`survey.heading.edit`)}</PageHeaderHeading>
             </PageHeader>
-
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 self-stretch">
+                    <Separator />
+                    <FormSectionHeading>{t(`survey.heading.introDesc`)}</FormSectionHeading>
+                    {translationFields.map((field, index)=>(
+                        <div key={`${field.id}-wrapper`}>
+                            {index > 0 && (<Separator key={`${field.id}-separator`} lineStyle={"dotted"} />)}
+                            <div
+                                key={field.id}
+                                className={`flex items-start gap-x-[1.25rem] !mt-4 relative`}
+                            >
+                                <FormFieldRenderer
+                                    control={form.control}
+                                    name={`translations.${index}.language`}
+                                    className={"basis-1/5"}
+                                    type={"Select"}
+                                    disabled={isLoading}
+                                    label={t('survey.label.introLang')}
+                                    placeholder={t('survey.placeholder.introLang')}
+                                    description={t('survey.description.introLang')}
+                                    optionValues={languageValues}
+                                />
+                                <div className={`flex flex-col items-start gap-y-[1rem] basis-4/5`}>
+                                    <FormFieldRenderer
+                                        control={form.control}
+                                        name={`translations.${index}.title`}
+                                        className={"flex-grow self-stretch"}
+                                        type={"Input"}
+                                        disabled={isLoading}
+                                        label={t("survey.label.title")}
+                                        placeholder={t("survey.placeholder.title")}
+                                        description={t("survey.description.title")}
+                                    />
+                                    <FormFieldRenderer
+                                        control={form.control}
+                                        name={`translations.${index}.body`}
+                                        className={"flex-grow self-stretch"}
+                                        type={"TextArea"}
+                                        disabled={isLoading}
+                                        label={t("survey.label.body")}
+                                        placeholder={t("survey.placeholder.body")}
+                                        description={t("survey.description.body")}
+                                    />
+                                </div>
+                                {index > 0 ? (
+                                    <Button
+                                        variant={"outline"}
+                                        size={"icon"}
+                                        onClick={(e)=>removeTranslation(e, index)}
+                                        disabled={isLoading}
+                                        className={"!w-10"}
+                                    >
+                                        <Trash2Icon />
+                                    </Button>
+                                ) : (
+                                    <div className="!w-10 flex items-center justify-center text-foreground/60">
+                                        <AsteriskIcon />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                    {translationFields.length < languageValues.length ? (
+                        <div className="flex items-center !mt-6">
+                            <Separator
+                                className="!w-auto flex-grow"
+                                lineStyle={"normal"}
+                            />
+                            <Button
+                                variant={"ghost"}
+                                disabled={isLoading}
+                                onClick={insertTranslation}
+                                className={"pl-3 pr-4"}
+                            >
+                                <PlusIcon />
+                                {t('survey.button.addIntroLang')}
+                            </Button>
+                            <Separator
+                                className="!w-auto flex-grow"
+                                lineStyle={"normal"}
+                            />
+                        </div>
+                    ) : (<Separator lineStyle={"normal"} />)}
+                    <FormSectionHeading>{t(`survey.heading.author`)}</FormSectionHeading>
+                    <div className={`flex items-start gap-x-[1.25rem] !mt-4`}>
+                        <FormFieldRenderer
+                            control={form.control}
+                            name={"authorId"}
+                            className={"flex flex-col basis-1/5"}
+                            type={"ComboBox"}
+                            disabled={isLoading}
+                            label={t("survey.label.author")}
+                            placeholder={t("survey.placeholder.author")}
+                            optionValues={authorValues}
+                            onSelected={(name, value) => {
+                                console.log(`setValue of ${name} to ${value}`);
+                                form.setValue(name as keyof FormShape, value, { shouldDirty: true });
+                                authorSelectionHandler(value);
+                            }}
+                        />
+                        <div className={`space-y-3 basis-4/5`}>
+                            <p className="text-sm font-medium">{t(`survey.label.authorPreview`)}</p>
+                            <Card className={`rounded-md px-3 py-2 flex space-x-4 border border-input ${selectedAuthor ? 'ring-1 ring-ring border-opacity-50' : ''}`}>
+                                <Avatar
+                                    className={`w-16 h-16`}
+                                >
+                                    <AvatarImage
+                                        src={`/images/avatar-${
+                                            selectedAuthor ?
+                                            selectedAuthor.gender === 'M' ? 'male' : 'female' :
+                                            'unknown'
+                                        }.png`}
+                                    />
+                                    <AvatarFallback>?</AvatarFallback>
+                                </Avatar>
+                                {selectedAuthor ? (
+                                    <div className={`flex justify-between grow space-x-2`}>
+                                        <div className={`flex flex-col grow items-start space-y-1`}>
+                                            <p className={`text-lg`}>{selectedAuthor.primName}</p>
+                                            {selectedAuthor.secName && (<p className={`text-sm`}>{selectedAuthor.secName}</p>)}
+                                            <div className={`space-x-1`}>
+                                                <Badge className={`!my-2 px-2 py-0.5`} variant="secondary">{t(`user.valueLabel.status.${selectedAuthor.status}`)}</Badge>
+                                                {selectedAuthor.role && <Badge className={`!my-2 px-2 py-0.5`} variant="secondary">
+                                                    {t(`user.abbr.role`)} : {t(`user.valueLabel.role.${selectedAuthor.role}`)}
+                                                </Badge>}
+                                                {selectedAuthor.subscription && <Badge className={`!my-2 px-2 py-0.5`} variant="secondary">
+                                                {t(`user.abbr.subscription`)} : {t(`user.valueLabel.subscription.${selectedAuthor.subscription}`)}
+                                                </Badge>}
+                                            </div>
+                                        </div>
+                                        <div className={`flex flex-col items-center grow`}>
+                                            <p className={`text-sm font-bold text-foreground/40`}>{t(`user.label.surveysCreated`)}</p>
+                                            <p className={`flex text-2xl grow items-center`}>{selectedAuthor.surveysCreated || 0}</p>
+                                        </div>
+                                        <div className={`flex flex-col items-center grow`}>
+                                            <p className={`text-sm font-bold text-foreground/40`}>{t(`user.label.surveysParticipated`)}</p>
+                                            <p className={`flex text-2xl grow items-center`}>{selectedAuthor.surveysParticipated || 0}</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className={`flex justify-center items-center flex-grow`}>
+                                        <p className="text-sm font-light text-foreground/60">{t(`survey.placeholder.authorPreview`)}</p>
+                                    </div>
+                                )}
+                            </Card>
+                        </div>
+                        <div className="!w-10 flex items-center justify-center text-foreground/60">
+                            <AsteriskIcon />
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <Link to="/surveys">
+                            <Button variant="outline" disabled={isLoading}><ArrowLeftIcon />{t("action.back", { ns: "common" })}</Button>
+                        </Link>
+                        <Button type="submit" disabled={!form.formState.isDirty || Object.keys(form.formState.dirtyFields)?.length === 0 || isLoading}>
+                            {isLoading && (<Loader2 className="animate-spin" />)}
+                            {t(isLoading ? 'loading' : 'button.submit', { ns: 'common' })}
+                        </Button>
+                    </div>
+                </form>
+            </Form>
         </div>
     );
 }

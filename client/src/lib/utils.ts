@@ -170,6 +170,13 @@ export function extractSurveyFormData (response: DataResponse, options: { langua
           language: lang
         }))
       ];
+    } else {
+      return [
+        ...Object.keys(trans).map((lang)=>({
+          ...trans[lang],
+          language: lang
+        }))
+      ];
     }
   }
   return {
