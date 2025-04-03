@@ -143,17 +143,19 @@ router.put('/:id', async (req, res) => {
         const apiAction = t('endpoint.action.update');
         validateObjectId(req.params.id, t('survey.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
         const id = new mongoose.Types.ObjectId(`${req.params.id}`);
-        const payload = getReqBodyDataAsModelSchema(req, User);
+        const payload = getReqBodyDataAsModelSchema(req, Survey);
 
         // console.log('params id =>', id);
         let result = {};
         if (!payload.translations) {
+            const { authorId, ...restOfPayload } = payload;
             result = await Survey.findOneAndUpdate(
                 { _id: id },
                 [
                     {
                         $set: {
-                            ...payload,
+                            ...(authorId && { authorId: new mongoose.Types.ObjectId(`${authorId}`) }),
+                            ...restOfPayload,
                             updatedAt: new Date()
                         }
                     }
@@ -163,7 +165,7 @@ router.put('/:id', async (req, res) => {
         } else {
             const survey = await Survey.findOne({ _id: id });
             const { translations } = survey;
-            const { translations: payloadTranslations, ...restOfPayload } = payload;
+            const { translations: payloadTranslations, authorId, ...restOfPayload } = payload;
             Object.keys(payloadTranslations).forEach((key)=>{
                 if (translations.get(key) !== undefined) {
                     translations.set(key, {
@@ -174,12 +176,14 @@ router.put('/:id', async (req, res) => {
                     translations.set(key, payloadTranslations[key]);
                 }
             });
+            console.log(">>(?)>> authorId => ", authorId);
             result = await Survey.findOneAndUpdate(
                 { _id: id },
                 [
                     {
                         $set: {
                             translations: translations,
+                            ...(authorId && { authorId: new mongoose.Types.ObjectId(`${authorId}`) }),
                             ...restOfPayload,
                             updatedAt: new Date()
                         }
@@ -188,8 +192,56 @@ router.put('/:id', async (req, res) => {
                 { new: true }
             );
         }
+        console.log('result =>', result);
+
+        res.setHeader('Content-Type', 'application/json');
+        res.write(JSON.stringify({
+            statusText: "success",
+            message: t('survey.updted', { ns: 'message' }),
+            data: {
+                survey: result
+            }
+        }));
+        res.end();
 
     } catch (error) {
+
+        return standardErrorHandler(res, {
+            code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",
+            statusCode: error.message.indexOf('fail') >= 0 ? 400 : 404,
+            message: error.message
+        });
+
+    }
+
+});
+
+router.delete('/:id', async (req, res) => {
+
+    const { t } = req;
+    try {
+        const apiAction = t('endpoint.action.delete');
+        validateObjectId(req.params.id, t('survey.requirement', { ns: 'message', requirement: 'ID', action: apiAction }));
+
+        const id = new mongoose.Types.ObjectId(`${req.params.id}`);
+
+        // console.log('params id =>', id);
+        const result = await Survey.deleteOne({
+            _id: id
+        });
+        console.log('result =>', result);
+
+        res.setHeader('Content-Type', 'application/json');
+        res.write(JSON.stringify({
+            statusText: "success",
+            message: t('survey.deleted', { ns: 'message' }),
+            data: {
+                operationResult: result
+            }
+        }));
+        res.end();
+
+    } catch(error) {
 
         return standardErrorHandler(res, {
             code: error.message.indexOf('fail') >= 0 ? "fail" : "bad_request",

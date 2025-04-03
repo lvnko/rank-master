@@ -4,7 +4,7 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations, extractSurveyFormData } from "@/lib/utils";
+import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations, extractSurveyFormData, extractSurveyTitleFromRawTranslations } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon, AsteriskIcon } from "lucide-react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
@@ -17,7 +17,7 @@ import { Card } from "@/components/ui/card";
 import FormSectionHeading from "@/components/form-section-heading";
 import FormFieldRenderer from "@/components/form-field-renderer";
 
-import { createSurveyInsertionPromise } from "@/loaders";
+import { createSurveyUpdatePromise } from "@/loaders";
 import useToastPromise from "@/hooks/useToastPromise";
 import { SurveyPayloadType } from "@/types/survey";
 import LanguageType from "@/types/languages";
@@ -40,7 +40,7 @@ export default function SurveyEditForm() {
     const { language } = i18n;
     const callToastPromiseHook = useToastPromise();
     const navigate = useNavigate();
-    const params = useParams();
+    const { id = "" } = useParams();
     const response: any = useLoaderData();
 
     const supportedLanguagesLib: LanguageType[] = response?.data?.languages || [];
@@ -62,7 +62,7 @@ export default function SurveyEditForm() {
 
     const formDefaultValues = extractSurveyFormData(response);
 
-    console.log('formDefaultValues => ', formDefaultValues);
+    // console.log('formDefaultValues => ', formDefaultValues);
     
     const [isLoading, setIsLoading] = useState(false);
     type FormShape = z.infer<typeof formSchema>;
@@ -109,11 +109,77 @@ export default function SurveyEditForm() {
         }
     }
 
+    const callToastPromise = (args: {
+        id: string;
+        payload: SurveyPayloadType;
+        language: string;
+    }) => {
+        callToastPromiseHook({
+            promise: createSurveyUpdatePromise,
+            args: [args.id, args.payload, args.language],
+            loadingMessage: t('loading', { ns: 'common' }),
+            successMessage: ({data})=>{
+                console.log('data => ', data);
+                const {survey} = data;
+                const title = extractSurveyTitleFromRawTranslations(survey.translations);
+                return {
+                    message: t('survey.success.update.title'),
+                    description: t('survey.success.update.description', { title })
+                };
+            },
+            errorMessage: t('survey.error.update'),
+            callback: () => {
+                setIsLoading(false);
+                navigate("/surveys");
+            },
+            errorCallback: ()=> {
+                setIsLoading(false);
+            }
+        });
+    }
+
     const onSubmit: SubmitHandler<FormShape> = async (data) => {
 
         console.log("!!! Form Submitted !!! data => ", data);
-        console.log("form isDirty?", form?.formState?.isDirty);
-        console.log("form dirtyFields => ", form?.formState?.dirtyFields);
+        // console.log("form isDirty?", form?.formState?.isDirty);
+        // console.log("form dirtyFields => ", form?.formState?.dirtyFields);
+
+        if (form?.formState?.isDirty && Object.keys(form?.formState?.dirtyFields).length > 0) {
+            setIsLoading(true);
+            let payloadCollection: SurveyPayloadType = {};
+            const dirtyFields = form.formState.dirtyFields;
+            console.log("form dirtyFields => ", form?.formState?.dirtyFields);
+
+            payloadCollection = {
+                ...payloadCollection,
+                ...(dirtyFields?.translations && {
+                    translations: Object.keys(dirtyFields.translations).reduce((accm, curr)=> {
+                        const dirtyTranslation:{
+                            title: string;
+                            body: string;
+                            language: string;
+                        } = data.translations[parseInt(curr)];
+                        const dirtyTranslationFields = dirtyFields.translations && dirtyFields.translations[parseInt(curr)]
+                            ? Object.keys(dirtyFields.translations[parseInt(curr)])
+                            : [];
+                        return {
+                            ...accm,
+                            [dirtyTranslation.language]: {
+                                ...dirtyTranslationFields.filter((key)=>key!=='language').reduce((accm, curr)=>{
+                                    return {
+                                        ...accm,
+                                        [curr]: dirtyTranslation[curr as 'title' | 'body']
+                                    };
+                                }, {})
+                            }
+                        };
+                    }, {})
+                }),
+                ...(dirtyFields?.authorId && { authorId: data.authorId })
+            }
+            console.log("payloadCollection => ", payloadCollection);    
+            callToastPromise({id, payload: payloadCollection, language});
+        }
 
     }
     

@@ -251,9 +251,67 @@ export function createUserDeleteThenUsersRetrivalPromise<T> (id: string, languag
 
 }
 
+export function createSurveyDeletePromise<T> (id: string, language: string) : Promise<T> {
+
+  return createPromise(`http://localhost:8081/survey/${id}`, {
+    method: 'DELETE',
+    language
+  });
+
+}
+
+export function createSurveyDeleteThenSurveysRetrivalPromise<T> (id: string, language: string) : Promise<T> {
+  interface ResponseType {
+    message?: string | string[]
+    data?: DataItem
+  }
+  
+  return new Promise(async (resolve, reject) => {
+    
+    let result = {};
+    
+    try {
+      
+      const report: Response = await createSurveyDeletePromise(id, language);
+      if ( report?.statusText !== 'success' )
+        throw new Error('survey.fail.delete');
+      else result = {
+        ...report as ResponseType
+      };
+
+      const response: Response = await createSurveysRetrievalPromise(language);
+      if ( response?.statusText !== 'success' )
+        throw new Error('survey.fail.get.plural');
+
+      const { message = '', data: resultContent = {} } = result as ResponseType;
+      const { message: responseMessage = '', data: responseContent = {} }  = response as ResponseType;
+      result = {
+        message: message !== '' ? [message, responseMessage] : responseMessage,
+        data: { 
+          ...resultContent,
+          ...responseContent
+        }
+      };
+      resolve(result as T);
+
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 export function createSurveyRetrievalPromise<T> (id: string, language: string) : Promise<T> {
   
   return createPromise(`http://localhost:8081/survey/${id}`, {
+    method: 'GET',
+    language
+  });
+
+}
+
+export function createSurveysRetrievalPromise<T> (language: string) : Promise<T> {
+  
+  return createPromise(`http://localhost:8081/survey`, {
     method: 'GET',
     language
   });
@@ -277,7 +335,15 @@ export async function createSupportedLanguagesPromise<T> (language: string) : Pr
   });
 }
 
-export async function createSurveryUpdatePromise<T> (id: string[], body: any, language: string) : Promise<T> {
+export async function createSurveyUpdatePromise<T> (id: string, body: any, language: string) : Promise<T> {
+  return createPromise(`http://localhost:8081/survey/${id}`, {
+    method: 'PUT',
+    language,
+    body
+  });
+}
+
+export async function createUserSurveyUpdatePromise<T> (id: string[], body: any, language: string) : Promise<T> {
   const [user_id, survey_id] = id;
   return createPromise(`http://localhost:8081/user/${user_id}/survey/${survey_id}`, {
     method: 'PUT',

@@ -11,7 +11,7 @@ import { columns, SurveyTableRow } from "./columns";
 import { PlusIcon } from "@radix-ui/react-icons";
 // import { UserPageDataType } from "@/types/user";
 import { composeFullName, covertRawSurveysToTableData } from "@/lib/utils";
-import { createUserDeleteThenUsersRetrivalPromise } from "@/loaders";
+import { createSurveyDeleteThenSurveysRetrivalPromise, createUserDeleteThenUsersRetrivalPromise } from "@/loaders";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { DataItem } from "@/types/data-response";
@@ -31,15 +31,61 @@ export default function Surveys() {
     const [tableData, setTableData] = useState<SurveyTableRow[]>([...surveyDataRows]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleTableActione = (action: string, options: {
-        id: string;
-        payload?: TableActionPayloadType;
-    }) => {
+    const handleTableActione = (
+        action: string,
+        options: {
+            id: string;
+            payload?: TableActionPayloadType;
+        }
+    ) => {
         const { id, payload } = options;
-        console.log(action);
-        console.log(id);
-        console.log(payload);
+        const actionPromise = getActionPromise(action);
+        // console.log(action);
+        // console.log(id);
+        // console.log(payload);
+        if (actionPromise) {
+            toast.promise(
+                actionPromise(...[
+                    id,
+                    language
+                ]),
+                {
+                    loading: t('loading', { ns: 'common' }),
+                    success: (resData) => {
+                        // console.log('resData =>', resData);
+                        const { message, data } = resData as {
+                            message: string,
+                            data: DataItem
+                        };
+                        console.log('data => ', data);
+                        // Success Callback
+                        const surveyDataRows: SurveyTableRow[] = covertRawSurveysToTableData(data?.surveys || []);
+                        setTableData(surveyDataRows);
+                        setIsLoading(false);
+                        return {
+                            message: t(`survey.success.${action.toLowerCase()}.title`) || message || `Success toast has been added`,
+                            description: t(`survey.success.${action.toLowerCase()}.description`, { title: payload && 'title' in payload ? payload.title : '' }) || `Success description.`
+                        };
+                    },
+                    error: (error) => {
+                        setIsLoading(false);
+                        return error instanceof Error ? `${t(error.name)} : ${t(error.message)}` : `Error toast has been added`;
+                    },
+                }
+            );
+        } else {
+            console.log('Nothing can be done!!!');
+        }
     };
+
+    const getActionPromise = (type: string) => {
+        switch(type) {
+            case "DELETE":
+                return createSurveyDeleteThenSurveysRetrivalPromise;
+            default:
+                return;
+        }
+    }
 
     useEffect(() => {  
         console.log('response =>', surveysRaw);

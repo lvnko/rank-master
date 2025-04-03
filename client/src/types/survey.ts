@@ -6,6 +6,11 @@ export interface SurveyTranslationType {
     body: string;
 }
 
+export interface SurveyTranslationPayloadType {
+    title?: string;
+    body?: string;
+}
+
 export interface SurveyRawType {
     _id: string;
     translations: Record<string, SurveyTranslationType>;
@@ -21,7 +26,7 @@ export interface SurveyRawType {
 }
 
 export type SurveyPayloadType = {
-    translations?: Record<string, Omit<SurveyTranslationType, '_id'>>;
+    translations?: Record<string, SurveyTranslationPayloadType>;
     authorId?: string;
     status?: "draft" | "inactive" | "active" | "suspended";
     minPairAppearance?: number;
