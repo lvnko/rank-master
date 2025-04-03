@@ -60,7 +60,7 @@ export default function SurveyEditForm() {
         };
     });
 
-    const formDefaultValues = extractSurveyFormData(response);
+    const formDefaultValues = extractSurveyFormData(response, { language });
 
     // console.log('formDefaultValues => ', formDefaultValues);
     
