@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { fetchLanguages } from "@/loaders";
 import { Icons } from "./icons";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface LanguageType {
     name: string;
@@ -25,6 +26,8 @@ export function LanguageToggle() {
     
     const { t, i18n } = useTranslation();
     const { changeLanguage, language } = i18n;
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const [languages, setLanguages] = useState<LanguageType[]>([]);
 
@@ -36,6 +39,12 @@ export function LanguageToggle() {
             if (err) return console.error('something went wrong loading', err);
             // t('key'); // -> same as i18next.t
         });
+        const { pathname } = location;
+        console.log('pathname => ', pathname);
+        navigate(`${pathname}?lng=${currentLanguage}`, {
+            replace: true
+        });
+
     },[currentLanguage]);
     
     useEffect(()=>{

@@ -272,9 +272,9 @@ export function covertRawSurveysToTableData (
     createdAt
   }: SurveyRawType)=>{
 
-    console.log('!!!! Survey Data convertor !!!!');
-    console.log('translations =>', translations);
-    console.log('author =>', author);
+    // console.log('!!!! Survey Data convertor !!!!');
+    // console.log('translations =>', translations);
+    // console.log('author =>', author);
 
     const { language } = options;
 
@@ -324,4 +324,20 @@ export function extractSurveyTitleFromRawTranslations<T extends any>(
     surveyIntros.get(language)?.title || surveyIntros.get(Object.keys(translations)[0])?.title || '' :
     '';
   return title;
+}
+
+const extractValuesSelected = (selectionFields: any[], indexToExclude: number) => {
+  return selectionFields.filter((field, index)=>index !== indexToExclude)
+      .map(({language})=>language);
+}
+
+const trimValuesSelected = (optionValues: any[], valuesToTrimmed: any[]) => {
+  return optionValues.filter(({value}) => valuesToTrimmed.indexOf(value) < 0);
+}
+
+export const trimValuesOfOtherFields = (optinsValues : any[], fields : any[], indexOfFieldToExclude: number) => {
+  return trimValuesSelected(
+    optinsValues,
+    extractValuesSelected(fields, indexOfFieldToExclude)
+  );
 }

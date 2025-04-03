@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
 import type UserType from "@/types/user";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage     } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { UserFormDataType, UserPageDataType } from "@/types/user";
+import { Button } from "@/components/ui/button";
 
 export default function User() {
 
     const response: any = useLoaderData();
+    const navigate = useNavigate();
     // const user: UserType = response?.data?.user || {};
     const userRaw = response?.data?.user || {};
     const user: UserPageDataType = {
@@ -26,7 +28,18 @@ export default function User() {
     return (
         <>
             <PageHeader className="justify-start item-center space-x-2">
-                <div className="mt-2"><Link to="/users"><ArrowLeftIcon width="34" height="34"/></Link></div>
+                <div className="mt-2">
+                    <Button
+                        variant={'ghost'}
+                        className={"py-1.5 px-3 -ml-3"}
+                        onClick={(e)=>{
+                            e.preventDefault();
+                            navigate(-1);
+                        }}
+                    >
+                        <ArrowLeftIcon width="46" height="46"/>
+                    </Button>
+                </div>
                 <PageHeaderHeading>User Page</PageHeaderHeading>
             </PageHeader>
             <Card>

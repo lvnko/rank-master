@@ -127,7 +127,7 @@ export const columns: ColumnDef<SurveyTableRow>[] = [
             const meta = table.options.meta;
             const { t, i18n: { language } } = useTranslation();
             const navigate = useNavigate();
-            console.log('ROW : survey => ', survey)
+            // console.log('ROW : survey => ', survey)
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

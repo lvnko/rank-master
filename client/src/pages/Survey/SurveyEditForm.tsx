@@ -4,7 +4,7 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations, extractSurveyFormData, extractSurveyTitleFromRawTranslations } from "@/lib/utils";
+import { cn, covertObjectOfRecordsToMap, extractFullNameFromRawTranslations, extractSurveyFormData, extractSurveyTitleFromRawTranslations, trimValuesOfOtherFields } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { ArrowLeftIcon, ArrowUpDown, Loader2, Trash2Icon, AsteriskIcon } from "lucide-react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
@@ -182,6 +182,15 @@ export default function SurveyEditForm() {
         }
 
     }
+
+    const extractValuesSelected = (selectionFields: any[], indexToExclude: number) => {
+        return selectionFields.filter((field, index)=>index !== indexToExclude)
+            .map(({language})=>language);
+    }
+
+    const trimValuesSelected = (optionValues: any[], valuesToTrimmed: any[]) => {
+        return optionValues.filter(({value}) => valuesToTrimmed.indexOf(value) < 0);
+    }
     
     useEffect(()=>{
 
@@ -221,7 +230,9 @@ export default function SurveyEditForm() {
                                     label={t('survey.label.introLang')}
                                     placeholder={t('survey.placeholder.introLang')}
                                     description={t('survey.description.introLang')}
-                                    optionValues={languageValues}
+                                    optionValues={trimValuesOfOtherFields(
+                                        languageValues, form.getValues("translations"), index
+                                    )}
                                 />
                                 <div className={`flex flex-col items-start gap-y-[1rem] basis-4/5`}>
                                     <FormFieldRenderer
